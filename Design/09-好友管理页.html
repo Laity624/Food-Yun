@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好友管理 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部导航 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-xl font-bold text-gray-800">我的好友</h1>
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-search text-gray-400 text-lg"></i>
+                        <i class="fas fa-user-plus text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+                
+                <!-- 好友请求提醒 -->
+                <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-plus text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">好友请求</p>
+                            <p class="text-xs text-gray-500">3个待处理请求</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- 好友列表 -->
+            <div class="flex-1 px-6 pt-4 pb-20">
+                <div class="space-y-1">
+                    <!-- 好友卡片1 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop" 
+                             alt="小王" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小王</h3>
+                            <p class="text-sm text-gray-500">分享了 12 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">活跃用户</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友卡片2 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b332c4b2?w=50&h=50&fit=crop" 
+                             alt="小李" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小李</h3>
+                            <p class="text-sm text-gray-500">分享了 8 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-green-500 bg-green-50 px-2 py-0.5 rounded-full">在线</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友卡片3 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" 
+                             alt="小张" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小张</h3>
+                            <p class="text-sm text-gray-500">分享了 15 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">2小时前</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友卡片4 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop" 
+                             alt="小刘" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小刘</h3>
+                            <p class="text-sm text-gray-500">分享了 6 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">昨天</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友卡片5 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop" 
+                             alt="小陈" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小陈</h3>
+                            <p class="text-sm text-gray-500">分享了 20 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-purple-500 bg-purple-50 px-2 py-0.5 rounded-full">美食达人</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友卡片6 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center space-x-4">
+                        <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop" 
+                             alt="小赵" class="w-12 h-12 rounded-full object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">小赵</h3>
+                            <p class="text-sm text-gray-500">分享了 4 个菜谱</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">3天前</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-gray-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部添加好友按钮 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-4 absolute bottom-0 left-0 right-0">
+                <button class="w-full bg-orange-500 text-white py-3 rounded-2xl font-semibold flex items-center justify-center">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    添加好友
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

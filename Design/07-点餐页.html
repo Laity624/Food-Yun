@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点餐 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部导航 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <i class="fas fa-arrow-left text-gray-600 text-lg"></i>
+                    <h1 class="text-lg font-semibold text-gray-800">点餐</h1>
+                    <i class="fas fa-shopping-cart text-gray-600 text-lg relative">
+                        <span class="absolute -top-2 -right-2 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+                    </i>
+                </div>
+            </div>
+            
+            <!-- 餐次选择 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <h3 class="text-sm font-medium text-gray-700 mb-3">选择餐次</h3>
+                <div class="flex space-x-3">
+                    <button class="flex-1 py-3 bg-orange-500 text-white rounded-xl font-medium text-sm">
+                        <i class="fas fa-sun mr-2"></i>早餐
+                    </button>
+                    <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-medium text-sm">
+                        <i class="fas fa-sun mr-2"></i>午餐
+                    </button>
+                    <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-medium text-sm">
+                        <i class="fas fa-moon mr-2"></i>晚餐
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 好友菜谱 -->
+            <div class="flex-1 px-6 pt-4 pb-20">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-medium text-gray-700">好友菜谱</h3>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-filter text-gray-400 text-sm"></i>
+                        <span class="text-gray-500 text-sm">筛选</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- 好友菜谱卡片1 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div class="flex p-4">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=80&h=80&fit=crop" 
+                                 alt="红烧肉" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-semibold text-gray-800">红烧肉</h4>
+                                    <div class="flex items-center space-x-1">
+                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop" 
+                                             alt="好友头像" class="w-5 h-5 rounded-full">
+                                        <span class="text-xs text-gray-500">小王</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">香甜软糯，入口即化</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span class="mr-3">45分钟</span>
+                                        <i class="fas fa-star mr-1"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-xs rounded-full">
+                                        <i class="fas fa-plus mr-1"></i>添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友菜谱卡片2 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div class="flex p-4">
+                            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=80&h=80&fit=crop" 
+                                 alt="番茄鸡蛋" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-semibold text-gray-800">番茄鸡蛋</h4>
+                                    <div class="flex items-center space-x-1">
+                                        <img src="https://images.unsplash.com/photo-1494790108755-2616b332c4b2?w=20&h=20&fit=crop" 
+                                             alt="好友头像" class="w-5 h-5 rounded-full">
+                                        <span class="text-xs text-gray-500">小李</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">经典家常菜，营养丰富</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span class="mr-3">15分钟</span>
+                                        <i class="fas fa-star mr-1"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                    <button class="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
+                                        <i class="fas fa-check mr-1"></i>已添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友菜谱卡片3 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div class="flex p-4">
+                            <img src="https://images.unsplash.com/photo-1563379091339-03246963d51b?w=80&h=80&fit=crop" 
+                                 alt="宫保鸡丁" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-semibold text-gray-800">宫保鸡丁</h4>
+                                    <div class="flex items-center space-x-1">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=20&h=20&fit=crop" 
+                                             alt="好友头像" class="w-5 h-5 rounded-full">
+                                        <span class="text-xs text-gray-500">小张</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">酸甜微辣，经典川菜</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span class="mr-3">30分钟</span>
+                                        <i class="fas fa-star mr-1"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-xs rounded-full">
+                                        <i class="fas fa-plus mr-1"></i>添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 好友菜谱卡片4 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div class="flex p-4">
+                            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=80&h=80&fit=crop" 
+                                 alt="蒸蛋羹" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-semibold text-gray-800">蒸蛋羹</h4>
+                                    <div class="flex items-center space-x-1">
+                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop" 
+                                             alt="好友头像" class="w-5 h-5 rounded-full">
+                                        <span class="text-xs text-gray-500">小王</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">嫩滑爽口，老少皆宜</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span class="mr-3">20分钟</span>
+                                        <i class="fas fa-star mr-1"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                    <button class="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
+                                        <i class="fas fa-check mr-1"></i>已添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部按钮 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-4 absolute bottom-0 left-0 right-0">
+                <button class="w-full bg-orange-500 text-white py-3 rounded-2xl font-semibold flex items-center justify-center">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    提交订单 (2道菜)
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

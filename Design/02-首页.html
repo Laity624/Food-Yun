@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 30%, #f8f9fa 100%);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .recipe-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .recipe-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        .floating-icon {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部 -->
+            <div class="px-6 pb-4">
+                <div class="flex items-center justify-between mb-6 mt-2">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white drop-shadow-lg">早上好，小王</h1>
+                        <p class="text-white text-opacity-90">今天想吃什么？</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop" 
+                             alt="头像" class="w-10 h-10 rounded-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- 搜索框 -->
+                <div class="relative mb-6">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" placeholder="搜索菜谱、食材..." 
+                           class="w-full pl-13 pr-4 py-4 glass-card rounded-3xl border-0 focus:ring-2 focus:ring-pink-200 text-gray-700 placeholder-gray-500">
+                </div>
+            </div>
+            
+            <!-- 快捷功能 -->
+            <div class="px-6 mb-6">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="feature-card rounded-3xl p-5 text-center shadow-lg">
+                        <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 floating-icon">
+                            <i class="fas fa-plus text-white text-xl"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700">创建菜谱</p>
+                    </div>
+                    <div class="feature-card rounded-3xl p-5 text-center shadow-lg">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 floating-icon" style="animation-delay: 0.2s;">
+                            <i class="fas fa-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700">智能点餐</p>
+                    </div>
+                    <div class="feature-card rounded-3xl p-5 text-center shadow-lg">
+                        <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 floating-icon" style="animation-delay: 0.4s;">
+                            <i class="fas fa-users text-white text-xl"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700">好友圈</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 热门菜谱 -->
+            <div class="px-6 flex-1">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl font-bold text-gray-800">🔥 热门菜谱</h2>
+                    <div class="flex items-center text-pink-500 font-medium">
+                        <span class="text-sm">查看更多</span>
+                        <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="recipe-card rounded-3xl p-5 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=80&h=80&fit=crop" 
+                                     alt="菜谱" class="w-20 h-20 rounded-2xl object-cover shadow-md">
+                                <div class="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-heart text-white text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="ml-5 flex-1">
+                                <h3 class="font-bold text-gray-800 mb-1 text-lg">红烧肉</h3>
+                                <p class="text-sm text-gray-600 mb-3">香甜软糯，入口即化的经典家常菜</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-orange-400"></i>45分钟
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-star mr-1 text-yellow-400"></i>4.8
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-pink-500 font-medium">
+                                        <i class="fas fa-eye mr-1"></i>1.2k
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recipe-card rounded-3xl p-5 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=80&h=80&fit=crop" 
+                                     alt="菜谱" class="w-20 h-20 rounded-2xl object-cover shadow-md">
+                                <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-leaf text-white text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="ml-5 flex-1">
+                                <h3 class="font-bold text-gray-800 mb-1 text-lg">番茄鸡蛋</h3>
+                                <p class="text-sm text-gray-600 mb-3">经典家常菜，营养丰富又美味</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-orange-400"></i>15分钟
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-star mr-1 text-yellow-400"></i>4.6
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-pink-500 font-medium">
+                                        <i class="fas fa-eye mr-1"></i>856
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部导航 -->
+            <div class="bg-white bg-opacity-95 backdrop-filter backdrop-blur-lg border-t border-white border-opacity-30 px-6 py-4">
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="w-8 h-8 bg-gradient-to-r from-pink-400 to-red-400 rounded-xl flex items-center justify-center mx-auto mb-1">
+                            <i class="fas fa-home text-white text-lg"></i>
+                        </div>
+                        <p class="text-xs text-pink-500 font-medium">首页</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-book text-gray-400 text-2xl mb-1"></i>
+                        <p class="text-xs text-gray-400">菜谱</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-shopping-cart text-gray-400 text-2xl mb-1"></i>
+                        <p class="text-xs text-gray-400">订单</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-user text-gray-400 text-2xl mb-1"></i>
+                        <p class="text-xs text-gray-400">我的</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

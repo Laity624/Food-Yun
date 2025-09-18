@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部用户信息 -->
+            <div class="gradient-header pt-8 pb-6 px-6 text-white relative overflow-hidden">
+                <!-- 装饰性背景元素 -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white bg-opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white bg-opacity-5 rounded-full -ml-12 -mb-12"></div>
+                
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <h1 class="text-xl font-bold">个人中心</h1>
+                    <div class="flex space-x-3">
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-bell text-lg"></i>
+                        </div>
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cog text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4 relative z-10">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=70&h=70&fit=crop" 
+                             alt="用户头像" class="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg">
+                        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 border-2 border-white rounded-full"></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <h2 class="text-2xl font-bold">小王</h2>
+                            <div class="px-2 py-0.5 bg-yellow-400 bg-opacity-20 rounded-full">
+                                <span class="text-yellow-200 text-xs font-medium">VIP</span>
+                            </div>
+                        </div>
+                        <p class="text-white text-opacity-90 text-sm mb-3">🍳 美食达人 | 热爱分享生活美味</p>
+                        <div class="flex items-center space-x-6 text-sm">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">12</div>
+                                <div class="text-white text-opacity-80 text-xs">菜谱</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">6</div>
+                                <div class="text-white text-opacity-80 text-xs">好友</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">24</div>
+                                <div class="text-white text-opacity-80 text-xs">获赞</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 我的搜索码 -->
+                <div class="bg-white bg-opacity-15 backdrop-filter backdrop-blur-lg rounded-2xl p-4 mt-6 flex items-center justify-between relative z-10">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-qrcode text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg">我的搜索码</p>
+                            <p class="text-sm text-white text-opacity-90 font-mono">FY2024</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-copy text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-share text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能菜单 -->
+            <div class="bg-white -mt-4 rounded-t-3xl flex-1 px-6 pt-8">
+                <!-- 快捷功能 -->
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-pink-400 rounded-xl flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-utensils text-white text-lg"></i>
+                        </div>
+                        <p class="text-xs text-gray-600">我的菜谱</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-400 rounded-xl flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-shopping-cart text-white text-lg"></i>
+                        </div>
+                        <p class="text-xs text-gray-600">我的订单</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-400 rounded-xl flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-heart text-white text-lg"></i>
+                        </div>
+                        <p class="text-xs text-gray-600">收藏</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-chart-line text-white text-lg"></i>
+                        </div>
+                        <p class="text-xs text-gray-600">统计</p>
+                    </div>
+                </div>
+                
+                <!-- 菜单列表 -->
+                <div class="space-y-1">
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-book text-orange-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">我的菜谱</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-400 text-sm">12个</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-users text-blue-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">好友管理</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-400 text-sm">6个</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-heart text-green-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">我的收藏</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-400 text-sm">8个</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-cog text-purple-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">设置</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-question-circle text-yellow-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">帮助与反馈</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl py-4 px-4 flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-info-circle text-red-500"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">关于我们</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部导航 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-3 absolute bottom-0 left-0 right-0">
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <i class="fas fa-home text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">首页</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-book text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">菜谱</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-shopping-cart text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">订单</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-user text-orange-500 text-xl mb-1"></i>
+                        <p class="text-xs text-orange-500">我的</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜谱详情 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        .hero-overlay {
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        .ingredient-item {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .ingredient-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+        .step-number {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        .floating-action {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+        .floating-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(255, 107, 107, 0.5);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部图片 -->
+            <div class="relative h-72">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop" 
+                     alt="红烧肉" class="w-full h-full object-cover">
+                <div class="absolute inset-0 hero-overlay"></div>
+                
+                <!-- 顶部操作栏 -->
+                <div class="absolute top-12 left-4 right-4 flex items-center justify-between">
+                    <div class="w-10 h-10 glass-button rounded-full flex items-center justify-center">
+                        <i class="fas fa-arrow-left text-white text-lg"></i>
+                    </div>
+                    <div class="flex space-x-3">
+                        <div class="w-10 h-10 glass-button rounded-full flex items-center justify-center">
+                            <i class="fas fa-share text-white text-lg"></i>
+                        </div>
+                        <div class="w-10 h-10 glass-button rounded-full flex items-center justify-center">
+                            <i class="fas fa-heart text-red-400 text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 底部信息预览 -->
+                <div class="absolute bottom-4 left-4 right-4">
+                    <div class="glass-button rounded-2xl p-4">
+                        <div class="flex items-center justify-between text-white">
+                            <div>
+                                <h1 class="text-xl font-bold mb-1">红烧肉</h1>
+                                <div class="flex items-center space-x-4 text-sm">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-clock mr-1 text-orange-300"></i>45分钟
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-star mr-1 text-yellow-300"></i>4.8
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-users mr-1 text-blue-300"></i>3-4人
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl">👨‍🍳</div>
+                                <div class="text-xs">小王</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 菜谱详细信息 -->
+            <div class="info-card rounded-t-3xl -mt-6 relative z-10 flex-1">
+                <div class="px-6 pt-8 pb-4">
+                    <!-- 描述 -->
+                    <p class="text-gray-600 mb-6 text-center leading-relaxed">
+                        🍖 香甜软糯，入口即化的经典家常菜<br/>
+                        传承千年的烹饪智慧，每一口都是满满的幸福
+                    </p>
+                    
+                    <!-- 营养标签 -->
+                    <div class="flex items-center justify-center space-x-3 mb-8">
+                        <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">高蛋白</span>
+                        <span class="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-medium">补铁</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">家常菜</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-medium">下饭神器</span>
+                    </div>
+                    
+                    <!-- 食材清单 -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-shopping-basket mr-2 text-orange-500"></i>
+                            食材清单
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="ingredient-item rounded-2xl p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">🥩</span>
+                                    <span class="font-medium text-gray-700">五花肉</span>
+                                </div>
+                                <span class="text-orange-600 font-semibold">500g</span>
+                            </div>
+                            <div class="ingredient-item rounded-2xl p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">🧂</span>
+                                    <span class="font-medium text-gray-700">冰糖</span>
+                                </div>
+                                <span class="text-orange-600 font-semibold">30g</span>
+                            </div>
+                            <div class="ingredient-item rounded-2xl p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">🍶</span>
+                                    <span class="font-medium text-gray-700">生抽</span>
+                                </div>
+                                <span class="text-orange-600 font-semibold">2勺</span>
+                            </div>
+                            <div class="ingredient-item rounded-2xl p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">🍷</span>
+                                    <span class="font-medium text-gray-700">料酒</span>
+                                </div>
+                                <span class="text-orange-600 font-semibold">1勺</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 制作步骤 -->
+                    <div class="mb-24">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-list-ol mr-2 text-green-500"></i>
+                            制作步骤
+                        </h3>
+                        <div class="space-y-5">
+                            <div class="flex items-start">
+                                <div class="step-number w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">1</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-700 leading-relaxed">五花肉洗净切块，用开水焯水去血沫，这样可以去除腥味</p>
+                                    <div class="mt-2 text-xs text-gray-500">💡 小贴士：焯水时加入料酒效果更佳</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="step-number w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">2</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-700 leading-relaxed">热锅下油，放入冰糖小火炒出糖色，颜色呈焦糖色即可</p>
+                                    <div class="mt-2 text-xs text-gray-500">💡 小贴士：火候要小，避免糖炒糊</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="step-number w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">3</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-700 leading-relaxed">下入肉块翻炒上色，加入生抽老抽调色和调味</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="step-number w-8 h-8 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">4</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-700 leading-relaxed">加适量水没过肉块，大火烧开转小火炖30分钟至软烂</p>
+                                    <div class="mt-2 text-xs text-gray-500">💡 小贴士：最后大火收汁，颜色更好看</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部操作栏 -->
+            <div class="bg-white bg-opacity-95 backdrop-filter backdrop-blur-lg border-t border-white border-opacity-30 px-6 py-4 absolute bottom-0 left-0 right-0">
+                <div class="flex space-x-3">
+                    <button class="flex-1 bg-gray-100 text-gray-700 py-4 rounded-2xl font-semibold flex items-center justify-center">
+                        <i class="fas fa-bookmark mr-2"></i>
+                        收藏
+                    </button>
+                    <button class="flex-2 floating-action text-white py-4 px-8 rounded-2xl font-bold flex items-center justify-center">
+                        <i class="fas fa-play mr-2"></i>
+                        开始制作
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

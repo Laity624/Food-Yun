@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建菜谱 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部导航 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <i class="fas fa-arrow-left text-gray-600 text-lg"></i>
+                    <h1 class="text-lg font-semibold text-gray-800">创建菜谱</h1>
+                    <span class="text-orange-500 font-medium">保存</span>
+                </div>
+            </div>
+            
+            <!-- 表单内容 -->
+            <div class="flex-1 px-6 pt-4 pb-20 space-y-6">
+                <!-- 菜谱图片 -->
+                <div class="bg-white rounded-2xl p-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">菜谱图片</label>
+                    <div class="w-full h-32 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-camera text-gray-400 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-500">点击上传图片</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 基本信息 -->
+                <div class="bg-white rounded-2xl p-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">菜谱名称</label>
+                        <input type="text" placeholder="请输入菜谱名称" 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-300">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">菜谱描述</label>
+                        <textarea placeholder="简单描述一下这道菜..." rows="3"
+                                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-300 resize-none"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">烹饪时间</label>
+                            <select class="w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-300">
+                                <option>15分钟</option>
+                                <option>30分钟</option>
+                                <option>45分钟</option>
+                                <option>60分钟</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">难度等级</label>
+                            <select class="w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-300">
+                                <option>简单</option>
+                                <option>中等</option>
+                                <option>困难</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">人份</label>
+                            <select class="w-full px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-300">
+                                <option>1-2人</option>
+                                <option>3-4人</option>
+                                <option>5-6人</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 食材清单 -->
+                <div class="bg-white rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-medium text-gray-700">食材清单</h3>
+                        <button class="text-orange-500 text-sm">
+                            <i class="fas fa-plus mr-1"></i>添加食材
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="食材名称" 
+                                   class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <input type="text" placeholder="用量" 
+                                   class="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <i class="fas fa-trash text-gray-400"></i>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="食材名称" 
+                                   class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <input type="text" placeholder="用量" 
+                                   class="w-20 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <i class="fas fa-trash text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 制作步骤 -->
+                <div class="bg-white rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-medium text-gray-700">制作步骤</h3>
+                        <button class="text-orange-500 text-sm">
+                            <i class="fas fa-plus mr-1"></i>添加步骤
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex space-x-3">
+                            <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-semibold mt-1">1</div>
+                            <textarea placeholder="描述制作步骤..." rows="2"
+                                      class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"></textarea>
+                        </div>
+                        <div class="flex space-x-3">
+                            <div class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-semibold mt-1">2</div>
+                            <textarea placeholder="描述制作步骤..." rows="2"
+                                      class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 公开设置 -->
+                <div class="bg-white rounded-2xl p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700">公开给好友</h3>
+                            <p class="text-xs text-gray-500">开启后好友可以看到这个菜谱</p>
+                        </div>
+                        <div class="w-12 h-6 bg-orange-500 rounded-full relative">
+                            <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部按钮 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-4 absolute bottom-0 left-0 right-0">
+                <button class="w-full bg-orange-500 text-white py-3 rounded-2xl font-semibold">
+                    创建菜谱
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

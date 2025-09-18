@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 60%;
+            animation-delay: 4s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        .logo-glow {
+            box-shadow: 0 0 40px rgba(255, 154, 158, 0.4);
+        }
+        .btn-glow {
+            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(34, 197, 94, 0.4);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 浮动装饰 -->
+            <div class="floating-shapes">
+                <div class="shape"></div>
+                <div class="shape"></div>
+                <div class="shape"></div>
+            </div>
+            
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 主要内容 -->
+            <div class="h-full flex flex-col items-center justify-center px-8 relative z-10">
+                <!-- Logo区域 -->
+                <div class="mb-20 text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-orange-400 via-pink-400 to-purple-500 rounded-full flex items-center justify-center mb-8 logo-glow mx-auto">
+                        <i class="fas fa-utensils text-white text-4xl"></i>
+                    </div>
+                    <h1 class="text-5xl font-bold text-white text-center mb-3 drop-shadow-lg">食云</h1>
+                    <p class="text-white text-opacity-90 text-center text-xl font-medium">让美食连接你我</p>
+                    <div class="mt-6 flex items-center justify-center space-x-2">
+                        <div class="w-2 h-2 bg-white bg-opacity-60 rounded-full"></div>
+                        <div class="w-8 h-2 bg-white bg-opacity-80 rounded-full"></div>
+                        <div class="w-2 h-2 bg-white bg-opacity-60 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <!-- 登录按钮 -->
+                <div class="w-full space-y-5">
+                    <button class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-5 rounded-3xl font-bold text-lg flex items-center justify-center space-x-4 btn-glow">
+                        <i class="fab fa-weixin text-3xl"></i>
+                        <span>微信快速登录</span>
+                    </button>
+                    
+                    <div class="text-center mt-8">
+                        <p class="text-sm text-white text-opacity-80 leading-relaxed px-4">
+                            登录即表示同意
+                            <span class="text-yellow-200 font-medium underline">《用户协议》</span>
+                            和
+                            <span class="text-yellow-200 font-medium underline">《隐私政策》</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 底部特色 -->
+                <div class="absolute bottom-8 left-0 right-0 text-center">
+                    <div class="flex items-center justify-center space-x-6 text-white text-opacity-70">
+                        <div class="text-center">
+                            <i class="fas fa-users text-lg mb-1"></i>
+                            <p class="text-xs">好友分享</p>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-heart text-lg mb-1"></i>
+                            <p class="text-xs">精选菜谱</p>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-star text-lg mb-1"></i>
+                            <p class="text-xs">智能推荐</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

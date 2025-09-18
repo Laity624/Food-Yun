@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜谱列表 - 食云</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部导航 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-xl font-bold text-gray-800">菜谱大全</h1>
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-search text-gray-400 text-lg"></i>
+                        <i class="fas fa-plus-circle text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+                
+                <!-- 分类筛选 -->
+                <div class="flex space-x-3 overflow-x-auto">
+                    <span class="px-4 py-2 bg-orange-500 text-white text-sm rounded-full whitespace-nowrap">全部</span>
+                    <span class="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-full whitespace-nowrap">家常菜</span>
+                    <span class="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-full whitespace-nowrap">汤品</span>
+                    <span class="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-full whitespace-nowrap">甜品</span>
+                    <span class="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-full whitespace-nowrap">素食</span>
+                </div>
+            </div>
+            
+            <!-- 菜谱列表 -->
+            <div class="flex-1 px-6 pt-4 pb-20">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 菜谱卡片1 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=120&fit=crop" 
+                             alt="红烧肉" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">红烧肉</h3>
+                            <p class="text-xs text-gray-500 mb-2">香甜软糯，入口即化</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>45分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 菜谱卡片2 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=200&h=120&fit=crop" 
+                             alt="番茄鸡蛋" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">番茄鸡蛋</h3>
+                            <p class="text-xs text-gray-500 mb-2">经典家常菜，营养丰富</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>15分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 菜谱卡片3 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=120&fit=crop" 
+                             alt="蒸蛋羹" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">蒸蛋羹</h3>
+                            <p class="text-xs text-gray-500 mb-2">嫩滑爽口，老少皆宜</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>20分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 菜谱卡片4 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=200&h=120&fit=crop" 
+                             alt="青椒肉丝" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">青椒肉丝</h3>
+                            <p class="text-xs text-gray-500 mb-2">清爽下饭，简单易做</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>25分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 菜谱卡片5 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1563379091339-03246963d51b?w=200&h=120&fit=crop" 
+                             alt="宫保鸡丁" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">宫保鸡丁</h3>
+                            <p class="text-xs text-gray-500 mb-2">酸甜微辣，经典川菜</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>30分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 菜谱卡片6 -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=200&h=120&fit=crop" 
+                             alt="蛋炒饭" class="w-full h-24 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-semibold text-gray-800 mb-1 text-sm">蛋炒饭</h3>
+                            <p class="text-xs text-gray-500 mb-2">简单快手，香气四溢</p>
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fas fa-clock mr-1"></i>10分钟</span>
+                                <span><i class="fas fa-star mr-1"></i>4.4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部导航 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-3 absolute bottom-0 left-0 right-0">
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <i class="fas fa-home text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">首页</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-book text-orange-500 text-xl mb-1"></i>
+                        <p class="text-xs text-orange-500">菜谱</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-shopping-cart text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">订单</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-user text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">我的</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

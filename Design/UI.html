@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食云 - 产品设计图集合</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .design-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .design-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .design-item h3 {
+            margin: 0 0 20px 0;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 10px rgba(0,0,0,0.2);
+        }
+        
+        .design-frame {
+            width: 400px;
+            height: 850px;
+            border: none;
+            background: #f6f6f6;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .design-frame:hover {
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stats {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .stats h2 {
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .stat-item {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍳 食云 Food-Yun</h1>
+        <p>家庭菜谱管理小程序 - 产品设计图集合</p>
+    </div>
+    
+    <div class="grid">
+        <div class="design-item">
+            <h3>01 - 登录页</h3>
+            <iframe src="01-登录页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>02 - 首页</h3>
+            <iframe src="02-首页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>03 - 菜谱列表页</h3>
+            <iframe src="03-菜谱列表页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>04 - 菜谱详情页</h3>
+            <iframe src="04-菜谱详情页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>05 - 创建菜谱页</h3>
+            <iframe src="05-创建菜谱页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>06 - 搜索页</h3>
+            <iframe src="06-搜索页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>07 - 点餐页</h3>
+            <iframe src="07-点餐页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>08 - 订单列表页</h3>
+            <iframe src="08-订单列表页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>09 - 好友管理页</h3>
+            <iframe src="09-好友管理页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>10 - 好友请求页</h3>
+            <iframe src="10-好友请求页.html" class="design-frame"></iframe>
+        </div>
+        
+        <div class="design-item">
+            <h3>11 - 个人中心页</h3>
+            <iframe src="11-个人中心页.html" class="design-frame"></iframe>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <h2>✨ 设计统计</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">11</div>
+                <div class="stat-label">页面设计</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">375×812</div>
+                <div class="stat-label">设计尺寸(PX)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5</div>
+                <div class="stat-label">核心功能模块</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">MVP覆盖率</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
