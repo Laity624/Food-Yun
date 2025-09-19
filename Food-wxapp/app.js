@@ -69,6 +69,7 @@ App({
   globalData: {
     userInfo: null,
     openid: null,
+    isPreviewMode: false, // 预览模式标志
     version: '1.0.0'
   }
 })

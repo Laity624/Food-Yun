@@ -7,7 +7,9 @@ Page({
     hasUserInfo: false,
     canIUseGetUserProfile: false,
     recommendRecipes: [],
-    loading: true
+    loading: true,
+    showLoginPrompt: false,
+    promptContent: ''
   },
 
   onLoad: function () {
@@ -20,18 +22,20 @@ Page({
 
   // 检查登录状态并加载数据
   checkLoginAndLoad: function() {
-    if (!app.isLoggedIn()) {
-      // 未登录，跳转到登录页
+    // 允许预览模式访问
+    if (!app.isLoggedIn() && !app.globalData.isPreviewMode) {
+      // 未登录且不是预览模式，跳转到登录页
       wx.redirectTo({
         url: '/pages/login/login'
       })
       return
     }
 
-    // 已登录，更新用户信息并加载数据
+    // 已登录或预览模式，更新用户信息并加载数据
     this.setData({
       userInfo: app.globalData.userInfo,
-      hasUserInfo: true
+      hasUserInfo: app.isLoggedIn(),
+      isPreviewMode: app.globalData.isPreviewMode
     })
     
     this.loadRecommendRecipes()
@@ -71,7 +75,10 @@ Page({
 
   onFriendsClick: function() {
     if (!this.data.hasUserInfo) {
-      util.showError('请先登录')
+      this.setData({
+        showLoginPrompt: true,
+        promptContent: '好友功能需要登录后使用'
+      })
       return
     }
     wx.navigateTo({
@@ -100,12 +107,26 @@ Page({
 
   onAddRecipeClick: function() {
     if (!this.data.hasUserInfo) {
-      util.showError('请先登录')
+      this.setData({
+        showLoginPrompt: true,
+        promptContent: '发布菜谱需要登录后使用'
+      })
       return
     }
     wx.navigateTo({
       url: '/pages/recipe-form/recipe-form'
     })
+  },
+
+  // 关闭提示弹窗
+  onPromptClose: function() {
+    this.setData({ showLoginPrompt: false })
+  },
+
+  // 点击立即登录
+  onPromptLogin: function() {
+    this.setData({ showLoginPrompt: false })
+    wx.navigateTo({ url: '/pages/login/login' })
   },
 
   onOrderClick: function() {

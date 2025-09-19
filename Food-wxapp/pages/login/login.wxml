@@ -1,9 +1,23 @@
 <view class="login-container">
+  <!-- 浮动装饰 -->
+  <view class="floating-shapes">
+    <view class="shape"></view>
+    <view class="shape"></view>
+    <view class="shape"></view>
+  </view>
+  
   <!-- 顶部Logo区域 -->
   <view class="logo-section">
-    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
-    <text class="app-name">Food-Yun</text>
-    <text class="app-desc">家庭菜谱管理助手</text>
+    <view class="logo">
+      <text class="logo-icon">🍽️</text>
+    </view>
+    <text class="app-name">食云</text>
+    <text class="app-desc">让美食连接你我</text>
+    <view class="logo-dots">
+      <view class="dot"></view>
+      <view class="dot active"></view>
+      <view class="dot"></view>
+    </view>
   </view>
 
   <!-- 登录区域 -->
@@ -20,8 +34,8 @@
         class="login-btn" 
         bindtap="getUserProfile"
       >
-        <image class="wechat-icon" src="/images/wechat-icon.png"></image>
-        <text>微信登录</text>
+        <image class="wechat-icon" src="/images/wechat-icon.png" mode="aspectFit"></image>
+        <text>微信快速登录</text>
       </button>
       
       <button 
@@ -30,8 +44,13 @@
         open-type="getUserInfo" 
         bindgetuserinfo="getUserInfo"
       >
-        <image class="wechat-icon" src="/images/wechat-icon.png"></image>
-        <text>微信登录</text>
+        <image class="wechat-icon" src="/images/wechat-icon.png" mode="aspectFit"></image>
+        <text>微信快速登录</text>
+      </button>
+
+      <!-- 暂不登录按钮 -->
+      <button class="preview-btn" bindtap="enterPreviewMode">
+        <text>暂不登录，先看看</text>
       </button>
     </view>
 
@@ -45,6 +64,7 @@
       <button class="logout-btn" bindtap="logout">退出登录</button>
     </view>
   </view>
+
 
   <!-- 底部说明 -->
   <view class="footer">

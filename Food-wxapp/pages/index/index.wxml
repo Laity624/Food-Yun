@@ -1,6 +1,15 @@
 <!-- 页面容器 -->
 <view class="page-container safe-area-top">
 
+  <!-- 登录提示组件 -->
+  <login-prompt 
+    id="loginPrompt"
+    visible="{{showLoginPrompt}}"
+    content="{{promptContent}}"
+    bind:close="onPromptClose"
+    bind:login="onPromptLogin"
+  />
+
   <!-- 头部用户信息 -->
   <view class="header-section">
     <view class="user-info">

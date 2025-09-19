@@ -1,10 +1,19 @@
 <view class="container">
+  <!-- 登录提示组件 -->
+  <login-prompt 
+    id="loginPrompt"
+    visible="{{showLoginPrompt}}"
+    content="{{promptContent}}"
+    bind:close="onPromptClose"
+    bind:login="onPromptLogin"
+  />
+
   <!-- 用户信息区域 -->
   <view class="user-section card">
-    <image class="user-avatar" src="{{userInfo.avatar}}"></image>
+    <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}"></image>
     <view class="user-details">
-      <text class="user-name">{{userInfo.nickname}}</text>
-      <text class="user-code">搜索码: {{userInfo.searchCode}}</text>
+      <text class="user-name">{{userInfo.nickname || '未登录用户'}}</text>
+      <text class="user-code" wx:if="{{userInfo.searchCode}}">搜索码: {{userInfo.searchCode}}</text>
     </view>
   </view>
 
@@ -36,7 +45,7 @@
   </view>
 
   <!-- 退出登录按钮 -->
-  <view class="logout-section">
+  <view class="logout-section" wx:if="{{!isPreviewMode}}">
     <button class="logout-btn" bindtap="logout">退出登录</button>
   </view>
 </view>

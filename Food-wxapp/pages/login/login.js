@@ -63,7 +63,11 @@ Page({
         hasUserInfo: true
       })
       util.hideLoading()
-      util.showSuccess('登录成功')
+      
+      // 登录成功后直接跳转到首页
+      wx.switchTab({
+        url: '/pages/index/index'
+      })
     }).catch(err => {
       util.hideLoading()
       util.showError('登录失败')
@@ -95,6 +99,17 @@ Page({
 
   // 进入应用
   enterApp: function() {
+    wx.switchTab({
+      url: '/pages/index/index'
+    })
+  },
+
+  // 进入预览模式
+  enterPreviewMode: function() {
+    const app = getApp()
+    app.globalData.isPreviewMode = true
+    
+    // 跳转到首页
     wx.switchTab({
       url: '/pages/index/index'
     })
