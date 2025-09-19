@@ -1,0 +1,67 @@
+<view class="container">
+  <!-- 分类筛选 -->
+  <scroll-view class="category-scroll" scroll-x="true">
+    <view class="category-list">
+      <view 
+        wx:for="{{categories}}" 
+        wx:key="*this"
+        class="category-item {{currentCategory === item ? 'active' : ''}}"
+        data-category="{{item}}"
+        bindtap="onCategoryChange"
+      >
+        {{item}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 菜谱列表 -->
+  <view class="recipe-list">
+    <view 
+      wx:for="{{recipes}}" 
+      wx:key="_id"
+      class="recipe-item card"
+      data-id="{{item._id}}"
+      bindtap="onRecipeClick"
+    >
+      <image class="recipe-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="recipe-content">
+        <text class="recipe-title">{{item.title}}</text>
+        <text class="recipe-desc">{{item.description}}</text>
+        <view class="recipe-meta">
+          <text class="meta-item">⏱️ {{item.cookTime}}分钟</text>
+          <text class="meta-item">🔥 {{item.difficulty}}</text>
+          <text class="meta-item">📂 {{item.category}}</text>
+        </view>
+        <view class="recipe-footer">
+          <view class="creator-info">
+            <image class="creator-avatar" src="{{item.creator.avatar}}"></image>
+            <text class="creator-name">{{item.creator.nickname}}</text>
+          </view>
+          <text class="create-time">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{recipes.length === 0}}" class="empty">
+    <text class="empty-icon">🍳</text>
+    <text class="empty-text">暂无菜谱</text>
+    <button class="btn btn-primary" bindtap="onAddClick">添加第一个菜谱</button>
+  </view>
+
+  <!-- 没有更多 -->
+  <view wx:elif="{{!hasMore}}" class="no-more">
+    <text>没有更多了</text>
+  </view>
+
+  <!-- 悬浮按钮 -->
+  <view class="fab" bindtap="onAddClick">
+    <text class="fab-icon">+</text>
+  </view>
+</view>

@@ -1,0 +1,105 @@
+<!-- 页面容器 -->
+<view class="page-container safe-area-top">
+
+  <!-- 头部用户信息 -->
+  <view class="header-section">
+    <view class="user-info">
+      <view class="greeting">
+        <text class="greeting-text">早上好，{{userInfo ? userInfo.nickname : '用户'}}</text>
+        <text class="sub-text">今天想吃什么？</text>
+      </view>
+    </view>
+
+    <!-- 搜索框 -->
+    <view class="search-container">
+      <text class="iconfont icon-search search-icon"></text>
+      <input 
+        class="search-input" 
+        placeholder="搜索菜谱、食材..." 
+        placeholder-class="placeholder"
+        bindfocus="onSearchClick"
+      />
+    </view>
+  </view>
+
+  <!-- 快捷功能网格 -->
+  <view class="quick-grid">
+    <view class="feature-card" bindtap="onAddRecipeClick">
+      <view class="icon-container gradient-green floating">
+        <text class="iconfont icon-plus"></text>
+      </view>
+      <text class="feature-text">创建菜谱</text>
+    </view>
+    
+    <view class="feature-card" bindtap="onOrderClick">
+      <view class="icon-container gradient-purple floating" style="animation-delay: 0.2s;">
+        <text class="iconfont icon-cart"></text>
+      </view>
+      <text class="feature-text">智能点餐</text>
+    </view>
+    
+    <view class="feature-card" bindtap="onFriendsClick">
+      <view class="icon-container gradient-orange floating" style="animation-delay: 0.4s;">
+        <text class="iconfont icon-users"></text>
+      </view>
+      <text class="feature-text">好友圈</text>
+    </view>
+  </view>
+
+  <!-- 热门菜谱区域 -->
+  <view class="hot-recipes">
+    <view class="section-header">
+      <text class="section-title">🔥 热门菜谱</text>
+      <view class="view-more" bindtap="onMoreClick">
+        <text class="more-text">查看更多</text>
+        <text class="iconfont icon-arrow-right"></text>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-container">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view wx:elif="{{recommendRecipes.length > 0}}" class="recipes-list">
+      <view 
+        wx:for="{{recommendRecipes}}" 
+        wx:key="_id" 
+        class="recipe-card"
+        data-id="{{item._id}}"
+        bindtap="onRecipeClick"
+      >
+        <view class="recipe-image-container">
+          <image class="recipe-image" src="{{item.image ? item.image : '/images/default-recipe.png'}}" mode="aspectFill"></image>
+          <view class="recipe-badge {{item.isVegetarian ? 'vegetarian' : 'popular'}}">
+            <text class="badge-icon">{{item.isVegetarian ? '🌿' : '❤️'}}</text>
+          </view>
+        </view>
+        
+        <view class="recipe-content">
+          <text class="recipe-title">{{item.title}}</text>
+          <text class="recipe-desc">{{item.description}}</text>
+          
+          <view class="recipe-meta">
+            <view class="meta-item">
+              <text class="iconfont icon-clock"></text>
+              <text class="meta-text">{{item.cookTime}}分钟</text>
+            </view>
+            <view class="meta-item">
+              <text class="iconfont icon-star"></text>
+              <text class="meta-text">{{item.rating ? item.rating : 4.8}}</text>
+            </view>
+            <view class="meta-item views">
+              <text class="iconfont icon-eye"></text>
+              <text class="meta-text">{{item.views ? item.views : '1.2k'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-container">
+      <text class="empty-icon">🍳</text>
+      <text class="empty-text">暂无推荐菜谱</text>
+    </view>
+  </view>
+</view>

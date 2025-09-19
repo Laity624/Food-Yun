@@ -1,0 +1,42 @@
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-section card">
+    <image class="user-avatar" src="{{userInfo.avatar}}"></image>
+    <view class="user-details">
+      <text class="user-name">{{userInfo.nickname}}</text>
+      <text class="user-code">搜索码: {{userInfo.searchCode}}</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="onMyRecipes">
+      <text class="menu-icon">📖</text>
+      <text class="menu-text">我的菜谱</text>
+      <text class="menu-arrow">></text>
+    </view>
+    
+    <view class="menu-item" bindtap="onMyOrders">
+      <text class="menu-icon">📋</text>
+      <text class="menu-text">我的订单</text>
+      <text class="menu-arrow">></text>
+    </view>
+    
+    <view class="menu-item" bindtap="onMyFriends">
+      <text class="menu-icon">👥</text>
+      <text class="menu-text">我的好友</text>
+      <text class="menu-arrow">></text>
+    </view>
+    
+    <view class="menu-item" bindtap="onSettings">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-text">设置</text>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>

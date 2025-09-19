@@ -1,0 +1,56 @@
+<view class="login-container">
+  <!-- 顶部Logo区域 -->
+  <view class="logo-section">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="app-name">Food-Yun</text>
+    <text class="app-desc">家庭菜谱管理助手</text>
+  </view>
+
+  <!-- 登录区域 -->
+  <view class="login-section">
+    <view wx:if="{{!hasUserInfo}}" class="login-area">
+      <view class="login-tips">
+        <text class="tips-title">欢迎使用 Food-Yun</text>
+        <text class="tips-desc">请授权登录以使用完整功能</text>
+      </view>
+      
+      <!-- 微信登录按钮 -->
+      <button 
+        wx:if="{{canIUseGetUserProfile}}" 
+        class="login-btn" 
+        bindtap="getUserProfile"
+      >
+        <image class="wechat-icon" src="/images/wechat-icon.png"></image>
+        <text>微信登录</text>
+      </button>
+      
+      <button 
+        wx:else 
+        class="login-btn" 
+        open-type="getUserInfo" 
+        bindgetuserinfo="getUserInfo"
+      >
+        <image class="wechat-icon" src="/images/wechat-icon.png"></image>
+        <text>微信登录</text>
+      </button>
+    </view>
+
+    <!-- 已登录状态 -->
+    <view wx:else class="logged-in">
+      <image class="user-avatar" src="{{userInfo.avatar}}"></image>
+      <text class="user-name">{{userInfo.nickname}}</text>
+      <text class="login-success">登录成功！</text>
+      
+      <button class="enter-btn" bindtap="enterApp">进入应用</button>
+      <button class="logout-btn" bindtap="logout">退出登录</button>
+    </view>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="footer">
+    <text class="footer-text">登录即表示同意</text>
+    <text class="footer-link">《用户协议》</text>
+    <text class="footer-text">和</text>
+    <text class="footer-link">《隐私政策》</text>
+  </view>
+</view>

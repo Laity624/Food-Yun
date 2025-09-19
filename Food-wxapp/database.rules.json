@@ -1,0 +1,18 @@
+{
+  "users": {
+    "read": "auth.openid == resource.openid",
+    "write": "auth.openid == resource.openid"
+  },
+  "recipes": {
+    "read": "resource.isPublic == true || resource.creatorId == auth.openid",
+    "write": "resource.creatorId == auth.openid"
+  },
+  "orders": {
+    "read": "resource.userId == auth.openid",
+    "write": "resource.userId == auth.openid"
+  },
+  "friendships": {
+    "read": "resource.requesterId == auth.openid || resource.receiverId == auth.openid",
+    "write": "resource.requesterId == auth.openid || resource.receiverId == auth.openid"
+  }
+}

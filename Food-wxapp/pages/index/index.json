@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#ff9a9e",
+  "usingComponents": {
+    "safe-area-layout": "/components/safe-area-layout/safe-area-layout"
+  }
+}

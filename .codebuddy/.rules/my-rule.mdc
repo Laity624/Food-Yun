@@ -1,0 +1,122 @@
+# Food-Yun 小程序项目规则
+
+这是一个规则文件，用于帮助 AI 理解您的代码库和遵循项目约定。
+
+## 项目概述
+- **项目类型**: 微信小程序
+- **技术栈**: 微信小程序原生开发 + 微信云开发
+- **数据库**: 云数据库 (MongoDB)
+- **存储**: 云存储
+- **函数**: 云函数 (Node.js)
+
+## 目录结构约定
+```
+Food-wxapp/
+├── pages/                  # 页面目录，每个页面一个子目录
+│   ├── [page-name]/       # 页面目录命名使用kebab-case
+│   │   ├── [page-name].js # 页面逻辑
+│   │   ├── [page-name].json # 页面配置
+│   │   ├── [page-name].wxml # 页面模板
+│   │   └── [page-name].wxss # 页面样式
+├── components/            # 公共组件目录
+├── utils/                 # 工具函数目录
+├── cloudfunctions/        # 云函数目录
+│   ├── [function-name]/   # 云函数目录命名使用kebab-case
+│   │   ├── index.js       # 云函数入口
+│   │   ├── package.json   # 依赖配置
+│   │   └── config.json     # 函数配置
+├── images/                # 图片资源目录
+└── miniprogram_npm/       # npm包目录
+```
+
+## 代码风格规范
+
+### JavaScript 规范
+- 使用 ES6+ 语法
+- 变量命名使用 camelCase
+- 函数命名使用 camelCase
+- 常量命名使用 UPPER_CASE
+- 使用 const/let 代替 var
+- 使用 Promise 或 async/await 处理异步操作
+
+### WXML 规范
+- 使用 kebab-case 命名自定义组件
+- 属性命名使用 camelCase
+- 事件处理函数命名以 on 开头
+
+### 云函数规范
+- 每个云函数独立目录
+- 使用 async/await 处理异步
+- 统一错误处理格式
+- 返回格式: { success: boolean, data: any, message?: string }
+
+## 开发约定
+
+### 页面开发
+1. 页面必须包含四个文件: .js, .json, .wxml, .wxss
+2. 页面数据初始化在 data 对象中
+3. 生命周期函数按顺序定义
+4. 事件处理函数以 on 开头
+
+### 组件开发
+1. 组件命名使用 kebab-case
+2. 组件属性使用 camelCase
+3. 组件事件使用 kebab-case
+
+### 工具函数
+1. 工具函数统一在 utils/util.js 中定义
+2. 函数要有清晰的注释说明
+3. 导出使用 module.exports
+
+## 云开发规范
+
+### 数据库操作
+- 使用 wx.cloud.database() 访问数据库
+- 集合命名使用复数形式 (users, recipes, orders)
+- 查询操作使用链式调用
+
+### 云函数调用
+- 使用 util.callCloudFunction 统一调用
+- 错误处理使用 try-catch
+- 返回数据格式统一
+
+### 文件上传
+- 使用 util.uploadFile 上传文件
+- 文件路径使用 cloudPath 参数指定
+- 图片资源存储在 images/ 目录
+
+## 安全规范
+1. 数据库权限在 database.rules.json 中配置
+2. 云函数需要验证用户权限
+3. 敏感操作需要用户确认
+4. 输入数据需要验证和过滤
+
+## 性能优化
+1. 图片使用合适的尺寸和格式
+2. 数据懒加载和分页查询
+3. 使用防抖和节流函数
+4. 避免不必要的 setData 调用
+
+## 测试规范
+1. 云函数需要在真机测试
+2. 测试云开发环境ID一致性
+3. 测试图片上传和显示
+4. 测试网络超时处理
+
+## 部署规范
+1. 云函数需要单独部署
+2. 数据库权限需要配置
+3. 云存储权限需要配置
+4. 小程序需要提交审核
+
+## 错误处理
+1. 使用 util.showError 显示错误提示
+2. 网络错误需要重试机制
+3. 用户操作失败需要友好提示
+4. 云函数错误需要日志记录
+
+## 版本控制
+1. 保持基础库版本 >= 2.2.3
+2. 云函数环境ID保持一致
+3. 配置文件需要版本控制
+4. 依赖版本需要锁定

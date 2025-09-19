@@ -1,0 +1,4 @@
+<!-- 安全区域布局组件 -->
+<view class="safe-area-layout {{customClass}}">
+  <slot></slot>
+</view>

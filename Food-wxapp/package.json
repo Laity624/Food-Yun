@@ -1,0 +1,15 @@
+{
+  "name": "food-wxapp",
+  "version": "1.0.0",
+  "description": "家庭菜谱管理小程序，基于微信小程序云开发。",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}

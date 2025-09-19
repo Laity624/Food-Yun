@@ -1,0 +1,9 @@
+/* 安全区域布局组件样式 */
+.safe-area-layout {
+  min-height: 100vh;
+  padding-top: env(safe-area-inset-top, 44rpx);
+  padding-bottom: env(safe-area-inset-bottom, 34rpx);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  box-sizing: border-box;
+}
