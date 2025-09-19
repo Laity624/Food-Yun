@@ -10,9 +10,12 @@
 
   <!-- 用户信息区域 -->
   <view class="user-section card">
-    <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}"></image>
+    <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" bindtap="onAvatarClick"></image>
     <view class="user-details">
-      <text class="user-name">{{userInfo.nickname || '未登录用户'}}</text>
+      <view class="user-name-row">
+        <text class="user-name">{{userInfo.nickname || '未登录用户'}}</text>
+        <text class="edit-nickname-btn" bindtap="onEditNickname" wx:if="{{!isPreviewMode}}">✏️</text>
+      </view>
       <text class="user-code" wx:if="{{userInfo.searchCode}}">搜索码: {{userInfo.searchCode}}</text>
     </view>
   </view>
@@ -47,5 +50,29 @@
   <!-- 退出登录按钮 -->
   <view class="logout-section" wx:if="{{!isPreviewMode}}">
     <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 昵称编辑模态框 -->
+  <view class="modal-mask" wx:if="{{showNicknameModal}}" catchtap="onCloseNicknameModal">
+    <view class="modal-content" catchtap="preventTouchMove">
+      <view class="modal-header">
+        <text class="modal-title">编辑昵称</text>
+      </view>
+      <view class="modal-body">
+        <input 
+          class="nickname-input" 
+          value="{{editingNickname}}" 
+          placeholder="请输入昵称" 
+          maxlength="10"
+          bindinput="onNicknameInput"
+          focus="{{showNicknameModal}}"
+        />
+        <view class="nickname-counter">{{nicknameLength}}/10</view>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="onCloseNicknameModal">取消</button>
+        <button class="modal-btn confirm" bindtap="onConfirmNickname">确定</button>
+      </view>
+    </view>
   </view>
 </view>

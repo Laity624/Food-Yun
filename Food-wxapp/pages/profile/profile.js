@@ -5,7 +5,9 @@ Page({
   data: {
     userInfo: null,
     showLoginPrompt: false,
-    promptContent: ''
+    promptContent: '',
+    showNicknameModal: false,
+    editingNickname: ''
   },
 
   onLoad: function () {
@@ -14,6 +16,14 @@ Page({
 
   onShow: function () {
     this.checkLoginAndLoad()
+    
+    // 检查是否有裁剪后的头像需要上传
+    const app = getApp()
+    if (app.globalData.croppedAvatarPath) {
+      const croppedPath = app.globalData.croppedAvatarPath
+      app.globalData.croppedAvatarPath = null // 清除数据
+      this.uploadAvatar(croppedPath)
+    }
   },
 
   // 检查登录状态并加载数据
@@ -30,18 +40,25 @@ Page({
     }
 
     // 已登录或预览模式，更新用户信息
-    this.setData({
-      userInfo: app.globalData.userInfo,
-      isPreviewMode: app.globalData.isPreviewMode
-    })
-    
-    // 如果是预览模式，显示欢迎信息
     if (app.globalData.isPreviewMode) {
+      // 预览模式，显示预览用户信息
       this.setData({
         userInfo: {
           nickname: '预览用户',
           avatar: '/images/default-avatar.png'
-        }
+        },
+        isPreviewMode: true
+      })
+    } else if (app.isLoggedIn()) {
+      // 已登录，显示真实用户信息
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        isPreviewMode: false
+      })
+    } else {
+      // 未登录且不是预览模式，跳转到登录页
+      wx.redirectTo({
+        url: '/pages/login/login'
       })
     }
   },
@@ -124,6 +141,188 @@ Page({
           url: '/pages/login/login'
         })
       }
+    })
+  },
+
+  // 头像点击事件 - 上传新头像
+  onAvatarClick: function() {
+    const app = getApp()
+    
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      util.showError('请先登录后再修改头像')
+      return
+    }
+
+    // 显示选择菜单
+    wx.showActionSheet({
+      itemList: ['拍照', '从相册选择'],
+      success: (res) => {
+        const sourceType = res.tapIndex === 0 ? 'camera' : 'album'
+        this.chooseImage(sourceType)
+      }
+    })
+  },
+
+  // 选择图片
+  chooseImage: function(sourceType) {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: [sourceType],
+      success: (res) => {
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        // 跳转到自定义裁剪页面
+        wx.navigateTo({
+          url: `/pages/avatar-cropper/avatar-cropper?src=${tempFilePath}`
+        })
+      }
+    })
+  },
+
+  // 上传头像
+  uploadAvatar: function(tempFilePath) {
+    util.showLoading('上传中...')
+
+    // 上传到云存储
+    const cloudPath = `avatars/${Date.now()}-${Math.random().toString(36).substr(2)}.jpg`
+
+    wx.cloud.uploadFile({
+      cloudPath: cloudPath,
+      filePath: tempFilePath,
+      success: (res) => {
+        // 直接使用fileID，不需要获取临时链接
+        this.updateUserAvatar(res.fileID)
+      },
+      fail: (err) => {
+        util.hideLoading()
+        util.showError('上传失败')
+        console.error('上传失败', err)
+      }
+    })
+  },
+
+  // 更新用户头像
+  updateUserAvatar: function(avatarUrl) {
+    const app = getApp()
+
+    util.callCloudFunction('user', {
+      action: 'updateProfile',
+      avatar: avatarUrl
+    }).then(res => {
+      util.hideLoading()
+
+      // 更新全局用户信息
+      app.globalData.userInfo.avatar = avatarUrl
+
+      // 更新本地存储
+      wx.setStorageSync('userInfo', app.globalData.userInfo)
+
+      // 更新页面显示
+      this.setData({
+        'userInfo.avatar': avatarUrl
+      })
+
+      util.showSuccess('头像更新成功')
+    }).catch(err => {
+      util.hideLoading()
+      util.showError('更新失败')
+      console.error('更新失败', err)
+    })
+  },
+
+  // 编辑昵称
+  onEditNickname: function() {
+    const app = getApp()
+
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      util.showError('请先登录后再修改昵称')
+      return
+    }
+
+    this.setData({
+      showNicknameModal: true,
+      editingNickname: this.data.userInfo.nickname || '',
+      nicknameLength: (this.data.userInfo.nickname || '').length
+    })
+  },
+
+  // 关闭昵称编辑弹窗
+  onCloseNicknameModal: function() {
+    this.setData({
+      showNicknameModal: false,
+      editingNickname: '',
+      nicknameLength: 0
+    })
+  },
+
+  // 昵称输入
+  onNicknameInput: function(e) {
+    const value = e.detail.value
+    this.setData({
+      editingNickname: value,
+      nicknameLength: value.length
+    })
+  },
+
+  // 确认修改昵称
+  onConfirmNickname: function() {
+    const nickname = this.data.editingNickname.trim()
+
+    if (!nickname) {
+      util.showError('昵称不能为空')
+      return
+    }
+
+    if (nickname.length > 10) {
+      util.showError('昵称不能超过10个字符')
+      return
+    }
+
+    if (nickname === this.data.userInfo.nickname) {
+      this.onCloseNicknameModal()
+      return
+    }
+
+    this.updateNickname(nickname)
+  },
+
+  // 防止弹窗背景滚动
+  preventTouchMove: function() {
+    return false
+  },
+
+  // 更新昵称
+  updateNickname: function(nickname) {
+    util.showLoading('更新中...')
+
+    const app = getApp()
+    util.callCloudFunction('user', {
+      action: 'updateProfile',
+      nickname: nickname
+    }).then(res => {
+      util.hideLoading()
+
+      // 更新全局用户信息
+      app.globalData.userInfo.nickname = nickname
+
+      // 更新本地存储
+      wx.setStorageSync('userInfo', app.globalData.userInfo)
+
+      // 更新页面显示并关闭模态框
+      this.setData({
+        'userInfo.nickname': nickname,
+        showNicknameModal: false,
+        editingNickname: '',
+        nicknameLength: 0
+      })
+
+      util.showSuccess('昵称更新成功')
+    }).catch(err => {
+      util.hideLoading()
+      util.showError('更新失败')
+      console.error('更新失败', err)
     })
   }
 })

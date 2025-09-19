@@ -97,10 +97,26 @@ Page({
     })
   },
 
-  // 进入应用
+  // 进入应用（重新登录但不更新用户信息）
   enterApp: function() {
-    wx.switchTab({
-      url: '/pages/index/index'
+    util.showLoading('登录中...')
+    
+    // 重新登录但不传入用户信息，避免覆盖自定义头像
+    app.login(null).then(res => {
+      this.setData({
+        userInfo: res.userInfo,
+        hasUserInfo: true
+      })
+      util.hideLoading()
+      
+      // 登录成功后直接跳转到首页
+      wx.switchTab({
+        url: '/pages/index/index'
+      })
+    }).catch(err => {
+      util.hideLoading()
+      util.showError('登录失败')
+      console.error('登录失败', err)
     })
   },
 

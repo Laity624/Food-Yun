@@ -1,0 +1,14 @@
+<import src="./we-cropper/we-cropper.wxml" />
+
+<view class="cropper-wrapper" 
+      catch:touchstart="touchStart"
+      catch:touchmove="touchMove" 
+      catch:touchend="touchEnd">
+  <template is="we-cropper" data="{{...cropperOpt}}" />
+  <cover-view class="cropper-buttons">
+    <cover-view class="upload btn" catchtap="uploadTap">取消</cover-view>
+    <cover-view class="getCropperImage btn" catchtap="getCropperImage">确定</cover-view>
+  </cover-view>
+</view>
+
+

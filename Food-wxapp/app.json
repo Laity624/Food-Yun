@@ -10,7 +10,8 @@
     "pages/order-list/order-list",
     "pages/friends/friends",
     "pages/friend-requests/friend-requests",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/avatar-cropper/avatar-cropper"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -77,6 +78,7 @@
     "van-icon": "@vant/weapp/icon/index",
     "van-tab": "@vant/weapp/tab/index",
     "van-tabs": "@vant/weapp/tabs/index",
-    "van-search": "@vant/weapp/search/index"
+    "van-search": "@vant/weapp/search/index",
+    "van-dialog": "@vant/weapp/dialog/index"
   }
 }

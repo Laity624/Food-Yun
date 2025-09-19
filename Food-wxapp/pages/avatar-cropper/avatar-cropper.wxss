@@ -1,0 +1,61 @@
+
+.cropper-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
+.cropper-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.95);
+  position: relative;
+}
+
+.cropper-buttons {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: rgba(0, 0, 0, 0.95);
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.cropper-buttons .upload, .cropper-buttons .getCropperImage {
+  text-align: center;
+}
+
+.cropper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 60px);
+}
+
+.btn {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 32rpx;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.cropper-buttons .upload {
+  background-color: #666;
+  border: 1px solid #888;
+}
+
+.cropper-buttons .getCropperImage {
+  background-color: #07C160;
+  border: 1px solid #07C160;
+}
