@@ -3,12 +3,12 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.95);
+  position: relative;
 }
 
-.cropper-wrapper {
+.cropper-area {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.95);
+  height: calc(100% - 60px);
   position: relative;
 }
 
@@ -26,11 +26,12 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .cropper-buttons .upload, .cropper-buttons .getCropperImage {
   text-align: center;
+  cursor: pointer;
 }
 
 .cropper {
@@ -38,7 +39,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px);
+  height: 100%;
 }
 
 .btn {
@@ -48,6 +49,7 @@
   border-radius: 6px;
   color: #fff;
   font-size: 16px;
+  user-select: none;
 }
 
 .cropper-buttons .upload {
