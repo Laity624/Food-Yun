@@ -17,7 +17,7 @@
 
 /* 头部用户信息 */
 .header-section {
-  padding: 60rpx 0 32rpx 0;
+  padding: 62rpx 0 32rpx 0;
 }
 
 .user-info {
@@ -29,7 +29,7 @@
 
 .greeting-text {
   display: block;
-  font-size: 48rpx;
+  font-size: 46rpx;
   font-weight: 800;
   color: #fff;
   text-shadow: 0 4rpx 8rpx rgba(0,0,0,0.3);

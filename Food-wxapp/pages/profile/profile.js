@@ -7,7 +7,9 @@ Page({
     showLoginPrompt: false,
     promptContent: '',
     showNicknameModal: false,
-    editingNickname: ''
+    editingNickname: '',
+    nicknameLength: 0,
+    isPreviewMode: false
   },
 
   onLoad: function () {
@@ -107,12 +109,33 @@ Page({
     })
   },
 
-  // 我的好友
-  onMyFriends: function() {
+  // 我的收藏
+  onMyFavorites: function() {
+    this.handlePreviewMode('查看收藏需要登录后使用', () => {
+      util.showError('收藏功能开发中')
+    })
+  },
+
+  // 数据统计
+  onStatistics: function() {
+    this.handlePreviewMode('查看数据统计需要登录后使用', () => {
+      util.showError('数据统计功能开发中')
+    })
+  },
+
+  // 好友管理
+  onFriends: function() {
     this.handlePreviewMode('好友功能需要登录后使用', () => {
       wx.navigateTo({
         url: '/pages/friends/friends'
       })
+    })
+  },
+
+  // 收藏
+  onFavorites: function() {
+    this.handlePreviewMode('收藏功能需要登录后使用', () => {
+      util.showError('收藏功能开发中')
     })
   },
 
@@ -123,8 +146,50 @@ Page({
     })
   },
 
+  // 帮助中心
+  onHelp: function() {
+    this.handlePreviewMode('帮助中心需要登录后使用', () => {
+      util.showError('帮助中心开发中')
+    })
+  },
+
+  // 关于我们
+  onAbout: function() {
+    this.handlePreviewMode('关于我们需要登录后使用', () => {
+      util.showError('关于我们开发中')
+    })
+  },
+
+  // 通知中心
+  onNotifications: function() {
+    this.handlePreviewMode('通知功能需要登录后使用', () => {
+      util.showError('通知功能开发中')
+    })
+  },
+
+  // 复制搜索码
+  onCopySearchCode: function() {
+    this.handlePreviewMode('复制搜索码需要登录后使用', () => {
+      if (this.data.userInfo.searchCode) {
+        wx.setClipboardData({
+          data: this.data.userInfo.searchCode,
+          success: () => {
+            util.showSuccess('搜索码已复制')
+          }
+        })
+      }
+    })
+  },
+
+  // 分享搜索码
+  onShareSearchCode: function() {
+    this.handlePreviewMode('分享搜索码需要登录后使用', () => {
+      util.showError('分享功能开发中')
+    })
+  },
+
   // 退出登录
-  logout: function() {
+  onLogout: function() {
     util.showConfirm('确定要退出登录吗？').then(confirm => {
       if (confirm) {
         // 清除全局数据
@@ -248,13 +313,18 @@ Page({
     })
   },
 
-  // 关闭昵称编辑弹窗
-  onCloseNicknameModal: function() {
+  // 关闭模态框
+  onCloseModal: function() {
     this.setData({
       showNicknameModal: false,
       editingNickname: '',
       nicknameLength: 0
     })
+  },
+
+  // 阻止事件冒泡
+  stopPropagation: function(e) {
+    // 空函数，阻止事件冒泡
   },
 
   // 昵称输入
@@ -267,7 +337,7 @@ Page({
   },
 
   // 确认修改昵称
-  onConfirmNickname: function() {
+  onUpdateNickname: function() {
     const nickname = this.data.editingNickname.trim()
 
     if (!nickname) {
@@ -281,7 +351,7 @@ Page({
     }
 
     if (nickname === this.data.userInfo.nickname) {
-      this.onCloseNicknameModal()
+      this.onCloseModal()
       return
     }
 
