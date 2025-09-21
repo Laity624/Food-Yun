@@ -1,11 +1,4 @@
-# 微信小程序
-project.config.json
-project.private.config.json
-sitemap.json
 
-# 云开发
-cloudfunctions/
-miniprogram_npm/
 
 # 依赖
 node_modules/
