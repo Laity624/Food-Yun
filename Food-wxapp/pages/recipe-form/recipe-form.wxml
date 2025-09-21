@@ -1,3 +1,246 @@
-<view class="container">
-  <text>添加菜谱页面开发中...</text>
+<view class="recipe-container">
+
+  <view class="main">
+    <!-- 表单内容 -->
+    <scroll-view
+      class="form-content"
+      scroll-y="true"
+      show-scrollbar="{{false}}"
+    >
+      <!-- 菜谱图片 -->
+      <view class="form-section">
+        <text class="section-label">菜谱图片 ({{formData.images.length}}/5)</text>
+        <view class="images-container">
+          <!-- 已上传的图片 -->
+          <view
+            wx:for="{{formData.images}}"
+            wx:key="index"
+            class="image-item"
+          >
+            <image
+              class="uploaded-image"
+              src="{{item}}"
+              mode="aspectFill"
+            />
+            <view class="image-delete" bindtap="removeImage" data-index="{{index}}">
+              <van-icon name="cross" size="16px" color="#fff" />
+            </view>
+          </view>
+
+          <!-- 上传按钮 -->
+          <view
+            wx:if="{{formData.images.length < 5}}"
+            class="image-upload"
+            bindtap="onImageUpload"
+          >
+            <van-icon name="photograph" size="24px" color="#c0c4cc" />
+            <text class="upload-text">点击上传</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 基本信息 -->
+      <view class="form-section">
+        <view class="input-group">
+          <text class="input-label">菜谱名称</text>
+          <view class="section-item">
+            <van-field 
+              value="{{formData.title}}" 
+              maxlength="15"
+              show-word-limit
+              placeholder="请输入菜谱名称"
+              bind:change="onTitleChange"
+            />
+          </view>
+        </view>
+
+        <view class="input-group">
+          <text class="input-label">菜谱描述</text>
+          <view class="section-item">
+            <van-field 
+              value="{{formData.description}}" 
+              placeholder="简单描述一下这道菜..."
+              maxlength="30"
+              show-word-limit
+              bind:change="onDescriptionChange"
+            />
+          </view>
+        </view>
+
+        <view class="input-row">
+          <view class="input-column">
+            <text class="input-label">烹饪时间</text>
+            <picker 
+              range="{{cookTimeOptions}}" 
+              value="{{formData.cookTimeIndex}}"
+              bindchange="onCookTimeChange"
+            >
+              <view class="picker-field">
+                {{cookTimeOptions[formData.cookTimeIndex] || '请选择'}}
+              </view>
+            </picker>
+          </view>
+
+          <view class="input-column">
+            <text class="input-label">难度等级</text>
+            <picker 
+              range="{{difficultyOptions}}" 
+              value="{{formData.difficultyIndex}}"
+              bindchange="onDifficultyChange"
+            >
+              <view class="picker-field">
+                {{difficultyOptions[formData.difficultyIndex] || '请选择'}}
+              </view>
+            </picker>
+          </view>
+
+          <view class="input-column">
+            <text class="input-label">人份</text>
+            <picker 
+              range="{{servingOptions}}" 
+              value="{{formData.servingIndex}}"
+              bindchange="onServingChange"
+            >
+              <view class="picker-field">
+                {{servingOptions[formData.servingIndex] || '请选择'}}
+              </view>
+            </picker>
+          </view>
+        </view>
+      </view>
+
+
+
+      <!-- 食材清单 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">食材清单</text>
+          <text class="section-action" bindtap="addIngredient">
+            <van-icon name="plus" size="14px" />添加食材
+          </text>
+        </view>
+
+        <view wx:for="{{formData.ingredients}}" wx:key="id" wx:for-item="item" class="ingredient-item" data-index="{{index}}">
+          <van-field
+            value="{{item.name}}"
+            placeholder="食材名称"
+            maxlength="10"
+            border="{{false}}"
+            data-index="{{index}}"
+            bind:change="onIngredientNameChange"
+          />
+          <van-field
+            value="{{item.amount}}"
+            placeholder="用量"
+            maxlength="10"
+            border="{{false}}"
+            data-index="{{index}}"
+            bind:change="onIngredientAmountChange"
+          />
+          <van-icon 
+            wx:if="{{formData.ingredients.length > 1}}"
+            name="delete" 
+            size="16px" 
+            color="#c0c4cc" 
+            bindtap="removeIngredient" 
+            data-index="{{index}}" 
+          />
+        </view>
+      </view>
+
+      <!-- 制作步骤 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">制作步骤</text>
+          <text class="section-action" bindtap="addStep">
+            <van-icon name="plus" size="14px" />添加步骤
+          </text>
+        </view>
+
+        <view wx:for="{{formData.steps}}" wx:key="id" wx:for-item="item" class="step-item" data-index="{{index}}">
+          <view class="step-header">
+            <view class="step-number">{{index + 1}}</view>
+            <van-icon
+              wx:if="{{formData.steps.length > 1}}"
+              name="delete"
+              size="16px"
+              color="#c0c4cc"
+              bindtap="removeStep"
+              data-index="{{index}}"
+            />
+          </view>
+          <van-field
+            value="{{item.content}}"
+            placeholder="描述制作步骤..."
+            type="textarea"
+            autosize="{{false}}"
+            maxlength="200"
+            show-word-limit
+            border="{{false}}"
+            data-index="{{index}}"
+            bind:change="onStepContentChange"
+            class="step-input"
+          />
+        </view>
+      </view>
+
+      <!-- 菜谱标签 -->
+      <view class="form-section">
+        <text class="section-label">菜谱标签 ({{formData.tags.length}}个)</text>
+
+        <view wx:for="{{tagOptions}}" wx:key="name" wx:for-item="category" class="tag-category">
+          <view class="tag-category-title">{{category.name}}</view>
+          <view class="tag-list">
+            <view
+              wx:for="{{category.tags}}"
+              wx:key="*this"
+              wx:for-item="tagName"
+              class="tag-item {{formData.selectedTags[tagName] ? 'selected' : ''}}"
+              bindtap="onTagToggle"
+              data-tag="{{tagName}}"
+            >
+              {{tagName}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 公开设置 -->
+      <view class="form-section">
+        <view class="privacy-setting">
+          <view class="privacy-info">
+            <text class="privacy-title">公开给好友</text>
+            <text class="privacy-desc">开启后好友可以看到这个菜谱</text>
+          </view>
+          <van-switch 
+            checked="{{formData.isPublic}}" 
+            size="24px"
+            bind:change="onPrivacyChange"
+          />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <!-- <view class="footer-buttons"> -->
+      <van-button 
+        class="save-btn"
+        type="default" 
+        bind:click="onSave"
+      >
+        暂存
+      </van-button>
+      <van-button 
+        class="submit-btn"
+        type="primary" 
+        bind:click="onSubmit"
+        loading="{{loading}}"
+      >
+        创建菜谱
+      </van-button>
+    <!-- </view> -->
+  </view>
 </view>

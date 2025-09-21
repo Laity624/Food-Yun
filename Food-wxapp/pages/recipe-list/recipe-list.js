@@ -49,7 +49,7 @@ Page({
       pageSize,
       category: currentCategory === '全部' ? null : currentCategory
     }).then(res => {
-      const newRecipes = res.recipes || []
+      const newRecipes = res.data.recipes || []
       this.setData({
         recipes: page === 1 ? newRecipes : [...this.data.recipes, ...newRecipes],
         hasMore: newRecipes.length === pageSize,

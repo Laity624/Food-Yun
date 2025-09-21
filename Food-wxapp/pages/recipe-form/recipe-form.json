@@ -1,1 +1,12 @@
-{"navigationBarTitleText": "添加菜谱"}
+{
+  "navigationBarTitleText": "创建菜谱",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fafafa",
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-switch": "@vant/weapp/switch/index"
+  }
+}
