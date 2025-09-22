@@ -1,0 +1,41 @@
+// 筛选工具函数
+var filterUtils = {
+  // 根据ID查找场景分类名称
+  getSceneName: function(sceneCategories, sceneId) {
+    for (var i = 0; i < sceneCategories.length; i++) {
+      if (sceneCategories[i].id === sceneId) {
+        return sceneCategories[i].name
+      }
+    }
+    return ''
+  },
+  
+  // 根据ID查找食材分类名称
+  getIngredientName: function(ingredientCategories, ingredientId) {
+    for (var i = 0; i < ingredientCategories.length; i++) {
+      if (ingredientCategories[i].id === ingredientId) {
+        return ingredientCategories[i].name
+      }
+    }
+    return ''
+  },
+  
+  // 根据ID查找可选标签名称
+  getOptionalTagName: function(cookingMethods, flavorTypes, tagId) {
+    // 先在烹饪方式中查找
+    for (var i = 0; i < cookingMethods.length; i++) {
+      if (cookingMethods[i].id === tagId) {
+        return cookingMethods[i].name
+      }
+    }
+    // 再在口味类型中查找
+    for (var j = 0; j < flavorTypes.length; j++) {
+      if (flavorTypes[j].id === tagId) {
+        return flavorTypes[j].name
+      }
+    }
+    return ''
+  }
+}
+
+module.exports = filterUtils
