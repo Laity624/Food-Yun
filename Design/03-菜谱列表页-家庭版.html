@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜谱列表 - 食云（家庭版）</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+        .scene-tag {
+            transition: all 0.3s ease;
+        }
+        .scene-tag.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .recipe-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .ingredient-tag {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .scene-tag-daily { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .scene-tag-quick { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .scene-tag-guest { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .scene-tag-light { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .scene-tag-heavy { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        
+        .filter-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center space-x-4">
+                    <!-- 搜索框 -->
+                    <div class="flex-1 relative">
+                        <input type="text" placeholder="今天吃什么？搜索菜名或食材..." 
+                               class="w-full pl-10 pr-4 py-3 bg-gray-50 border-0 rounded-2xl text-sm focus:ring-2 focus:ring-blue-200 focus:bg-white"
+                               oninput="onSearchInput(this.value)">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- 添加按钮 -->
+                    <button class="p-3 bg-blue-500 text-white rounded-2xl" onclick="addRecipe()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 场景分类（主要筛选） -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <h3 class="text-sm font-medium text-gray-600 mb-3">按场景选择</h3>
+                <div class="grid grid-cols-5 gap-3">
+                    <div class="scene-tag scene-tag-daily text-center p-3 rounded-2xl text-white cursor-pointer active" onclick="selectScene(this, '日常家常菜')">
+                        <div class="text-lg mb-1">📅</div>
+                        <div class="text-xs font-medium">日常</div>
+                    </div>
+                    <div class="scene-tag scene-tag-quick text-center p-3 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '快手菜')">
+                        <div class="text-lg mb-1">⚡</div>
+                        <div class="text-xs font-medium">快手</div>
+                    </div>
+                    <div class="scene-tag scene-tag-guest text-center p-3 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '宴客菜')">
+                        <div class="text-lg mb-1">🎉</div>
+                        <div class="text-xs font-medium">宴客</div>
+                    </div>
+                    <div class="scene-tag scene-tag-light text-center p-3 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '清淡菜')">
+                        <div class="text-lg mb-1">🥗</div>
+                        <div class="text-xs font-medium">清淡</div>
+                    </div>
+                    <div class="scene-tag scene-tag-heavy text-center p-3 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '重口味菜')">
+                        <div class="text-lg mb-1">🌶️</div>
+                        <div class="text-xs font-medium">重口味</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 食材快速筛选 -->
+            <div class="bg-white px-6 py-3 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-600">按食材筛选</h3>
+                    <button class="text-xs text-blue-500" onclick="toggleAdvancedFilter()">
+                        更多筛选 <i class="fas fa-chevron-down ml-1"></i>
+                    </button>
+                </div>
+                <div class="flex space-x-2 overflow-x-auto">
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '肉类')">🥩 肉类</span>
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '水产')">🐟 水产</span>
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '蛋类')">🥚 蛋类</span>
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '蔬菜')">🥬 蔬菜</span>
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '汤类')">🍲 汤类</span>
+                    <span class="ingredient-tag px-3 py-1 text-white text-xs rounded-full whitespace-nowrap cursor-pointer" onclick="toggleIngredient(this, '主食')">🍚 主食</span>
+                </div>
+            </div>
+
+            <!-- 高级筛选面板 -->
+            <div id="advancedFilter" class="hidden filter-panel px-6 py-4 border-b border-gray-100">
+                <div class="space-y-3">
+                    <!-- 制作时间 -->
+                    <div>
+                        <h4 class="text-xs font-medium text-gray-600 mb-2">制作时间</h4>
+                        <div class="flex space-x-2">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTimeFilter(this, '10分钟')">⏱️ 10分钟</span>
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTimeFilter(this, '30分钟')">⏰ 30分钟</span>
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTimeFilter(this, '1小时')">🕐 1小时</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 口味偏好 -->
+                    <div>
+                        <h4 class="text-xs font-medium text-gray-600 mb-2">口味偏好</h4>
+                        <div class="flex space-x-2">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTasteFilter(this, '川菜')">🌶️ 川菜</span>
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTasteFilter(this, '粤菜')">🦐 粤菜</span>
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTasteFilter(this, '家常味')">🏠 家常味</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 当前筛选条件显示 -->
+            <div id="currentFilters" class="hidden px-6 py-2 bg-blue-50">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-blue-600">当前筛选：</span>
+                    <div id="filterTags" class="flex space-x-1">
+                        <!-- 动态生成筛选标签 -->
+                    </div>
+                    <button class="text-xs text-blue-500 ml-2" onclick="clearAllFilters()">清空</button>
+                </div>
+            </div>
+            
+            <!-- 菜谱列表 -->
+            <div class="flex-1 px-6 pt-4 pb-20 overflow-y-auto">
+                <div class="space-y-4">
+                    <!-- 菜谱卡片1 - 日常家常菜 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="日常家常菜" data-ingredient="蛋类" onclick="viewRecipe('1')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=120&h=120&fit=crop" 
+                                 alt="番茄鸡蛋" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">番茄鸡蛋</h3>
+                                <p class="text-xs text-gray-500 mb-2">经典家常菜，酸甜开胃</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>15分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>2-3人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.8</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-daily px-2 py-0.5 text-white text-xs rounded">日常</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">蛋类</span>
+                                    <span class="px-2 py-0.5 bg-orange-100 text-orange-600 text-xs rounded">快手</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 菜谱卡片2 - 快手菜 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="快手菜" data-ingredient="蔬菜" onclick="viewRecipe('2')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1604909052743-94e838986d24?w=120&h=120&fit=crop" 
+                                 alt="凉拌黄瓜" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">凉拌黄瓜</h3>
+                                <p class="text-xs text-gray-500 mb-2">清脆爽口，开胃下酒</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>5分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>2-4人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.5</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-quick px-2 py-0.5 text-white text-xs rounded">快手</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">蔬菜</span>
+                                    <span class="px-2 py-0.5 bg-cyan-100 text-cyan-600 text-xs rounded">清淡</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 菜谱卡片3 - 宴客菜 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="宴客菜" data-ingredient="肉类" onclick="viewRecipe('3')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=120&h=120&fit=crop" 
+                                 alt="红烧肉" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">红烧肉</h3>
+                                <p class="text-xs text-gray-500 mb-2">香甜软糯，入口即化</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>90分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>4-6人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.9</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-guest px-2 py-0.5 text-white text-xs rounded">宴客</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">肉类</span>
+                                    <span class="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">重口味</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 菜谱卡片4 - 清淡菜 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="清淡菜" data-ingredient="水产" onclick="viewRecipe('4')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=120&h=120&fit=crop" 
+                                 alt="清蒸鲈鱼" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">清蒸鲈鱼</h3>
+                                <p class="text-xs text-gray-500 mb-2">鲜嫩清香，营养丰富</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>25分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>3-4人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.7</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-light px-2 py-0.5 text-white text-xs rounded">清淡</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">水产</span>
+                                    <span class="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">蒸菜</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 菜谱卡片5 - 汤类 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="日常家常菜" data-ingredient="汤类" onclick="viewRecipe('5')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=120&h=120&fit=crop" 
+                                 alt="冬瓜排骨汤" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">冬瓜排骨汤</h3>
+                                <p class="text-xs text-gray-500 mb-2">清热解腻，营养滋补</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>60分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>4-6人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.6</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-daily px-2 py-0.5 text-white text-xs rounded">日常</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">汤类</span>
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded">炖汤</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 菜谱卡片6 - 重口味菜 -->
+                    <div class="recipe-card bg-white rounded-2xl p-4 shadow-sm cursor-pointer" data-scene="重口味菜" data-ingredient="肉类" onclick="viewRecipe('6')">
+                        <div class="flex space-x-4">
+                            <img src="https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=120&h=120&fit=crop" 
+                                 alt="麻婆豆腐" class="w-20 h-20 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 mb-1">麻婆豆腐</h3>
+                                <p class="text-xs text-gray-500 mb-2">麻辣鲜香，经典川菜</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-400 mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>20分钟</span>
+                                    <span><i class="fas fa-users mr-1"></i>2-3人</span>
+                                    <span><i class="fas fa-star mr-1 text-yellow-400"></i>4.8</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <span class="scene-tag-heavy px-2 py-0.5 text-white text-xs rounded">重口味</span>
+                                    <span class="ingredient-tag px-2 py-0.5 text-white text-xs rounded">豆制品</span>
+                                    <span class="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">川菜</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部导航 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-3 absolute bottom-0 left-0 right-0">
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <i class="fas fa-home text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">首页</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-book text-blue-500 text-xl mb-1"></i>
+                        <p class="text-xs text-blue-500">菜谱</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-shopping-cart text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">订单</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-user text-gray-400 text-xl mb-1"></i>
+                        <p class="text-xs text-gray-400">我的</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentScene = '日常家常菜';
+        let selectedIngredients = [];
+        let selectedTime = '';
+        let selectedTaste = '';
+        let showAdvanced = false;
+
+        // 搜索输入处理
+        function onSearchInput(value) {
+            const searchTerm = value.toLowerCase().trim();
+            const recipes = document.querySelectorAll('.recipe-card');
+            
+            recipes.forEach(recipe => {
+                const title = recipe.querySelector('h3').textContent.toLowerCase();
+                const description = recipe.querySelector('p').textContent.toLowerCase();
+                
+                if (searchTerm === '' || title.includes(searchTerm) || description.includes(searchTerm)) {
+                    recipe.style.display = 'block';
+                } else {
+                    recipe.style.display = 'none';
+                }
+            });
+            
+            // 如果有搜索内容，暂时忽略其他筛选条件
+            if (searchTerm !== '') {
+                return;
+            }
+            
+            // 如果搜索框为空，重新应用筛选条件
+            filterRecipes();
+        }
+
+        // 选择场景
+        function selectScene(element, scene) {
+            // 移除所有active状态
+            document.querySelectorAll('.scene-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            
+            // 添加active状态
+            element.classList.add('active');
+            currentScene = scene;
+            
+            // 更新菜谱显示
+            filterRecipes();
+            updateCurrentFilters();
+        }
+
+        // 切换食材筛选
+        function toggleIngredient(element, ingredient) {
+            const index = selectedIngredients.indexOf(ingredient);
+            if (index > -1) {
+                selectedIngredients.splice(index, 1);
+                element.style.opacity = '0.7';
+            } else {
+                selectedIngredients.push(ingredient);
+                element.style.opacity = '1';
+            }
+            
+            filterRecipes();
+            updateCurrentFilters();
+        }
+
+        // 切换高级筛选面板
+        function toggleAdvancedFilter() {
+            const panel = document.getElementById('advancedFilter');
+            const icon = document.querySelector('.fa-chevron-down');
+            
+            showAdvanced = !showAdvanced;
+            
+            if (showAdvanced) {
+                panel.classList.remove('hidden');
+                panel.classList.add('fade-in');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                panel.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 切换时间筛选
+        function toggleTimeFilter(element, time) {
+            // 重置其他时间选项
+            document.querySelectorAll('[onclick*="toggleTimeFilter"]').forEach(el => {
+                el.classList.remove('bg-blue-500', 'text-white');
+                el.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            
+            if (selectedTime === time) {
+                selectedTime = '';
+            } else {
+                selectedTime = time;
+                element.classList.remove('bg-gray-100', 'text-gray-600');
+                element.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            filterRecipes();
+            updateCurrentFilters();
+        }
+
+        // 切换口味筛选
+        function toggleTasteFilter(element, taste) {
+            // 重置其他口味选项
+            document.querySelectorAll('[onclick*="toggleTasteFilter"]').forEach(el => {
+                el.classList.remove('bg-blue-500', 'text-white');
+                el.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            
+            if (selectedTaste === taste) {
+                selectedTaste = '';
+            } else {
+                selectedTaste = taste;
+                element.classList.remove('bg-gray-100', 'text-gray-600');
+                element.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            filterRecipes();
+            updateCurrentFilters();
+        }
+
+        // 筛选菜谱
+        function filterRecipes() {
+            const recipes = document.querySelectorAll('.recipe-card');
+            
+            recipes.forEach(recipe => {
+                let show = true;
+                
+                // 场景筛选
+                if (currentScene !== '日常家常菜') {
+                    const recipeScene = recipe.dataset.scene;
+                    if (recipeScene !== currentScene) {
+                        show = false;
+                    }
+                }
+                
+                // 食材筛选
+                if (selectedIngredients.length > 0) {
+                    const recipeIngredient = recipe.dataset.ingredient;
+                    if (!selectedIngredients.includes(recipeIngredient)) {
+                        show = false;
+                    }
+                }
+                
+                // 显示/隐藏菜谱
+                if (show) {
+                    recipe.style.display = 'block';
+                    recipe.classList.add('fade-in');
+                } else {
+                    recipe.style.display = 'none';
+                }
+            });
+        }
+
+        // 更新当前筛选条件显示
+        function updateCurrentFilters() {
+            const currentFilters = document.getElementById('currentFilters');
+            const filterTags = document.getElementById('filterTags');
+            
+            let tags = [];
+            
+            if (currentScene !== '日常家常菜') {
+                tags.push(currentScene);
+            }
+            
+            tags = tags.concat(selectedIngredients);
+            
+            if (selectedTime) {
+                tags.push(selectedTime);
+            }
+            
+            if (selectedTaste) {
+                tags.push(selectedTaste);
+            }
+            
+            if (tags.length > 0) {
+                currentFilters.classList.remove('hidden');
+                filterTags.innerHTML = tags.map(tag => 
+                    `<span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">${tag}</span>`
+                ).join('');
+            } else {
+                currentFilters.classList.add('hidden');
+            }
+        }
+
+        // 清空所有筛选
+        function clearAllFilters() {
+            // 重置场景为日常
+            document.querySelectorAll('.scene-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector('.scene-tag-daily').classList.add('active');
+            currentScene = '日常家常菜';
+            
+            // 重置食材
+            selectedIngredients = [];
+            document.querySelectorAll('.ingredient-tag').forEach(tag => {
+                tag.style.opacity = '0.7';
+            });
+            
+            // 重置时间和口味
+            selectedTime = '';
+            selectedTaste = '';
+            document.querySelectorAll('[onclick*="toggleTimeFilter"], [onclick*="toggleTasteFilter"]').forEach(el => {
+                el.classList.remove('bg-blue-500', 'text-white');
+                el.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            
+            filterRecipes();
+            updateCurrentFilters();
+        }
+
+        // 查看菜谱详情
+        function viewRecipe(id) {
+            console.log('查看菜谱:', id);
+            alert(`查看菜谱 ${id} 的详情`);
+        }
+
+        // 添加菜谱
+        function addRecipe() {
+            console.log('添加新菜谱');
+            alert('跳转到创建菜谱页面');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置初始状态
+            document.querySelectorAll('.ingredient-tag').forEach(tag => {
+                tag.style.opacity = '0.7';
+            });
+            
+            filterRecipes();
+        });
+    </script>
+</body>
+</html>

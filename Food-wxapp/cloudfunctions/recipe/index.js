@@ -78,37 +78,56 @@ async function createRecipe(event, openid) {
 
 // 获取菜谱列表
 async function getRecipeList(event, openid) {
-  const { page = 1, pageSize = 10, category, creatorId } = event
+  const { page = 1, pageSize = 10, search, tags, creatorId } = event
 
   let query = db.collection('recipes')
 
-  // 筛选条件
-  let whereCondition = {}
+  // 构建筛选条件
+  let conditions = []
 
-  if (category) {
-    // 使用 tags 数组字段来筛选分类
-    whereCondition.tags = category
+  // 搜索条件
+  if (search) {
+    conditions.push(
+      _.or([
+        {
+          title: db.RegExp({
+            regexp: search,
+            options: 'i'
+          })
+        },
+        {
+          description: db.RegExp({
+            regexp: search,
+            options: 'i'
+          })
+        }
+      ])
+    )
   }
 
+  // 标签筛选条件
+  if (tags && tags.length > 0) {
+    // 菜谱必须包含所有选中的标签
+    tags.forEach(tag => {
+      conditions.push({ tags: tag })
+    })
+  }
+
+  // 权限条件
   if (creatorId) {
-    whereCondition.creatorId = creatorId
+    conditions.push({ creatorId: creatorId })
   } else {
     // 只显示公开的菜谱或自己的菜谱
-    if (category) {
-      whereCondition = _.and([
-        { tags: category },
-        _.or([
-          { isPublic: true },
-          { creatorId: openid }
-        ])
-      ])
-    } else {
-      whereCondition = _.or([
+    conditions.push(
+      _.or([
         { isPublic: true },
         { creatorId: openid }
       ])
-    }
+    )
   }
+
+  // 合并所有条件
+  let whereCondition = conditions.length > 0 ? _.and(conditions) : {}
 
   const result = await query
     .where(whereCondition)

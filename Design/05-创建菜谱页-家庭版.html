@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建菜谱 - 食云（家庭版）</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+        
+        .scene-tag {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .scene-tag.selected {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .ingredient-tag {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .ingredient-tag.selected {
+            border-color: #10b981;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        .scene-tag-daily { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .scene-tag-quick { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .scene-tag-guest { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .scene-tag-light { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .scene-tag-heavy { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .required-label::after {
+            content: " *";
+            color: #ef4444;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 头部导航 -->
+            <div class="bg-white px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <button class="p-2 -ml-2" onclick="goBack()">
+                        <i class="fas fa-arrow-left text-gray-600 text-lg"></i>
+                    </button>
+                    <h1 class="text-lg font-semibold text-gray-800">创建菜谱</h1>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded-full text-sm font-medium" onclick="saveRecipe()">
+                        保存
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 表单内容 -->
+            <div class="flex-1 overflow-y-auto pb-24" style="height: calc(100vh - 200px); max-height: calc(812px - 200px);">
+                <!-- 菜谱图片 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <label class="block text-sm font-medium text-gray-700 mb-3 required-label">菜谱图片</label>
+                    <div class="upload-area w-full h-32 rounded-2xl flex items-center justify-center cursor-pointer" onclick="uploadImage()">
+                        <div class="text-center">
+                            <i class="fas fa-camera text-gray-400 text-3xl mb-2"></i>
+                            <p class="text-sm text-gray-500">点击上传菜谱图片</p>
+                            <p class="text-xs text-gray-400 mt-1">支持多张图片</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 基本信息 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 required-label">菜谱名称</label>
+                            <input type="text" placeholder="例如：红烧肉、番茄鸡蛋" 
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-300">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">菜谱描述</label>
+                            <textarea placeholder="简单描述一下这道菜的特色..." rows="3"
+                                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-300 resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景分类（必选） -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <label class="block text-sm font-medium text-gray-700 mb-3 required-label">这是什么场景的菜？</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="scene-tag scene-tag-daily text-center p-4 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '日常家常菜')">
+                            <div class="text-2xl mb-2">📅</div>
+                            <div class="text-sm font-medium">日常家常菜</div>
+                            <div class="text-xs opacity-90 mt-1">平时三餐</div>
+                        </div>
+                        <div class="scene-tag scene-tag-quick text-center p-4 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '快手菜')">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <div class="text-sm font-medium">快手菜</div>
+                            <div class="text-xs opacity-90 mt-1">30分钟内</div>
+                        </div>
+                        <div class="scene-tag scene-tag-guest text-center p-4 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '宴客菜')">
+                            <div class="text-2xl mb-2">🎉</div>
+                            <div class="text-sm font-medium">宴客菜</div>
+                            <div class="text-xs opacity-90 mt-1">招待客人</div>
+                        </div>
+                        <div class="scene-tag scene-tag-light text-center p-4 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '清淡菜')">
+                            <div class="text-2xl mb-2">🥗</div>
+                            <div class="text-sm font-medium">清淡菜</div>
+                            <div class="text-xs opacity-90 mt-1">老人小孩</div>
+                        </div>
+                        <div class="scene-tag scene-tag-heavy text-center p-4 rounded-2xl text-white cursor-pointer" onclick="selectScene(this, '重口味菜')">
+                            <div class="text-2xl mb-2">🌶️</div>
+                            <div class="text-sm font-medium">重口味菜</div>
+                            <div class="text-xs opacity-90 mt-1">下饭菜</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 食材分类（必选） -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <label class="block text-sm font-medium text-gray-700 mb-3 required-label">主要食材是什么？</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '肉类')">
+                            <div class="text-xl mb-1">🥩</div>
+                            <div class="text-sm font-medium text-gray-700">肉类</div>
+                        </div>
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '水产')">
+                            <div class="text-xl mb-1">🐟</div>
+                            <div class="text-sm font-medium text-gray-700">水产</div>
+                        </div>
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '蛋类')">
+                            <div class="text-xl mb-1">🥚</div>
+                            <div class="text-sm font-medium text-gray-700">蛋类</div>
+                        </div>
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '蔬菜')">
+                            <div class="text-xl mb-1">🥬</div>
+                            <div class="text-sm font-medium text-gray-700">蔬菜</div>
+                        </div>
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '汤类')">
+                            <div class="text-xl mb-1">🍲</div>
+                            <div class="text-sm font-medium text-gray-700">汤类</div>
+                        </div>
+                        <div class="ingredient-tag bg-white text-center p-3 rounded-xl cursor-pointer" onclick="selectIngredient(this, '主食')">
+                            <div class="text-xl mb-1">🍚</div>
+                            <div class="text-sm font-medium text-gray-700">主食</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 制作信息 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">制作信息</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">制作时间</label>
+                            <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200">
+                                <option>10分钟</option>
+                                <option>30分钟</option>
+                                <option>1小时</option>
+                                <option>2小时+</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">难度等级</label>
+                            <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200">
+                                <option>简单</option>
+                                <option>中等</option>
+                                <option>困难</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-2">适合人数</label>
+                            <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-200">
+                                <option>1-2人</option>
+                                <option>3-4人</option>
+                                <option>5-6人</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 可选标签 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-medium text-gray-700">更多标签（可选）</label>
+                        <button class="text-xs text-blue-500" onclick="toggleMoreTags()">
+                            <span id="moreTagsText">展开</span> <i class="fas fa-chevron-down ml-1" id="moreTagsIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="moreTags" class="hidden space-y-3 fade-in">
+                        <!-- 烹饪方式 -->
+                        <div>
+                            <h4 class="text-xs font-medium text-gray-600 mb-2">烹饪方式</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '炒菜')">🔥 炒菜</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '蒸菜')">💨 蒸菜</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '炖菜')">🍲 炖菜</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '凉拌')">🥗 凉拌</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '汤品')">🍜 汤品</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 口味特色 -->
+                        <div>
+                            <h4 class="text-xs font-medium text-gray-600 mb-2">口味特色</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '川菜')">🌶️ 川菜</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '粤菜')">🦐 粤菜</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '家常味')">🏠 家常味</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full cursor-pointer" onclick="toggleTag(this, '清淡')">🌿 清淡</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 食材清单 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-medium text-gray-700 required-label">食材清单</label>
+                        <button class="text-blue-500 text-sm" onclick="addIngredient()">
+                            <i class="fas fa-plus mr-1"></i>添加食材
+                        </button>
+                    </div>
+                    <div id="ingredientList" class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="食材名称" 
+                                   class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <input type="text" placeholder="用量" 
+                                   class="w-24 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <button class="p-2 text-gray-400 hover:text-red-500" onclick="removeIngredient(this)">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="食材名称" 
+                                   class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <input type="text" placeholder="用量" 
+                                   class="w-24 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <button class="p-2 text-gray-400 hover:text-red-500" onclick="removeIngredient(this)">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 制作步骤 -->
+                <div class="bg-white px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-medium text-gray-700 required-label">制作步骤</label>
+                        <button class="text-blue-500 text-sm" onclick="addStep()">
+                            <i class="fas fa-plus mr-1"></i>添加步骤
+                        </button>
+                    </div>
+                    <div id="stepList" class="space-y-4">
+                        <div class="flex space-x-3">
+                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-semibold mt-2">1</div>
+                            <div class="flex-1">
+                                <textarea placeholder="描述制作步骤..." rows="3"
+                                          class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"></textarea>
+                                <button class="mt-2 text-xs text-blue-500">
+                                    <i class="fas fa-camera mr-1"></i>添加步骤图片
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-semibold mt-2">2</div>
+                            <div class="flex-1">
+                                <textarea placeholder="描述制作步骤..." rows="3"
+                                          class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"></textarea>
+                                <button class="mt-2 text-xs text-blue-500">
+                                    <i class="fas fa-camera mr-1"></i>添加步骤图片
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分享设置 -->
+                <div class="bg-white px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700">分享给家人</h3>
+                            <p class="text-xs text-gray-500 mt-1">开启后家人可以看到这个菜谱</p>
+                        </div>
+                        <div class="relative">
+                            <input type="checkbox" id="shareToggle" class="sr-only" checked>
+                            <label for="shareToggle" class="flex items-center cursor-pointer">
+                                <div class="w-12 h-6 bg-blue-500 rounded-full relative">
+                                    <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5 transition-transform"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部按钮 -->
+            <div class="bg-white border-t border-gray-100 px-6 py-4 absolute bottom-0 left-0 right-0">
+                <div class="flex space-x-3">
+                    <button class="flex-1 bg-gray-100 text-gray-600 py-3 rounded-2xl font-medium" onclick="saveDraft()">
+                        保存草稿
+                    </button>
+                    <button class="flex-1 bg-blue-500 text-white py-3 rounded-2xl font-medium" onclick="publishRecipe()">
+                        创建菜谱
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let selectedScene = '';
+        let selectedIngredient = '';
+        let selectedTags = [];
+        let showMoreTags = false;
+
+        // 选择场景
+        function selectScene(element, scene) {
+            // 移除所有选中状态
+            document.querySelectorAll('.scene-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedScene = scene;
+            
+            console.log('选择场景:', scene);
+        }
+
+        // 选择食材
+        function selectIngredient(element, ingredient) {
+            // 移除所有选中状态
+            document.querySelectorAll('.ingredient-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedIngredient = ingredient;
+            
+            console.log('选择食材:', ingredient);
+        }
+
+        // 切换更多标签
+        function toggleMoreTags() {
+            const moreTags = document.getElementById('moreTags');
+            const text = document.getElementById('moreTagsText');
+            const icon = document.getElementById('moreTagsIcon');
+            
+            showMoreTags = !showMoreTags;
+            
+            if (showMoreTags) {
+                moreTags.classList.remove('hidden');
+                text.textContent = '收起';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                moreTags.classList.add('hidden');
+                text.textContent = '展开';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 切换标签
+        function toggleTag(element, tag) {
+            const index = selectedTags.indexOf(tag);
+            
+            if (index > -1) {
+                selectedTags.splice(index, 1);
+                element.classList.remove('bg-blue-500', 'text-white');
+                element.classList.add('bg-gray-100', 'text-gray-600');
+            } else {
+                selectedTags.push(tag);
+                element.classList.remove('bg-gray-100', 'text-gray-600');
+                element.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            console.log('选择标签:', selectedTags);
+        }
+
+        // 添加食材
+        function addIngredient() {
+            const list = document.getElementById('ingredientList');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex items-center space-x-3';
+            newItem.innerHTML = `
+                <input type="text" placeholder="食材名称" 
+                       class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                <input type="text" placeholder="用量" 
+                       class="w-24 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                <button class="p-2 text-gray-400 hover:text-red-500" onclick="removeIngredient(this)">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            `;
+            list.appendChild(newItem);
+        }
+
+        // 删除食材
+        function removeIngredient(button) {
+            const item = button.parentElement;
+            const list = document.getElementById('ingredientList');
+            if (list.children.length > 1) {
+                item.remove();
+            }
+        }
+
+        // 添加步骤
+        function addStep() {
+            const list = document.getElementById('stepList');
+            const stepNumber = list.children.length + 1;
+            const newStep = document.createElement('div');
+            newStep.className = 'flex space-x-3';
+            newStep.innerHTML = `
+                <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-semibold mt-2">${stepNumber}</div>
+                <div class="flex-1">
+                    <textarea placeholder="描述制作步骤..." rows="3"
+                              class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"></textarea>
+                    <button class="mt-2 text-xs text-blue-500">
+                        <i class="fas fa-camera mr-1"></i>添加步骤图片
+                    </button>
+                </div>
+            `;
+            list.appendChild(newStep);
+        }
+
+        // 上传图片
+        function uploadImage() {
+            console.log('上传图片');
+            alert('选择图片功能');
+        }
+
+        // 返回
+        function goBack() {
+            console.log('返回上一页');
+            alert('确定要离开吗？未保存的内容将丢失。');
+        }
+
+        // 保存草稿
+        function saveDraft() {
+            if (!validateRequired()) return;
+            
+            console.log('保存草稿');
+            alert('草稿保存成功！');
+        }
+
+        // 发布菜谱
+        function publishRecipe() {
+            if (!validateRequired()) return;
+            
+            console.log('发布菜谱');
+            alert('菜谱创建成功！');
+        }
+
+        // 保存菜谱
+        function saveRecipe() {
+            saveDraft();
+        }
+
+        // 验证必填项
+        function validateRequired() {
+            if (!selectedScene) {
+                alert('请选择菜谱场景');
+                return false;
+            }
+            
+            if (!selectedIngredient) {
+                alert('请选择主要食材');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('创建菜谱页面初始化完成');
+        });
+    </script>
+</body>
+</html>
