@@ -20,6 +20,8 @@ exports.main = async (event, context) => {
         return await getRecipeList(event, openid)
       case 'detail':
         return await getRecipeDetail(event, openid)
+      case 'getById':
+        return await getRecipeById(event, openid)
       case 'update':
         return await updateRecipe(event, openid)
       case 'delete':
@@ -47,21 +49,73 @@ exports.main = async (event, context) => {
 // 创建菜谱
 async function createRecipe(event, openid) {
   const { data } = event
-  const { title, description, images, ingredients, steps, cookTime, difficulty, serving, tags, isPublic, status } = data
+  const { 
+    name, 
+    description, 
+    images, 
+    ingredients, 
+    steps, 
+    preparationTime, 
+    difficulty, 
+    servingSize, 
+    sceneCategory,
+    ingredientCategory,
+    optionalTags,
+    isPublic, 
+    status 
+  } = data
+
+  // 验证必填字段
+  if (!name || !name.trim()) {
+    return {
+      success: false,
+      message: '菜谱名称不能为空'
+    }
+  }
+
+  if (!sceneCategory) {
+    return {
+      success: false,
+      message: '请选择菜谱场景'
+    }
+  }
+
+  if (!ingredientCategory) {
+    return {
+      success: false,
+      message: '请选择主要食材'
+    }
+  }
+
+  if (!ingredients || ingredients.length === 0) {
+    return {
+      success: false,
+      message: '请添加食材清单'
+    }
+  }
+
+  if (!steps || steps.length === 0) {
+    return {
+      success: false,
+      message: '请添加制作步骤'
+    }
+  }
 
   const result = await db.collection('recipes').add({
     data: {
-      title,
-      description,
-      images: images || [],  // 图片数组
+      name: name.trim(),
+      description: description ? description.trim() : '',
+      images: images || [],
       ingredients: ingredients || [],
       steps: steps || [],
-      cookTime,
-      difficulty,
-      serving,
-      tags: tags || [],      // 菜谱标签
-      isPublic: isPublic !== undefined ? isPublic : false,
-      status: status || 'draft',  // 状态：draft/published
+      preparationTime: preparationTime || { value: '30', label: '30分钟' },
+      difficulty: difficulty || { value: 1, label: '简单', color: 'green' },
+      servingSize: servingSize || { value: '3-4', label: '3-4人' },
+      sceneCategory,           // 场景分类ID
+      ingredientCategory,      // 食材分类ID
+      optionalTags: optionalTags || [], // 可选标签ID数组
+      isPublic: isPublic !== undefined ? isPublic : true,
+      status: status || 'draft',
       creatorId: openid,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -78,26 +132,34 @@ async function createRecipe(event, openid) {
 
 // 获取菜谱列表
 async function getRecipeList(event, openid) {
-  const { page = 1, pageSize = 10, search, tags, creatorId } = event
+  const { 
+    page = 1, 
+    pageSize = 10, 
+    search, 
+    sceneCategories, 
+    ingredientCategories,
+    optionalTags,
+    creatorId 
+  } = event
 
   let query = db.collection('recipes')
 
   // 构建筛选条件
   let conditions = []
 
-  // 搜索条件
-  if (search) {
+  // 搜索条件（支持菜谱名称和描述）
+  if (search && search.trim()) {
     conditions.push(
       _.or([
         {
-          title: db.RegExp({
-            regexp: search,
+          name: db.RegExp({
+            regexp: search.trim(),
             options: 'i'
           })
         },
         {
           description: db.RegExp({
-            regexp: search,
+            regexp: search.trim(),
             options: 'i'
           })
         }
@@ -105,11 +167,25 @@ async function getRecipeList(event, openid) {
     )
   }
 
-  // 标签筛选条件
-  if (tags && tags.length > 0) {
-    // 菜谱必须包含所有选中的标签
-    tags.forEach(tag => {
-      conditions.push({ tags: tag })
+  // 场景分类筛选
+  if (sceneCategories && sceneCategories.length > 0) {
+    conditions.push({
+      sceneCategory: _.in(sceneCategories)
+    })
+  }
+
+  // 食材分类筛选
+  if (ingredientCategories && ingredientCategories.length > 0) {
+    conditions.push({
+      ingredientCategory: _.in(ingredientCategories)
+    })
+  }
+
+  // 可选标签筛选
+  if (optionalTags && optionalTags.length > 0) {
+    // 菜谱必须包含至少一个选中的可选标签
+    conditions.push({
+      optionalTags: _.in(optionalTags)
     })
   }
 
@@ -188,22 +264,68 @@ async function getRecipeDetail(event, openid) {
   }
   
   // 获取创建者信息
-  const userResult = await db.collection('users').doc(recipe.creatorId).get()
-  recipe.creator = userResult.data || { nickname: '未知用户', avatar: '' }
+  try {
+    const userResult = await db.collection('users').doc(recipe.creatorId).get()
+    recipe.creator = userResult.data || { nickname: '未知用户', avatar: '' }
+  } catch (error) {
+    console.error('获取用户信息失败:', error)
+    recipe.creator = { nickname: '未知用户', avatar: '' }
+  }
   recipe.createTime = formatTime(recipe.createdAt)
   
   return {
     success: true,
-    data: {
-      recipe
+    data: recipe
+  }
+}
+
+// 根据ID获取菜谱（用于编辑）
+async function getRecipeById(event, openid) {
+  const { recipeId } = event
+  
+  const result = await db.collection('recipes').doc(recipeId).get()
+  
+  if (!result.data) {
+    return {
+      success: false,
+      message: '菜谱不存在'
     }
+  }
+  
+  const recipe = result.data
+  
+  // 只有创建者可以编辑
+  if (recipe.creatorId !== openid) {
+    return {
+      success: false,
+      message: '没有权限编辑此菜谱'
+    }
+  }
+  
+  return {
+    success: true,
+    data: recipe
   }
 }
 
 // 更新菜谱
 async function updateRecipe(event, openid) {
   const { recipeId, data } = event
-  const { title, description, images, ingredients, steps, cookTime, difficulty, serving, tags, isPublic, status } = data
+  const { 
+    name, 
+    description, 
+    images, 
+    ingredients, 
+    steps, 
+    preparationTime, 
+    difficulty, 
+    servingSize, 
+    sceneCategory,
+    ingredientCategory,
+    optionalTags,
+    isPublic, 
+    status 
+  } = data
 
   // 检查权限
   const recipeResult = await db.collection('recipes').doc(recipeId).get()
@@ -214,18 +336,42 @@ async function updateRecipe(event, openid) {
     }
   }
 
+  // 验证必填字段
+  if (!name || !name.trim()) {
+    return {
+      success: false,
+      message: '菜谱名称不能为空'
+    }
+  }
+
+  if (!sceneCategory) {
+    return {
+      success: false,
+      message: '请选择菜谱场景'
+    }
+  }
+
+  if (!ingredientCategory) {
+    return {
+      success: false,
+      message: '请选择主要食材'
+    }
+  }
+
   await db.collection('recipes').doc(recipeId).update({
     data: {
-      title,
-      description,
+      name: name.trim(),
+      description: description ? description.trim() : '',
       images: images || [],
       ingredients: ingredients || [],
       steps: steps || [],
-      cookTime,
-      difficulty,
-      serving,
-      tags: tags || [],
-      isPublic: isPublic !== undefined ? isPublic : false,
+      preparationTime: preparationTime || { value: '30', label: '30分钟' },
+      difficulty: difficulty || { value: 1, label: '简单', color: 'green' },
+      servingSize: servingSize || { value: '3-4', label: '3-4人' },
+      sceneCategory,
+      ingredientCategory,
+      optionalTags: optionalTags || [],
+      isPublic: isPublic !== undefined ? isPublic : true,
       status: status || 'draft',
       updatedAt: new Date()
     }
@@ -289,7 +435,7 @@ async function searchRecipes(event) {
       },
       _.or([
         {
-          title: db.RegExp({
+          name: db.RegExp({
             regexp: keyword,
             options: 'i'
           })

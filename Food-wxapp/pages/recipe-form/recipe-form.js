@@ -1,19 +1,31 @@
 const app = getApp()
-const { getTagOptions } = require('../../utils/tagData')
+const {
+  getSceneCategories,
+  getIngredientCategories,
+  getCookingMethods,
+  getFlavorTypes,
+  getPreparationTimes,
+  getDifficultyLevels,
+  getServingSizes,
+  getSceneCategoryById,
+  getIngredientCategoryById,
+  validateRequiredFields
+} = require('../../utils/tagData')
 
 Page({
   data: {
     loading: false,
     inputDebounceTimer: null,
     formData: {
-      images: [], // 改为数组支持多张图片
-      title: '',
+      images: [],
+      name: '',
       description: '',
-      cookTimeIndex: 0,
+      sceneCategory: '', // 必选：场景分类ID
+      ingredientCategory: '', // 必选：食材分类ID
+      preparationTimeIndex: 0,
       difficultyIndex: 0,
-      servingIndex: 0,
-      tags: [], // 菜谱标签
-      selectedTags: {}, // 用对象记录选中状态，key为标签名，value为true/false
+      servingSizeIndex: 0,
+      optionalTags: [], // 可选标签：烹饪方式和口味特色
       ingredients: [
         { id: 'ing_1', name: '', amount: '' },
         { id: 'ing_2', name: '', amount: '' }
@@ -24,36 +36,94 @@ Page({
       ],
       isPublic: true
     },
-    cookTimeOptions: ['10分钟','15分钟',  '20分钟', '30分钟', '40分钟','50分钟', '60分钟', '70分钟', '80分钟', '90分钟', '100分钟', '120分钟', '150分钟', '180分钟'],
-    difficultyOptions: ['简单', '中等', '困难'],
-    servingOptions: ['1-2人', '3-4人', '5-6人'],
-    // 使用公共标签数据
-    tagOptions: []
+    // 枚举数据
+    sceneCategories: [],
+    ingredientCategories: [],
+    cookingMethods: [],
+    flavorTypes: [],
+    preparationTimes: [],
+    difficultyLevels: [],
+    servingSizes: [],
+    // UI状态
+    showMoreTags: false
   },
 
   onLoad(options) {
-    // 初始化标签数据
+    // 初始化所有枚举数据
     this.setData({
-      tagOptions: getTagOptions()
+      sceneCategories: getSceneCategories(),
+      ingredientCategories: getIngredientCategories(),
+      cookingMethods: getCookingMethods(),
+      flavorTypes: getFlavorTypes(),
+      preparationTimes: getPreparationTimes(),
+      difficultyLevels: getDifficultyLevels(),
+      servingSizes: getServingSizes()
     })
+    
     // 如果有编辑模式，可以在这里初始化数据
+    if (options.id) {
+      this.loadRecipeData(options.id)
+    }
   },
 
   onUnload() {
     // 页面卸载时的清理工作
+    if (this.data.inputDebounceTimer) {
+      clearTimeout(this.data.inputDebounceTimer)
+    }
   },
 
-  onHide() {
-    // 页面隐藏时的处理
+  // 加载菜谱数据（编辑模式）
+  loadRecipeData(recipeId) {
+    wx.showLoading({ title: '加载中...' })
+    
+    wx.cloud.callFunction({
+      name: 'recipe',
+      data: {
+        action: 'getById',
+        recipeId: recipeId
+      },
+      success: (res) => {
+        if (res.result.success) {
+          const recipe = res.result.data
+          this.setData({
+            formData: {
+              ...this.data.formData,
+              images: recipe.images || [],
+              name: recipe.name || '',
+              description: recipe.description || '',
+              sceneCategory: recipe.sceneCategory || '',
+              ingredientCategory: recipe.ingredientCategory || '',
+              optionalTags: recipe.optionalTags || [],
+              ingredients: recipe.ingredients || [{ id: 'ing_1', name: '', amount: '' }],
+              steps: recipe.steps || [{ id: 'step_1', content: '', image: '' }],
+              isPublic: recipe.isPublic !== false
+            }
+          })
+        }
+      },
+      fail: (err) => {
+        console.error('加载菜谱失败:', err)
+        wx.showToast({
+          title: '加载失败',
+          icon: 'error'
+        })
+      },
+      complete: () => {
+        wx.hideLoading()
+      }
+    })
   },
 
   // 检查表单是否有未保存的数据
   isFormDirty() {
     const { formData } = this.data
     return formData.images.length > 0 ||
-           formData.title.trim() ||
+           formData.name.trim() ||
            formData.description.trim() ||
-           formData.tags.length > 0 ||
+           formData.sceneCategory ||
+           formData.ingredientCategory ||
+           formData.optionalTags.length > 0 ||
            formData.ingredients.some(ing => ing && ing.name && ing.amount && (ing.name.trim() || ing.amount.trim())) ||
            formData.steps.some(step => step && step.content && step.content.trim())
   },
@@ -94,7 +164,18 @@ Page({
 
   // 保存菜谱
   saveRecipe(isPublish) {
-    if (!this.validateForm(isPublish)) {
+    // 使用统一的验证函数
+    const errors = validateRequiredFields(this.data.formData)
+    if (errors.length > 0) {
+      wx.showToast({
+        title: errors[0],
+        icon: 'none'
+      })
+      return
+    }
+
+    // 发布时的额外验证
+    if (isPublish && !this.validateForPublish()) {
       return
     }
 
@@ -132,21 +213,9 @@ Page({
     })
   },
 
-  // 验证表单
-  validateForm(isPublish = true) {
+  // 发布时的额外验证
+  validateForPublish() {
     const { formData } = this.data
-
-    // 清理无效的食材数据
-    const validIngredients = formData.ingredients.filter(ingredient => 
-      ingredient && typeof ingredient === 'object' && ingredient.id
-    )
-    
-    // 如果发现无效数据，更新到 data 中
-    if (validIngredients.length !== formData.ingredients.length) {
-      this.setData({
-        'formData.ingredients': validIngredients
-      })
-    }
 
     if (formData.images.length === 0) {
       wx.showToast({
@@ -156,62 +225,11 @@ Page({
       return false
     }
 
-    if (!formData.title.trim()) {
-      wx.showToast({
-        title: '请输入菜谱名称',
-        icon: 'none'
-      })
-      return false
-    }
-
-    if (!formData.description.trim()) {
-      wx.showToast({
-        title: '请输入菜谱描述',
-        icon: 'none'
-      })
-      return false
-    }
-
-    // 验证食材
-    for (let i = 0; i < formData.ingredients.length; i++) {
-      const ingredient = formData.ingredients[i]
-      // 确保字段存在且为字符串，防止 undefined 错误
-      const name = (ingredient.name || '').trim()
-      const amount = (ingredient.amount || '').trim()
-      
-      if (!name && amount) {
+    // 验证所有步骤都有内容
+    for (let i = 0; i < formData.steps.length; i++) {
+      if (!formData.steps[i].content.trim()) {
         wx.showToast({
-          title: `第${i + 1}个食材名称不能为空`,
-          icon: 'none'
-        })
-        return false
-      }
-      if (name && !amount) {
-        wx.showToast({
-          title: `第${i + 1}个食材用量不能为空`,
-          icon: 'none'
-        })
-        return false
-      }
-    }
-
-    // 验证步骤（发布时要求所有步骤都有内容，保存草稿时允许空步骤）
-    if (isPublish) {
-      for (let i = 0; i < formData.steps.length; i++) {
-        if (!formData.steps[i].content.trim()) {
-          wx.showToast({
-            title: `第${i + 1}个步骤不能为空`,
-            icon: 'none'
-          })
-          return false
-        }
-      }
-    } else {
-      // 草稿模式下，至少要有一个非空步骤
-      const hasValidStep = formData.steps.some(step => step.content.trim())
-      if (!hasValidStep) {
-        wx.showToast({
-          title: '至少需要一个制作步骤',
+          title: `第${i + 1}个步骤不能为空`,
           icon: 'none'
         })
         return false
@@ -223,30 +241,123 @@ Page({
 
   // 准备表单数据
   prepareFormData(isPublish) {
-    const { formData, cookTimeOptions, difficultyOptions, servingOptions } = this.data
+    const { formData, preparationTimes, difficultyLevels, servingSizes } = this.data
     
-    // 过滤空食材，添加防御性检查
+    // 过滤空食材
     const ingredients = formData.ingredients.filter(item => 
       item && item.name && item.amount && 
       item.name.trim() && item.amount.trim()
     )
 
+    // 过滤空步骤
+    const steps = formData.steps.filter(step => 
+      step && step.content && step.content.trim()
+    ).map(step => ({
+      content: step.content.trim(),
+      image: step.image || ''
+    }))
+
     return {
       images: formData.images,
-      title: formData.title.trim(),
+      name: formData.name.trim(),
       description: formData.description.trim(),
-      cookTime: cookTimeOptions[formData.cookTimeIndex],
-      difficulty: difficultyOptions[formData.difficultyIndex],
-      serving: servingOptions[formData.servingIndex],
+      sceneCategory: formData.sceneCategory,
+      ingredientCategory: formData.ingredientCategory,
+      preparationTime: preparationTimes[formData.preparationTimeIndex],
+      difficulty: difficultyLevels[formData.difficultyIndex],
+      servingSize: servingSizes[formData.servingSizeIndex],
+      optionalTags: formData.optionalTags,
       ingredients: ingredients,
-      steps: formData.steps.map(step => ({
-        content: step.content.trim(),
-        image: step.image || ''
-      })),
-      tags: formData.tags, // 添加标签数据
+      steps: steps,
       isPublic: formData.isPublic,
       status: isPublish ? 'published' : 'draft'
     }
+  },
+
+  // 场景分类选择
+  onSceneCategorySelect(e) {
+    const categoryId = e.currentTarget.dataset.id
+    this.setData({
+      'formData.sceneCategory': categoryId
+    })
+  },
+
+  // 食材分类选择
+  onIngredientCategorySelect(e) {
+    const categoryId = e.currentTarget.dataset.id
+    this.setData({
+      'formData.ingredientCategory': categoryId
+    })
+  },
+
+  // 切换更多标签显示
+  toggleMoreTags() {
+    this.setData({
+      showMoreTags: !this.data.showMoreTags
+    })
+  },
+
+  // 可选标签选择/取消
+  onOptionalTagToggle(e) {
+    const tagId = e.currentTarget.dataset.id
+    const optionalTags = [...this.data.formData.optionalTags]
+    const index = optionalTags.indexOf(tagId)
+
+    if (index !== -1) {
+      // 标签已存在，移除
+      optionalTags.splice(index, 1)
+    } else {
+      // 标签不存在，添加（限制最多8个标签）
+      if (optionalTags.length >= 8) {
+        wx.showToast({
+          title: '最多只能选择8个标签',
+          icon: 'none'
+        })
+        return
+      }
+      optionalTags.push(tagId)
+    }
+
+    this.setData({
+      'formData.optionalTags': optionalTags
+    })
+  },
+
+  // 表单字段变化处理
+  onNameChange(e) {
+    this.setData({
+      'formData.name': e.detail.value
+    })
+  },
+
+  onDescriptionChange(e) {
+    this.setData({
+      'formData.description': e.detail.value
+    })
+  },
+
+  onPreparationTimeChange(e) {
+    this.setData({
+      'formData.preparationTimeIndex': e.detail.value
+    })
+  },
+
+  onDifficultyChange(e) {
+    this.setData({
+      'formData.difficultyIndex': e.detail.value
+    })
+  },
+
+  onServingSizeChange(e) {
+    this.setData({
+      'formData.servingSizeIndex': e.detail.value
+    })
+  },
+
+  onPrivacyChange(e) {
+    this.setData({
+      'formData.isPublic': e.detail.value
+    })
   },
 
   // 图片上传
@@ -262,13 +373,15 @@ Page({
       return
     }
 
-    wx.chooseImage({
+    wx.chooseMedia({
       count: maxCount,
-      sizeType: ['compressed'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
+      maxDuration: 30,
+      camera: 'back',
       success: (res) => {
-        const tempFilePaths = res.tempFilePaths
-        this.uploadMultipleImages(tempFilePaths)
+        const tempFiles = res.tempFiles.map(file => file.tempFilePath)
+        this.uploadMultipleImages(tempFiles)
       }
     })
   },
@@ -284,7 +397,10 @@ Page({
         wx.cloud.uploadFile({
           cloudPath,
           filePath,
-          success: (res) => resolve(res.fileID),
+          success: (res) => {
+            wx.showLoading({ title: `上传中(${index + 1}/${filePaths.length})...` })
+            resolve(res.fileID)
+          },
           fail: (err) => reject(err)
         })
       })
@@ -315,67 +431,20 @@ Page({
       })
   },
 
-  // 防抖处理输入事件
-  debounceInput(callback, delay = 300) {
-    clearTimeout(this.data.inputDebounceTimer)
-    const timer = setTimeout(callback, delay)
-    this.setData({ inputDebounceTimer: timer })
-  },
-
-  // 立即保存数据（用于添加/删除操作前）
-  flushPendingInput() {
-    if (this.data.inputDebounceTimer) {
-      clearTimeout(this.data.inputDebounceTimer)
-      this.setData({ inputDebounceTimer: null })
-    }
-
-    // 确保当前焦点的输入框数据被保存
-    // 这是一个同步操作，确保数据立即保存
-    console.log('刷新待保存输入数据')
-  },
-
-  // 表单字段变化处理
-  onTitleChange(e) {
+  // 删除图片
+  removeImage(e) {
+    const index = e.currentTarget.dataset.index
+    const images = [...this.data.formData.images]
+    images.splice(index, 1)
     this.setData({
-      'formData.title': e.detail
+      'formData.images': images
     })
   },
 
-  onDescriptionChange(e) {
-    this.setData({
-      'formData.description': e.detail
-    })
-  },
-
-  onCookTimeChange(e) {
-    this.setData({
-      'formData.cookTimeIndex': e.detail.value
-    })
-  },
-
-  onDifficultyChange(e) {
-    this.setData({
-      'formData.difficultyIndex': e.detail.value
-    })
-  },
-
-  onServingChange(e) {
-    this.setData({
-      'formData.servingIndex': e.detail.value
-    })
-  },
-
-  onPrivacyChange(e) {
-    this.setData({
-      'formData.isPublic': e.detail
-    })
-  },
-
-  // 食材相关操作（使用 input 事件优化性能）
+  // 食材相关操作
   onIngredientNameInput(e) {
     const index = e.currentTarget.dataset.index
     const value = e.detail.value
-    // 立即更新数据，避免与添加/删除操作冲突
     this.setData({
       [`formData.ingredients[${index}].name`]: value
     })
@@ -384,40 +453,14 @@ Page({
   onIngredientAmountInput(e) {
     const index = e.currentTarget.dataset.index
     const value = e.detail.value
-    // 立即更新数据，避免与添加/删除操作冲突
-    this.setData({
-      [`formData.ingredients[${index}].amount`]: value
-    })
-  },
-
-  // 保留原有的 change 事件作为兼容
-  onIngredientNameChange(e) {
-    const index = e.currentTarget.dataset.index
-    const value = e.detail || ''
-
-    // 立即更新数据，确保不丢失
-    this.setData({
-      [`formData.ingredients[${index}].name`]: value
-    })
-  },
-
-  onIngredientAmountChange(e) {
-    const index = e.currentTarget.dataset.index
-    const value = e.detail || ''
-
-    // 立即更新数据，确保不丢失
     this.setData({
       [`formData.ingredients[${index}].amount`]: value
     })
   },
 
   addIngredient() {
-    // 确保所有待保存的输入都已保存
-    this.flushPendingInput()
-
     const ingredients = [...this.data.formData.ingredients]
     const newId = `ing_${Date.now()}`
-    // 确保完全初始化，防止 undefined 错误
     ingredients.push({ 
       id: newId, 
       name: '', 
@@ -429,9 +472,6 @@ Page({
   },
 
   removeIngredient(e) {
-    // 确保所有待保存的输入都已保存
-    this.flushPendingInput()
-
     const index = e.currentTarget.dataset.index
     const ingredients = [...this.data.formData.ingredients]
     if (ingredients.length > 1) {
@@ -442,30 +482,21 @@ Page({
     }
   },
 
-  // 步骤相关操作（使用 input 事件优化性能）
+  // 步骤相关操作
   onStepContentChange(e) {
     const index = e.currentTarget.dataset.index
-    const value = e.detail || ''
-
-    console.log('步骤输入 - 索引:', index, '值:', value, '当前步骤数组长度:', this.data.formData.steps.length)
-
-    // 立即更新数据，确保不丢失
+    const value = e.detail.value
     this.setData({
       [`formData.steps[${index}].content`]: value
     })
   },
 
   addStep() {
-    console.log('添加步骤前的数据:', JSON.parse(JSON.stringify(this.data.formData.steps)))
-
     const steps = [...this.data.formData.steps]
     const newId = `step_${Date.now()}`
     steps.push({ id: newId, content: '', image: '' })
-
     this.setData({
       'formData.steps': steps
-    }, () => {
-      console.log('添加步骤后的数据:', JSON.parse(JSON.stringify(this.data.formData.steps)))
     })
   },
 
@@ -483,14 +514,13 @@ Page({
   // 步骤图片上传
   onStepImageUpload(e) {
     const index = e.currentTarget.dataset.index
-    const step = this.data.formData.steps[index]
     
-    wx.chooseImage({
+    wx.chooseMedia({
       count: 1,
-      sizeType: ['compressed'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePath = res.tempFilePaths[0]
+        const tempFilePath = res.tempFiles[0].tempFilePath
         this.uploadStepImage(tempFilePath, index)
       }
     })
@@ -506,7 +536,6 @@ Page({
       cloudPath,
       filePath: tempFilePath,
       success: (res) => {
-        // 更新步骤图片
         this.setData({
           [`formData.steps[${stepIndex}].image`]: res.fileID
         })
@@ -532,47 +561,6 @@ Page({
     const index = e.currentTarget.dataset.index
     this.setData({
       [`formData.steps[${index}].image`]: ''
-    })
-  },
-
-  // 删除图片
-  removeImage(e) {
-    const index = e.currentTarget.dataset.index
-    const images = [...this.data.formData.images]
-    images.splice(index, 1)
-    this.setData({
-      'formData.images': images
-    })
-  },
-
-  // 标签选择/取消
-  onTagToggle(e) {
-    const tag = e.currentTarget.dataset.tag
-    const tags = [...this.data.formData.tags]
-    const selectedTags = { ...this.data.formData.selectedTags }
-
-    const index = tags.indexOf(tag)
-
-    if (index !== -1) {
-      // 标签已存在，移除
-      tags.splice(index, 1)
-      selectedTags[tag] = false
-    } else {
-      // 标签不存在，添加（限制最多10个标签）
-      if (tags.length >= 10) {
-        wx.showToast({
-          title: '最多只能选择10个标签',
-          icon: 'none'
-        })
-        return
-      }
-      tags.push(tag)
-      selectedTags[tag] = true
-    }
-
-    this.setData({
-      'formData.tags': tags,
-      'formData.selectedTags': selectedTags
     })
   }
 })

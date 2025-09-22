@@ -1,5 +1,10 @@
 const util = require('../../utils/util')
-const { getTagOptions, getAllTags } = require('../../utils/tagData')
+const { 
+  getSceneCategories, 
+  getIngredientCategories,
+  getCookingMethods,
+  getFlavorTypes 
+} = require('../../utils/tagData')
 
 Page({
   data: {
@@ -13,25 +18,32 @@ Page({
     showSearch: false,
     // 筛选相关
     showFilter: false,
-    tagOptions: [],
-    selectedTags: [],
-    // 快速筛选分类（基于标签）
+    sceneCategories: [],
+    ingredientCategories: [],
+    cookingMethods: [],
+    flavorTypes: [],
+    selectedScenes: [],
+    selectedIngredients: [],
+    selectedOptionalTags: [],
+    // 快速筛选分类（基于场景）
     quickFilters: [
-      { name: '全部', tag: null },
-      { name: '家常菜', tag: '家常菜' },
-      { name: '川菜', tag: '川菜' },
-      { name: '素食', tag: '素食' },
-      { name: '快手菜', tag: '快手菜' },
-      { name: '下饭菜', tag: '下饭菜' },
-      { name: '宴客菜', tag: '宴客菜' }
+      { name: '全部', sceneId: null },
+      { name: '家常菜', sceneId: 'daily' },
+      { name: '快手菜', sceneId: 'quick' },
+      { name: '宴客菜', sceneId: 'guest' },
+      { name: '清淡菜', sceneId: 'light' },
+      { name: '重口味', sceneId: 'heavy' }
     ],
     currentQuickFilter: null
   },
 
   onLoad: function (options) {
-    // 初始化标签数据
+    // 初始化分类数据
     this.setData({
-      tagOptions: getTagOptions()
+      sceneCategories: getSceneCategories(),
+      ingredientCategories: getIngredientCategories(),
+      cookingMethods: getCookingMethods(),
+      flavorTypes: getFlavorTypes()
     })
     this.loadRecipes()
   },
