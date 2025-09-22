@@ -18,8 +18,8 @@ Page({
         { id: 'ing_2', name: '', amount: '' }
       ],
       steps: [
-        { id: 'step_1', content: '' },
-        { id: 'step_2', content: '' }
+        { id: 'step_1', content: '', image: '' },
+        { id: 'step_2', content: '', image: '' }
       ],
       isPublic: true
     },
@@ -256,7 +256,8 @@ Page({
       serving: servingOptions[formData.servingIndex],
       ingredients: ingredients,
       steps: formData.steps.map(step => ({
-        content: step.content.trim()
+        content: step.content.trim(),
+        image: step.image || ''
       })),
       tags: formData.tags, // 添加标签数据
       isPublic: formData.isPublic,
@@ -475,7 +476,7 @@ Page({
 
     const steps = [...this.data.formData.steps]
     const newId = `step_${Date.now()}`
-    steps.push({ id: newId, content: '' })
+    steps.push({ id: newId, content: '', image: '' })
 
     this.setData({
       'formData.steps': steps
@@ -493,6 +494,61 @@ Page({
         'formData.steps': steps
       })
     }
+  },
+
+  // 步骤图片上传
+  onStepImageUpload(e) {
+    const index = e.currentTarget.dataset.index
+    const step = this.data.formData.steps[index]
+    
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePath = res.tempFilePaths[0]
+        this.uploadStepImage(tempFilePath, index)
+      }
+    })
+  },
+
+  // 上传步骤图片到云存储
+  uploadStepImage(tempFilePath, stepIndex) {
+    wx.showLoading({ title: '上传图片中...' })
+
+    const cloudPath = `steps/${Date.now()}-${Math.random().toString(36).slice(-6)}.jpg`
+
+    wx.cloud.uploadFile({
+      cloudPath,
+      filePath: tempFilePath,
+      success: (res) => {
+        // 更新步骤图片
+        this.setData({
+          [`formData.steps[${stepIndex}].image`]: res.fileID
+        })
+        wx.hideLoading()
+        wx.showToast({
+          title: '图片上传成功',
+          icon: 'success'
+        })
+      },
+      fail: (err) => {
+        console.error('上传步骤图片失败:', err)
+        wx.hideLoading()
+        wx.showToast({
+          title: '上传失败',
+          icon: 'error'
+        })
+      }
+    })
+  },
+
+  // 删除步骤图片
+  removeStepImage(e) {
+    const index = e.currentTarget.dataset.index
+    this.setData({
+      [`formData.steps[${index}].image`]: ''
+    })
   },
 
   // 删除图片
