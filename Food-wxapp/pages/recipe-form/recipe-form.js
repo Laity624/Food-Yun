@@ -50,15 +50,28 @@ Page({
 
   onLoad(options) {
     // 初始化所有枚举数据
+    const cookingMethods = getCookingMethods().map(item => ({
+      ...item,
+      selected: false
+    }))
+    
+    const flavorTypes = getFlavorTypes().map(item => ({
+      ...item,
+      selected: false
+    }))
+    
     this.setData({
       sceneCategories: getSceneCategories(),
       ingredientCategories: getIngredientCategories(),
-      cookingMethods: getCookingMethods(),
-      flavorTypes: getFlavorTypes(),
+      cookingMethods: cookingMethods,
+      flavorTypes: flavorTypes,
       preparationTimes: getPreparationTimes(),
       difficultyLevels: getDifficultyLevels(),
       servingSizes: getServingSizes()
     })
+    
+    // 调试：确认optionalTags初始状态
+    console.log('页面加载时的optionalTags:', this.data.formData.optionalTags)
     
     // 如果有编辑模式，可以在这里初始化数据
     if (options.id) {
@@ -86,6 +99,20 @@ Page({
       success: (res) => {
         if (res.result.success) {
           const recipe = res.result.data
+          const optionalTags = recipe.optionalTags || []
+          
+          // 更新烹饪方式的选中状态
+          const cookingMethods = this.data.cookingMethods.map(item => ({
+            ...item,
+            selected: optionalTags.includes(item.id)
+          }))
+
+          // 更新口味特色的选中状态
+          const flavorTypes = this.data.flavorTypes.map(item => ({
+            ...item,
+            selected: optionalTags.includes(item.id)
+          }))
+
           this.setData({
             formData: {
               ...this.data.formData,
@@ -94,12 +121,16 @@ Page({
               description: recipe.description || '',
               sceneCategory: recipe.sceneCategory || '',
               ingredientCategory: recipe.ingredientCategory || '',
-              optionalTags: recipe.optionalTags || [],
+              optionalTags: optionalTags,
               ingredients: recipe.ingredients || [{ id: 'ing_1', name: '', amount: '' }],
               steps: recipe.steps || [{ id: 'step_1', content: '', image: '' }],
               isPublic: recipe.isPublic !== false
-            }
+            },
+            cookingMethods: cookingMethods,
+            flavorTypes: flavorTypes
           })
+          // 调试：确认编辑模式下的optionalTags
+          console.log('编辑模式加载的optionalTags:', optionalTags)
         }
       },
       fail: (err) => {
@@ -164,8 +195,14 @@ Page({
 
   // 保存菜谱
   saveRecipe(isPublish) {
+    // 调试：打印表单数据
+    console.log('表单数据:', this.data.formData)
+    console.log('菜谱名称:', this.data.formData.name)
+    
     // 使用统一的验证函数
     const errors = validateRequiredFields(this.data.formData)
+    console.log('验证错误:', errors)
+    
     if (errors.length > 0) {
       wx.showToast({
         title: errors[0],
@@ -292,9 +329,11 @@ Page({
 
   // 切换更多标签显示
   toggleMoreTags() {
+    console.log('切换标签显示状态，当前:', this.data.showMoreTags)
     this.setData({
       showMoreTags: !this.data.showMoreTags
     })
+    console.log('切换后的optionalTags:', this.data.formData.optionalTags)
   },
 
   // 可选标签选择/取消
@@ -303,9 +342,14 @@ Page({
     const optionalTags = [...this.data.formData.optionalTags]
     const index = optionalTags.indexOf(tagId)
 
+    console.log('点击标签:', tagId)
+    console.log('当前optionalTags:', optionalTags)
+    console.log('标签在数组中的索引:', index)
+
     if (index !== -1) {
       // 标签已存在，移除
       optionalTags.splice(index, 1)
+      console.log('移除标签后:', optionalTags)
     } else {
       // 标签不存在，添加（限制最多8个标签）
       if (optionalTags.length >= 8) {
@@ -316,47 +360,62 @@ Page({
         return
       }
       optionalTags.push(tagId)
+      console.log('添加标签后:', optionalTags)
     }
 
+    // 更新烹饪方式的选中状态
+    const cookingMethods = this.data.cookingMethods.map(item => ({
+      ...item,
+      selected: optionalTags.includes(item.id)
+    }))
+
+    // 更新口味特色的选中状态
+    const flavorTypes = this.data.flavorTypes.map(item => ({
+      ...item,
+      selected: optionalTags.includes(item.id)
+    }))
+
     this.setData({
-      'formData.optionalTags': optionalTags
+      'formData.optionalTags': optionalTags,
+      cookingMethods: cookingMethods,
+      flavorTypes: flavorTypes
     })
   },
 
   // 表单字段变化处理
   onNameChange(e) {
     this.setData({
-      'formData.name': e.detail.value
+      'formData.name': e.detail
     })
   },
 
   onDescriptionChange(e) {
     this.setData({
-      'formData.description': e.detail.value
+      'formData.description': e.detail
     })
   },
 
   onPreparationTimeChange(e) {
     this.setData({
-      'formData.preparationTimeIndex': e.detail.value
+      'formData.preparationTimeIndex': e.detail
     })
   },
 
   onDifficultyChange(e) {
     this.setData({
-      'formData.difficultyIndex': e.detail.value
+      'formData.difficultyIndex': e.detail
     })
   },
 
   onServingSizeChange(e) {
     this.setData({
-      'formData.servingSizeIndex': e.detail.value
+      'formData.servingSizeIndex': e.detail
     })
   },
 
   onPrivacyChange(e) {
     this.setData({
-      'formData.isPublic': e.detail.value
+      'formData.isPublic': e.detail
     })
   },
 
@@ -444,7 +503,7 @@ Page({
   // 食材相关操作
   onIngredientNameInput(e) {
     const index = e.currentTarget.dataset.index
-    const value = e.detail.value
+    const value = e.detail
     this.setData({
       [`formData.ingredients[${index}].name`]: value
     })
@@ -452,7 +511,7 @@ Page({
 
   onIngredientAmountInput(e) {
     const index = e.currentTarget.dataset.index
-    const value = e.detail.value
+    const value = e.detail
     this.setData({
       [`formData.ingredients[${index}].amount`]: value
     })
@@ -485,7 +544,7 @@ Page({
   // 步骤相关操作
   onStepContentChange(e) {
     const index = e.currentTarget.dataset.index
-    const value = e.detail.value
+    const value = e.detail
     this.setData({
       [`formData.steps[${index}].content`]: value
     })

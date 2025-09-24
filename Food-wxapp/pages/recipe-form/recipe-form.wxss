@@ -335,29 +335,44 @@
   gap: 12rpx;
 }
 
-.optional-tag {
+/* 可选标签基础样式 */
+.tag-list .optional-tag {
+  display: inline-block;
   padding: 12rpx 20rpx;
-  background-color: #f5f5f5;
-  border: 1rpx solid #e5e5e5;
   border-radius: 24rpx;
   font-size: 24rpx;
-  color: #666666;
   transition: all 0.3s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin: 0;
 }
 
-.optional-tag.selected {
-  background-color: #3b82f6;
-  border: 2rpx solid #3b82f6;
-  color: #ffffff;
+/* 未选中状态 - 明确定义 */
+.tag-list .optional-tag.unselected {
+  background-color: #ffffff !important;
+  border: 2rpx solid #e5e5e5 !important;
+  color: #666666 !important;
+}
+
+/* 悬停状态 */
+.tag-list .optional-tag.unselected:active {
+  background-color: #f5f5f5 !important;
+}
+
+/* 选中状态 - 最高优先级 */
+.tag-list .optional-tag.selected {
+  background-color: #3b82f6 !important;
+  border: 2rpx solid #3b82f6 !important;
+  color: #ffffff !important;
   transform: translateY(-1rpx);
   box-shadow: 0 3rpx 12rpx rgba(59, 130, 246, 0.3);
   position: relative;
 }
 
-.optional-tag.selected::before {
-  content: "✓ ";
+.tag-checkmark {
   font-weight: 800;
   margin-right: 4rpx;
+  color: #ffffff;
 }
 
 /* 分区头部 */

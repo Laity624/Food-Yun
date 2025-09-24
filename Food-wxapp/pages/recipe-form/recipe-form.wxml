@@ -145,6 +145,7 @@
         </text>
       </view>
       
+      
       <block wx:if="{{showMoreTags}}">
         <!-- 烹饪方式 -->
         <view class="tag-group">
@@ -152,11 +153,11 @@
           <view class="tag-list">
             <block wx:for="{{cookingMethods}}" wx:key="id">
               <view
-                class="optional-tag {{formData.optionalTags.indexOf(item.id) !== -1 ? 'selected' : ''}}"
+                class="optional-tag {{item.selected ? 'selected' : 'unselected'}}"
                 bindtap="onOptionalTagToggle"
                 data-id="{{item.id}}"
               >
-                {{item.emoji}} {{item.name}}
+                <text wx:if="{{item.selected}}" class="tag-checkmark">✓ </text>{{item.emoji}} {{item.name}}
               </view>
             </block>
           </view>
@@ -168,11 +169,11 @@
           <view class="tag-list">
             <block wx:for="{{flavorTypes}}" wx:key="id">
               <view
-                class="optional-tag {{formData.optionalTags.indexOf(item.id) !== -1 ? 'selected' : ''}}"
+                class="optional-tag {{item.selected ? 'selected' : 'unselected'}}"
                 bindtap="onOptionalTagToggle"
                 data-id="{{item.id}}"
               >
-                {{item.emoji}} {{item.name}}
+                <text wx:if="{{item.selected}}" class="tag-checkmark">✓ </text>{{item.emoji}} {{item.name}}
               </view>
             </block>
           </view>
