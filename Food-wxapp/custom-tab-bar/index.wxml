@@ -1,0 +1,32 @@
+<view
+  class="custom-tabbar">
+  <view class="main">
+    <view class="bg" />
+    <ul class="list">
+      <li
+        wx:for="{{ list }}"
+        wx:key="text"
+        data-item="{{ item }}"
+        data-index="{{ index }}"
+        class="{{ selected === item.type ? 'selected' : '' }}"
+        bindtap="switchTab" >
+        <view class="image-wrap">
+          <image
+            src="{{ item.selectedIconPath }}"
+            mode="aspectFit"
+            class="selected" />
+          <image
+            src="{{ item.iconPath }}"
+            mode="aspectFit"
+            class="normal" />
+        </view>
+        <text>{{ item.text }}</text>
+      </li>
+    </ul>
+  </view>
+  <view
+    style="height:{{safeAreaBottom > 30 ? safeAreaBottom - 10 : safeAreaBottom}}px"
+    class="long-screen-bg" />
+</view>
+
+

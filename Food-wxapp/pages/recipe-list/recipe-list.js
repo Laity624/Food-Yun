@@ -131,14 +131,21 @@ Page({
         optionalTags: selectedOptionalTags.length > 0 ? selectedOptionalTags : undefined
       }
     }).then(res => {
+      console.log('菜谱列表云函数调用结果:', res)
       if (res.result.success) {
         const newRecipes = res.result.data.recipes || []
+        console.log('获取到的菜谱数据:', newRecipes)
+        console.log('菜谱数量:', newRecipes.length)
+        if (newRecipes.length > 0) {
+          console.log('第一个菜谱的ID:', newRecipes[0]._id)
+        }
         this.setData({
           recipes: page === 1 ? newRecipes : [...this.data.recipes, ...newRecipes],
           hasMore: newRecipes.length === pageSize,
           loading: false
         })
       } else {
+        console.error('菜谱列表加载失败:', res.result)
         this.setData({ loading: false })
         wx.showToast({
           title: res.result.message || '加载失败',
@@ -179,6 +186,8 @@ Page({
   // 菜谱点击
   onRecipeClick: function(e) {
     const recipeId = e.currentTarget.dataset.id
+    console.log('点击菜谱，recipeId:', recipeId)
+    console.log('dataset:', e.currentTarget.dataset)
     wx.navigateTo({
       url: `/pages/recipe-detail/recipe-detail?id=${recipeId}`
     })

@@ -1,0 +1,93 @@
+.custom-tabbar {
+  z-index: 999;
+  position: relative;
+  background: #fff;
+  // box-shadow: 0rpx -6rpx 26rpx 0rpx rgba(42, 111, 202, 0.09);
+  border-top: 2rpx solid #e5e5e5;
+  .main {
+    width: 100%;
+    position: relative;
+    .bg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+    }
+    .list {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      position: relative;
+      z-index: 2;
+      box-sizing: border-box;
+      padding: 0 10rpx;
+      li {
+        flex: 1;
+        padding: 20rpx 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        position: relative;
+        .image-wrap {
+          width: 40rpx;
+          height: 40rpx;
+          position: relative;
+          image {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            &.selected {
+              visibility: hidden;
+            }
+            &.normal {
+              visibility: visible;
+            }
+          }
+        }
+        .count-tag {
+          display: block;
+          width: 42rpx;
+          height: 42rpx;
+          line-height: 40rpx;
+          text-align: center;
+          color: #fff;
+          font-size: 22rpx;
+          position: absolute;
+          top: 12rpx;
+          right: 26rpx;
+          border-radius: 50%;
+          background: linear-gradient( 180deg, #FB2D5B 0%, #FB2123 52%, #FC750B 100%);
+          border: 2rpx solid #fff;
+        }
+        text {
+          display: block;
+          text-align: center;
+          width: 100%;
+          font-size: 24rpx;
+          color: #333;
+          margin-top: 12rpx;
+          letter-spacing: 3rpx;
+        }
+        &.selected {
+          .image-wrap image {
+            &.selected {
+              visibility: visible;
+            }
+            &.normal {
+              visibility: hidden;
+            }
+          }
+          text {
+            color: #FF112D;
+          }
+        }
+      }
+    }
+  }
+}

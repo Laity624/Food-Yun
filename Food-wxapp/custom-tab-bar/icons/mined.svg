@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>矩形</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#FF3A55" offset="0%"></stop>
+            <stop stop-color="#FF5A32" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="素材" transform="translate(-353.000000, -84.000000)">
+            <g id="我的大麦激活" transform="translate(353.000000, 84.000000)">
+                <rect id="矩形" fill="#000000" fill-rule="nonzero" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                <path d="M10,10 C7.22727273,10 5,7.75416667 5,5 C5,2.24583331 7.22727273,0 10,0 C12.7727273,0 15,2.24583333 15,5 C15,7.75416665 12.7727273,10 10,10 Z M2,16 C2,13.5670034 3.69136872,12 6,12 L14,12 C16.3086313,12 18,13.5670034 18,15 C18,17.4329966 16.3086313,19 14,19 L6,19 C3.69238401,18.997731 2.00244908,17.432056 2,15 L2,16 Z" id="形状" fill="url(#linearGradient-1)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

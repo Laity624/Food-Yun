@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>矩形</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#FF3A55" offset="0%"></stop>
+            <stop stop-color="#FF5A32" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="素材" transform="translate(-41.000000, -84.000000)">
+            <g id="首页" transform="translate(41.000000, 84.000000)">
+                <rect id="矩形" fill="#000000" fill-rule="nonzero" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                <path d="M11.0742105,0.344495282 L18.7931579,5.86649134 C19.5506413,6.40836926 20,7.2807347 20,8.21005449 L20,17.1148076 C20,18.7082207 18.7039474,20 17.1052632,20 L13.1578947,20 L13.1578947,15.8033564 C13.1578947,14.0651591 11.7439474,12.6558738 10,12.6558738 C8.25605263,12.6558738 6.84210526,14.0651591 6.84210526,15.8033564 L6.84210526,20 L2.89473684,20 C1.29605262,20 0,18.7082207 0,17.1148076 L0,8.21031676 C0,7.28090444 0.449283315,6.40842322 1.2068421,5.86649134 L8.92578948,0.344495282 C9.5677895,-0.114831761 10.4322105,-0.114831761 11.0742105,0.344495282 Z" id="路径" fill="url(#linearGradient-1)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

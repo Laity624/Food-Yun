@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>矩形</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页" transform="translate(-353.000000, -1833.000000)">
+            <g id="编组-20" transform="translate(0.000000, 1819.000000)">
+                <g id="我的大麦激活" transform="translate(353.000000, 14.000000)">
+                    <rect id="矩形" fill="#000000" fill-rule="nonzero" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                    <circle id="椭圆形" stroke="#585F65" stroke-width="1.5" cx="10" cy="5" r="4.25"></circle>
+                    <rect id="矩形" stroke="#585F65" stroke-width="1.5" x="2.75" y="12.75" width="14.5" height="5.5" rx="2.75"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

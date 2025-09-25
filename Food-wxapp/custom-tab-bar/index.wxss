@@ -1,0 +1,88 @@
+.custom-tabbar {
+  z-index: 999;
+  position: relative;
+  background: #fff;
+  border-top: 2rpx solid #e5e5e5;
+}
+.custom-tabbar .main {
+  width: 100%;
+  position: relative;
+}
+.custom-tabbar .main .bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+}
+.custom-tabbar .main .list {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 0 10rpx;
+}
+.custom-tabbar .main .list li {
+  flex: 1;
+  padding: 20rpx 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+.custom-tabbar .main .list li .image-wrap {
+  width: 40rpx;
+  height: 40rpx;
+  position: relative;
+}
+.custom-tabbar .main .list li .image-wrap image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.custom-tabbar .main .list li .image-wrap image.selected {
+  visibility: hidden;
+}
+.custom-tabbar .main .list li .image-wrap image.normal {
+  visibility: visible;
+}
+.custom-tabbar .main .list li .count-tag {
+  display: block;
+  width: 42rpx;
+  height: 42rpx;
+  line-height: 40rpx;
+  text-align: center;
+  color: #fff;
+  font-size: 22rpx;
+  position: absolute;
+  top: 12rpx;
+  right: 26rpx;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #FB2D5B 0%, #FB2123 52%, #FC750B 100%);
+  border: 2rpx solid #fff;
+}
+.custom-tabbar .main .list li text {
+  display: block;
+  text-align: center;
+  width: 100%;
+  font-size: 24rpx;
+  color: #333;
+  margin-top: 12rpx;
+  letter-spacing: 3rpx;
+}
+.custom-tabbar .main .list li.selected .image-wrap image.selected {
+  visibility: visible;
+}
+.custom-tabbar .main .list li.selected .image-wrap image.normal {
+  visibility: hidden;
+}
+.custom-tabbar .main .list li.selected text {
+  color: #FF112D;
+}

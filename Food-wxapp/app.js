@@ -1,5 +1,7 @@
+import Device from './utils/device.js'
+
 App({
-  onLaunch: function () {
+  onLaunch: async function () {
     // 初始化云开发
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -20,6 +22,7 @@ App({
     
     // 检查本地登录状态
     this.checkLoginStatus()
+    await this.getSystemInfo()
   },
 
   onShow: function () {
@@ -66,10 +69,29 @@ App({
     })
   },
 
+  getSystemInfo() {
+    return new Promise((resolve) => {
+      Device.GetSystemInfo(async (res) => {
+        this.globalData.systemInfo = res
+        this.globalData.navHeight = res.statusBarHeight;
+        let deviceName = res.model || ''
+        if (res.brand) {
+          deviceName = `${res.brand} ${deviceName}`
+        }
+        this.globalData.deviceName = deviceName // 设备机型
+        resolve(true)
+
+      })
+    })
+	},
+
   globalData: {
     userInfo: null,
     openid: null,
     isPreviewMode: false, // 预览模式标志
-    version: '1.0.0'
+    version: '1.0.0',
+    systemInfo: {}, // 设备信息
+    navHeight: "",// 导航栏的高度
+    deviceName: "",// 设备机型
   }
 })

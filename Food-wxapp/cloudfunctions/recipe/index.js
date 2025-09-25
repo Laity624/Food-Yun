@@ -244,38 +244,83 @@ async function getRecipeList(event, openid) {
 async function getRecipeDetail(event, openid) {
   const { recipeId } = event
   
-  const result = await db.collection('recipes').doc(recipeId).get()
+  // 调试：打印接收到的参数
+  console.log('getRecipeDetail 接收到的参数:', JSON.stringify(event, null, 2))
+  console.log('recipeId:', recipeId, 'type:', typeof recipeId)
   
-  if (!result.data) {
+  // 验证recipeId格式
+  if (!recipeId) {
+    console.error('recipeId 为空')
     return {
       success: false,
-      message: '菜谱不存在'
+      message: '菜谱ID不能为空',
+      error: 'MISSING_RECIPE_ID'
     }
   }
   
-  const recipe = result.data
-  
-  // 检查权限
-  if (!recipe.isPublic && recipe.creatorId !== openid) {
+  // 验证recipeId格式（支持24位或32位十六进制字符串）
+  if (typeof recipeId !== 'string' || !/^[a-f0-9]{24}$|^[a-f0-9]{32}$/i.test(recipeId)) {
+    console.error('recipeId 格式不正确:', recipeId, '长度:', recipeId.length)
     return {
       success: false,
-      message: '没有权限查看此菜谱'
+      message: '菜谱ID格式不正确',
+      error: 'INVALID_RECIPE_ID_FORMAT',
+      receivedId: recipeId,
+      expectedLength: '24或32位十六进制字符串'
     }
   }
   
-  // 获取创建者信息
   try {
-    const userResult = await db.collection('users').doc(recipe.creatorId).get()
-    recipe.creator = userResult.data || { nickname: '未知用户', avatar: '' }
+    console.log('开始查询数据库，recipeId:', recipeId)
+    const result = await db.collection('recipes').doc(recipeId).get()
+    console.log('数据库查询结果:', JSON.stringify(result, null, 2))
+    
+    if (!result.data) {
+      console.error('菜谱不存在，recipeId:', recipeId)
+      return {
+        success: false,
+        message: '菜谱不存在',
+        error: 'RECIPE_NOT_FOUND',
+        recipeId: recipeId
+      }
+    }
+    
+    const recipe = result.data
+    console.log('获取到菜谱数据:', JSON.stringify(recipe, null, 2))
+    
+    // 检查权限
+    if (!recipe.isPublic && recipe.creatorId !== openid) {
+      console.error('没有权限查看此菜谱，recipeId:', recipeId, 'creatorId:', recipe.creatorId, 'openid:', openid)
+      return {
+        success: false,
+        message: '没有权限查看此菜谱',
+        error: 'NO_PERMISSION'
+      }
+    }
+    
+    // 获取创建者信息
+    try {
+      const userResult = await db.collection('users').doc(recipe.creatorId).get()
+      recipe.creator = userResult.data || { nickname: '未知用户', avatar: '' }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      recipe.creator = { nickname: '未知用户', avatar: '' }
+    }
+    recipe.createTime = formatTime(recipe.createdAt)
+    
+    console.log('返回菜谱数据成功')
+    return {
+      success: true,
+      data: recipe
+    }
   } catch (error) {
-    console.error('获取用户信息失败:', error)
-    recipe.creator = { nickname: '未知用户', avatar: '' }
-  }
-  recipe.createTime = formatTime(recipe.createdAt)
-  
-  return {
-    success: true,
-    data: recipe
+    console.error('查询菜谱详情失败:', error)
+    return {
+      success: false,
+      message: '查询菜谱详情失败',
+      error: error.message,
+      recipeId: recipeId
+    }
   }
 }
 
@@ -283,28 +328,73 @@ async function getRecipeDetail(event, openid) {
 async function getRecipeById(event, openid) {
   const { recipeId } = event
   
-  const result = await db.collection('recipes').doc(recipeId).get()
+  // 调试：打印接收到的参数
+  console.log('getRecipeById 接收到的参数:', JSON.stringify(event, null, 2))
+  console.log('recipeId:', recipeId, 'type:', typeof recipeId)
   
-  if (!result.data) {
+  // 验证recipeId格式
+  if (!recipeId) {
+    console.error('recipeId 为空')
     return {
       success: false,
-      message: '菜谱不存在'
+      message: '菜谱ID不能为空',
+      error: 'MISSING_RECIPE_ID'
     }
   }
   
-  const recipe = result.data
-  
-  // 只有创建者可以编辑
-  if (recipe.creatorId !== openid) {
+  // 验证recipeId格式（支持24位或32位十六进制字符串）
+  if (typeof recipeId !== 'string' || !/^[a-f0-9]{24}$|^[a-f0-9]{32}$/i.test(recipeId)) {
+    console.error('recipeId 格式不正确:', recipeId, '长度:', recipeId.length)
     return {
       success: false,
-      message: '没有权限编辑此菜谱'
+      message: '菜谱ID格式不正确',
+      error: 'INVALID_RECIPE_ID_FORMAT',
+      receivedId: recipeId,
+      expectedLength: '24或32位十六进制字符串'
     }
   }
   
-  return {
-    success: true,
-    data: recipe
+  try {
+    console.log('开始查询数据库，recipeId:', recipeId)
+    const result = await db.collection('recipes').doc(recipeId).get()
+    console.log('数据库查询结果:', JSON.stringify(result, null, 2))
+    
+    if (!result.data) {
+      console.error('菜谱不存在，recipeId:', recipeId)
+      return {
+        success: false,
+        message: '菜谱不存在',
+        error: 'RECIPE_NOT_FOUND',
+        recipeId: recipeId
+      }
+    }
+    
+    const recipe = result.data
+    console.log('获取到菜谱数据:', JSON.stringify(recipe, null, 2))
+    
+    // 只有创建者可以编辑
+    if (recipe.creatorId !== openid) {
+      console.error('没有权限编辑此菜谱，recipeId:', recipeId, 'creatorId:', recipe.creatorId, 'openid:', openid)
+      return {
+        success: false,
+        message: '没有权限编辑此菜谱',
+        error: 'NO_PERMISSION'
+      }
+    }
+    
+    console.log('返回菜谱数据成功')
+    return {
+      success: true,
+      data: recipe
+    }
+  } catch (error) {
+    console.error('查询菜谱详情失败:', error)
+    return {
+      success: false,
+      message: '查询菜谱详情失败',
+      error: error.message,
+      recipeId: recipeId
+    }
   }
 }
 
@@ -460,6 +550,7 @@ async function searchRecipes(event) {
     }
   }
 }
+
 
 // 格式化时间
 function formatTime(date) {

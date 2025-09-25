@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜谱详情 - 食云（家庭版）</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { overflow: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .hero-section {
+            height: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-image: url('https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop');
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+        }
+        
+        .hero-nav {
+            position: absolute;
+            top: 44px;
+            left: 0;
+            right: 0;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .hero-content {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            right: 24px;
+            color: white;
+        }
+        
+        .recipe-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .recipe-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            margin-top: -20px;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .section {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            color: #3b82f6;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .recipe-tag {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .tag-scene { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .tag-ingredient { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .tag-cooking { background: #fef3c7; color: #d97706; }
+        .tag-flavor { background: #fce7f3; color: #be185d; }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .info-item {
+            text-align: center;
+            padding: 16px 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .info-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .ingredient-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .ingredient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .ingredient-item:hover {
+            background: #e2e8f0;
+        }
+        
+        .ingredient-name {
+            font-weight: 500;
+            color: #1e293b;
+        }
+        
+        .ingredient-amount {
+            color: #3b82f6;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .step-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .step-item {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+        
+        .step-text {
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .step-image {
+            width: 100%;
+            height: 120px;
+            background: #f3f4f6;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .step-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .star {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+        
+        .rating-text {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .rating-btn {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            color: #3b82f6;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .rating-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            padding: 16px 24px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            gap: 12px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- 主要内容区域 -->
+            <div class="h-full overflow-y-auto" style="padding-bottom: 100px;">
+                <!-- 头图区域 -->
+                <div class="hero-section">
+                    <div class="hero-bg"></div>
+                    <div class="hero-overlay"></div>
+                    
+                    <!-- 导航栏 -->
+                    <div class="hero-nav">
+                        <div class="nav-btn" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="nav-btn" onclick="shareRecipe()">
+                                <i class="fas fa-share"></i>
+                            </div>
+                            <div class="nav-btn" onclick="toggleFavorite()">
+                                <i class="fas fa-heart" id="heartIcon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 头图内容 -->
+                    <div class="hero-content">
+                        <h1 class="recipe-title">番茄鸡蛋</h1>
+                        <p class="recipe-subtitle">经典家常菜，酸甜开胃，老少皆宜</p>
+                        <div class="recipe-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>15分钟</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>2-3人</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-signal"></i>
+                                <span>简单</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 内容卡片 -->
+                <div class="content-card slide-up">
+                    <!-- 标签区域 -->
+                    <div class="section">
+                        <div class="tag-container">
+                            <div class="recipe-tag tag-scene">
+                                <span>📅</span>
+                                <span>日常家常菜</span>
+                            </div>
+                            <div class="recipe-tag tag-ingredient">
+                                <span>🥚</span>
+                                <span>蛋类</span>
+                            </div>
+                            <div class="recipe-tag tag-cooking">
+                                <span>🔥</span>
+                                <span>炒菜</span>
+                            </div>
+                            <div class="recipe-tag tag-flavor">
+                                <span>🏠</span>
+                                <span>家常味</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 制作信息 -->
+                    <div class="section">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle section-icon"></i>
+                            制作信息
+                        </h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-number">15</div>
+                                <div class="info-label">分钟</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-number">简单</div>
+                                <div class="info-label">难度</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-number">2-3</div>
+                                <div class="info-label">人份</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 食材清单 -->
+                    <div class="section">
+                        <h2 class="section-title">
+                            <i class="fas fa-list-ul section-icon"></i>
+                            食材清单
+                        </h2>
+                        <div class="ingredient-list">
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">鸡蛋</span>
+                                <span class="ingredient-amount">3个</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">番茄</span>
+                                <span class="ingredient-amount">2个</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">葱花</span>
+                                <span class="ingredient-amount">适量</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">盐</span>
+                                <span class="ingredient-amount">1茶匙</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">糖</span>
+                                <span class="ingredient-amount">1/2茶匙</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-name">食用油</span>
+                                <span class="ingredient-amount">2汤匙</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 制作步骤 -->
+                    <div class="section">
+                        <h2 class="section-title">
+                            <i class="fas fa-tasks section-icon"></i>
+                            制作步骤
+                        </h2>
+                        <div class="step-list">
+                            <div class="step-item fade-in">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <p class="step-text">将番茄洗净，用开水烫一下，去皮切成小块。鸡蛋打散，加少许盐调味。</p>
+                                    <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&h=120&fit=crop')" onclick="viewStepImage(1)"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item fade-in">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <p class="step-text">热锅下少许油，倒入蛋液，快速炒散成块状，盛起备用。</p>
+                                    <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=120&fit=crop')" onclick="viewStepImage(2)"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item fade-in">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <p class="step-text">锅内留少许油，下番茄块炒出汁水，加盐和糖调味。</p>
+                                    <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=120&fit=crop')" onclick="viewStepImage(3)"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item fade-in">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <p class="step-text">倒入炒好的鸡蛋，快速翻炒均匀，撒上葱花即可出锅。</p>
+                                    <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=120&fit=crop')" onclick="viewStepImage(4)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 评价区域 -->
+                    <div class="section">
+                        <h2 class="section-title">
+                            <i class="fas fa-star section-icon"></i>
+                            菜谱评价
+                        </h2>
+                        <div class="rating-section">
+                            <div class="rating-display">
+                                <div class="rating-stars">
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                    <i class="fas fa-star star"></i>
+                                </div>
+                                <span class="rating-text">4.8 分 (126人评价)</span>
+                            </div>
+                            <div class="rating-btn" onclick="rateRecipe()">
+                                <i class="fas fa-thumbs-up mr-1"></i>
+                                评价
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 创建者信息 -->
+                    <div class="section">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    妈
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-800">妈妈的菜谱</div>
+                                    <div class="text-sm text-gray-500">2024年3月15日创建</div>
+                                </div>
+                            </div>
+                            <button class="text-blue-500 text-sm font-medium">
+                                查看更多菜谱
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部操作按钮 -->
+            <div class="action-buttons">
+                <div class="action-btn btn-secondary" onclick="toggleFavorite()">
+                    <i class="fas fa-heart"></i>
+                    <span>收藏</span>
+                </div>
+                <div class="action-btn btn-secondary" onclick="shareRecipe()">
+                    <i class="fas fa-share"></i>
+                    <span>分享</span>
+                </div>
+                <div class="action-btn btn-primary" onclick="startCooking()">
+                    <i class="fas fa-play"></i>
+                    <span>开始制作</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let isFavorited = false;
+        let currentRating = 0;
+
+        // 返回上一页
+        function goBack() {
+            console.log('返回菜谱列表');
+            alert('返回菜谱列表');
+        }
+
+        // 切换收藏状态
+        function toggleFavorite() {
+            isFavorited = !isFavorited;
+            const heartIcon = document.getElementById('heartIcon');
+            
+            if (isFavorited) {
+                heartIcon.style.color = '#ef4444';
+                console.log('已收藏菜谱');
+                // 添加收藏动画效果
+                heartIcon.classList.add('animate-pulse');
+                setTimeout(() => {
+                    heartIcon.classList.remove('animate-pulse');
+                }, 1000);
+            } else {
+                heartIcon.style.color = 'white';
+                console.log('取消收藏');
+            }
+        }
+
+        // 分享菜谱
+        function shareRecipe() {
+            console.log('分享菜谱');
+            alert('分享菜谱功能\n\n可以分享给家人或朋友');
+        }
+
+        // 查看步骤图片
+        function viewStepImage(stepNumber) {
+            console.log('查看步骤图片:', stepNumber);
+            alert(`查看第${stepNumber}步的详细图片`);
+        }
+
+        // 评价菜谱
+        function rateRecipe() {
+            console.log('评价菜谱');
+            const rating = prompt('请给这个菜谱打分（1-5星）:', '5');
+            if (rating && rating >= 1 && rating <= 5) {
+                currentRating = parseInt(rating);
+                alert(`感谢您的${rating}星评价！`);
+            }
+        }
+
+        // 开始制作
+        function startCooking() {
+            console.log('开始制作菜谱');
+            alert('进入制作模式\n\n将为您提供分步指导');
+        }
+
+        // 页面滚动效果
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const heroSection = document.querySelector('.hero-section');
+            
+            // 视差效果
+            if (heroSection) {
+                heroSection.style.transform = `translateY(${scrollY * 0.5}px)`;
+            }
+        }
+
+        // 步骤项目动画
+        function animateSteps() {
+            const steps = document.querySelectorAll('.step-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            steps.forEach((step, index) => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                step.style.transition = 'all 0.5s ease';
+                observer.observe(step);
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('菜谱详情页初始化完成');
+            
+            // 初始化步骤动画
+            animateSteps();
+            
+            // 添加滚动监听
+            window.addEventListener('scroll', handleScroll);
+            
+            // 模拟加载完成后的动画
+            setTimeout(() => {
+                document.querySelector('.content-card').classList.add('slide-up');
+            }, 300);
+        });
+
+        // 图片轮播功能（如果有多张图片）
+        function initImageCarousel() {
+            // 这里可以添加图片轮播逻辑
+            console.log('初始化图片轮播');
+        }
+
+        // 食材清单交互
+        document.querySelectorAll('.ingredient-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.background = this.style.background === 'rgb(226, 232, 240)' ? '#f8fafc' : '#e2e8f0';
+                console.log('切换食材状态:', this.querySelector('.ingredient-name').textContent);
+            });
+        });
+
+        // 制作信息卡片点击效果
+        document.querySelectorAll('.info-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
