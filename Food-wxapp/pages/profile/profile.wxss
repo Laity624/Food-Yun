@@ -1,14 +1,15 @@
 /* 全屏页面容器 */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(180deg, #ffeaa7 0%, #fff5e6 30%, #ffffff 100%);
   padding: env(safe-area-inset-top) 0 0 0;
   box-sizing: border-box;
 }
 
 /* 头部渐变背景 */
 .gradient-header {
-  background: transparent;
+  /* background: transparent; */
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   padding: 180rpx 30rpx 60rpx 30rpx;
   position: relative;
   overflow: hidden;
@@ -75,6 +76,10 @@
   align-items: center;
   gap: 30rpx;
   margin-bottom: 40rpx;
+  /* background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10rpx);
+  border-radius: 20rpx;
+  padding: 30rpx; */
 }
 
 .avatar-section {
@@ -114,7 +119,7 @@
 .user-name {
   font-size: 32rpx;
   font-weight: bold;
-  color: #fff;
+  color: #333;
 }
 
 .vip-badge {
@@ -151,13 +156,13 @@
   display: block;
   font-size: 28rpx;
   font-weight: bold;
-  color: #fff;
+  color: #333;
   margin-bottom: 4rpx;
 }
 
 .stat-label {
   font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.7);
+  color: #666;
 }
 
 /* 搜索码卡片 */
@@ -232,7 +237,7 @@
 
 /* 内容区域 */
 .content-section {
-  background: #fff;
+
   border-top-left-radius: 40rpx;
   border-top-right-radius: 40rpx;
   margin-top: -30rpx;

@@ -57,6 +57,10 @@ Component({
     }
   },
 
+  attached() {
+    // this.tabbarInit()
+  },
+
   methods: {
 
     getHeight () {
@@ -68,12 +72,19 @@ Component({
       }).exec()
     },
 
+    tabbarInit() {
+      this.setData({
+        selected: this.data.list[0].type
+      })
+    },
+
 
     switchTab(e) {
       const { index, item } = e.currentTarget.dataset
       const { list } = this.data
+      console.log('item==', item.type);
       this.setData({
-        selected: item.type
+        selected: this.data.list[index].type
       })
       wx.switchTab({
         url: item.pagePath,

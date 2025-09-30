@@ -18,6 +18,13 @@ Page({
 
   onShow: function () {
     this.checkLoginAndLoad()
+    
+    // 更新自定义tabbar的选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 'home'
+      })
+    }
   },
 
   // 检查登录状态并加载数据

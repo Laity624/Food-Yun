@@ -19,6 +19,13 @@ Page({
   onShow: function () {
     this.checkLoginAndLoad()
     
+    // 更新自定义tabbar的选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 'profile'
+      })
+    }
+    
     // 检查是否有裁剪后的头像需要上传
     const app = getApp()
     if (app.globalData.croppedAvatarPath) {

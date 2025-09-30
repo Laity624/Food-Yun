@@ -5,7 +5,7 @@
     <ul class="list">
       <li
         wx:for="{{ list }}"
-        wx:key="text"
+        wx:key="type"
         data-item="{{ item }}"
         data-index="{{ index }}"
         class="{{ selected === item.type ? 'selected' : '' }}"
