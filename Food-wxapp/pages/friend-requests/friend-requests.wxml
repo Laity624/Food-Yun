@@ -1,1 +1,112 @@
-<view class="container"><text>好友请求页面开发中...</text></view>
+<view class="container">
+
+  <!-- 我的搜索码 -->
+  <view class="search-code-section">
+    <text class="section-title">我的搜索码</text>
+    <view class="search-code-card">
+      <view class="code-content">
+        <view class="code-icon">
+          <text class="icon">📱</text>
+        </view>
+        <view class="code-info">
+          <text class="code-value">{{userSearchCode}}</text>
+          <text class="code-desc">分享给好友添加你</text>
+        </view>
+      </view>
+      <view class="code-actions">
+        <button class="action-btn" bindtap="onShareCode">
+          <text class="btn-icon">📤</text>
+          <text class="btn-text">分享</text>
+        </button>
+        <button class="action-btn" bindtap="onUpdateSearchCode">
+          <text class="btn-icon">🔄</text>
+          <text class="btn-text">更新</text>
+        </button>
+      </view>
+    </view>
+  </view>
+  
+
+  <!-- 添加好友 -->
+  <view class="add-friend-section">
+    <text class="section-title">添加好友</text>
+    <view class="add-friend-card">
+      <view class="input-container">
+        <input 
+          class="search-input" 
+          placeholder="输入好友搜索码..." 
+          value="{{searchCode}}"
+          bindinput="onSearchCodeInput"
+          bindconfirm="onSearchFriend"
+        />
+        <view wx:if="{{searchCode.length > 0}}" class="clear-btn" bindtap="onClearSearchCode">
+          <text class="clear-icon">×</text>
+        </view>
+      </view>
+      <button class="search-btn" bindtap="onSearchFriend">
+        <text class="icon">🔍</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 待处理请求 -->
+  <view class="pending-requests-section">
+    <text class="section-title">待处理请求 ({{pendingRequests.length}})</text>
+    <view class="request-list">
+      <!-- Loading状态 -->
+      <view wx:if="{{loading}}" class="loading-container">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+      
+      <!-- 空状态 -->
+      <view wx:elif="{{pendingRequests.length === 0}}" class="empty-container">
+        <image class="empty-icon" src="/images/friend.png" mode="aspectFit"></image>
+        <text class="empty-title">暂无待处理请求</text>
+        <text class="empty-desc">等待好友添加你吧！</text>
+      </view>
+      
+      <!-- 请求列表 -->
+      <view wx:else>
+        <view class="request-item" wx:for="{{pendingRequests}}" wx:key="id">
+          <view class="request-content">
+            <image class="request-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+            <view class="request-info">
+              <text class="request-name">{{item.nickname}}</text>
+              <text class="request-desc">想要添加你为好友</text>
+              <text class="request-time">{{item.time}}</text>
+            </view>
+          </view>
+          <view class="request-actions">
+            <button class="action-btn reject" bindtap="onRejectRequest" data-id="{{item.id}}">
+              拒绝
+            </button>
+            <button class="action-btn accept" bindtap="onAcceptRequest" data-id="{{item.id}}">
+              接受
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已发送请求 -->
+  <view class="sent-requests-section">
+    <text class="section-title">已发送请求 ({{sentRequests.length}})</text>
+    <view class="request-list">
+      <view class="request-item" wx:for="{{sentRequests}}" wx:key="id">
+        <view class="request-content">
+          <image class="request-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view class="request-info">
+            <text class="request-name">{{item.nickname}}</text>
+            <text class="request-desc">等待对方确认</text>
+            <text class="request-time">{{item.time}}</text>
+          </view>
+        </view>
+        <view class="request-status">
+          <text class="status-tag">{{item.status}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

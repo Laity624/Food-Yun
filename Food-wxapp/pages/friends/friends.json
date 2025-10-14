@@ -1,4 +1,8 @@
 
 {
-  "navigationBarTitleText": "好友"
+  "usingComponents": {},
+  "navigationBarTitleText": "我的好友",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#fafafa"
 }

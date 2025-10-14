@@ -10,6 +10,7 @@ Component({
     backgroundColor: '#ffffff',
     color: '#333333',
     selectedColor: '#00CF96',
+    isSwitching: false,
     list: [
       {
         "type": 'home',
@@ -80,15 +81,45 @@ Component({
 
 
     switchTab(e) {
+      // 防止重复点击
+      if (this.data.isSwitching) {
+        return
+      }
+      
       const { index, item } = e.currentTarget.dataset
       const { list } = this.data
-      console.log('item==', item.type);
+      
+      // 如果点击的是当前选中的tab，不执行切换
+      if (this.data.selected === item.type) {
+        return
+      }
+      
+      console.log('切换tab到:', item.type)
+      
       this.setData({
-        selected: this.data.list[index].type
+        selected: item.type,
+        isSwitching: true
       })
+      
       wx.switchTab({
         url: item.pagePath,
         success: () => {
+          console.log('tab切换成功')
+        },
+        fail: (error) => {
+          console.error('tab切换失败:', error)
+          // 切换失败时恢复状态
+          this.setData({
+            isSwitching: false
+          })
+        },
+        complete: () => {
+          // 延迟重置切换状态，防止快速点击
+          setTimeout(() => {
+            this.setData({
+              isSwitching: false
+            })
+          }, 500)
         }
       })
     }

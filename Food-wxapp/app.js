@@ -72,15 +72,31 @@ App({
   getSystemInfo() {
     return new Promise((resolve) => {
       Device.GetSystemInfo(async (res) => {
-        this.globalData.systemInfo = res
-        this.globalData.navHeight = res.statusBarHeight;
-        let deviceName = res.model || ''
-        if (res.brand) {
-          deviceName = `${res.brand} ${deviceName}`
+        try {
+          this.globalData.systemInfo = res || {}
+          this.globalData.navHeight = res.statusBarHeight || 20;
+          
+          let deviceName = res.model || 'Unknown Device'
+          if (res.brand && res.brand !== 'Unknown') {
+            deviceName = `${res.brand} ${deviceName}`
+          }
+          this.globalData.deviceName = deviceName // 设备机型
+          
+          resolve(true)
+        } catch (error) {
+          console.error('getSystemInfo error:', error);
+          // 设置默认值
+          this.globalData.systemInfo = {
+            brand: 'Unknown',
+            model: 'Unknown Device',
+            screenWidth: 375,
+            screenHeight: 667,
+            statusBarHeight: 20
+          }
+          this.globalData.navHeight = 20;
+          this.globalData.deviceName = 'Unknown Device';
+          resolve(true)
         }
-        this.globalData.deviceName = deviceName // 设备机型
-        resolve(true)
-
       })
     })
 	},

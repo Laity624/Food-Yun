@@ -1,1 +1,341 @@
 /* 好友页面样式 */
+.container {
+  min-height: 100vh;
+  background: #fafafa;
+  padding-bottom: 120rpx;
+}
+
+/* 头部导航 */
+.header {
+  background: #fff;
+  padding: 0 30rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 30rpx 0 20rpx;
+}
+
+.action-btn {
+  width: 80rpx;
+  height: 80rpx;
+  background: #f5f5f5;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.action-btn:active {
+  background: #e0e0e0;
+  transform: scale(0.95);
+}
+
+.action-btn .icon {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 刷新按钮特殊样式 */
+.action-btn:first-child .icon {
+  animation: none;
+}
+
+.action-btn:first-child:active .icon {
+  animation: spin 0.5s linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 搜索框 */
+.search-box {
+  position: relative;
+  background: #f5f5f5;
+  border-radius: 20rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  height: 80rpx;
+  background: transparent;
+  border: none;
+  font-size: 28rpx;
+  color: #333;
+  padding-right: 60rpx;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 20rpx;
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.clear-btn:active {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.clear-icon {
+  font-size: 18rpx;
+  color: #666;
+  font-weight: 600;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 好友请求提醒 */
+.request-reminder {
+  background: #fff7ed;
+  border: 1rpx solid #fed7aa;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reminder-content {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.reminder-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reminder-icon image {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.reminder-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.reminder-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.reminder-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.reminder-arrow {
+  font-size: 32rpx;
+  color: #999;
+}
+
+/* 好友列表 */
+.friend-list {
+  padding: 30rpx;
+}
+
+/* Loading状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top: 4rpx solid #007AFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.3;
+}
+
+.empty-title {
+  margin-top: 20rpx;
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.empty-desc {
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+.friend-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.friend-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.friend-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.friend-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.friend-desc {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.friend-status {
+  margin-top: 8rpx;
+}
+
+.status-tag {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  display: inline-block;
+}
+
+.status-tag.active {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-tag.online {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-tag.offline {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-tag.expert {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.friend-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* 底部添加好友按钮 */
+.bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+  padding: 30rpx;
+}
+
+.add-friend-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #f97316;
+  color: #fff;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.add-friend-btn::after {
+  border: none;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  font-size: 32rpx;
+}

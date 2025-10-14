@@ -9,7 +9,8 @@ Page({
     showNicknameModal: false,
     editingNickname: '',
     nicknameLength: 0,
-    isPreviewMode: false
+    isPreviewMode: false,
+    isDataLoaded: false
   },
 
   onLoad: function () {
@@ -17,7 +18,13 @@ Page({
   },
 
   onShow: function () {
-    this.checkLoginAndLoad()
+    // 只在数据未加载时才检查登录和加载数据
+    if (!this.data.isDataLoaded) {
+      this.checkLoginAndLoad()
+    } else {
+      // 数据已加载，但需要检查是否有更新（如搜索码更新）
+      this.checkDataSync()
+    }
     
     // 更新自定义tabbar的选中状态
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -56,19 +63,44 @@ Page({
           nickname: '预览用户',
           avatar: '/images/default-avatar.png'
         },
-        isPreviewMode: true
+        isPreviewMode: true,
+        isDataLoaded: true  // 数据加载完成
       })
     } else if (app.isLoggedIn()) {
       // 已登录，显示真实用户信息
       this.setData({
         userInfo: app.globalData.userInfo,
-        isPreviewMode: false
+        isPreviewMode: false,
+        isDataLoaded: true  // 数据加载完成
       })
     } else {
       // 未登录且不是预览模式，跳转到登录页
       wx.redirectTo({
         url: '/pages/login/login'
       })
+    }
+  },
+
+  // 检查数据同步
+  checkDataSync: function() {
+    const app = getApp()
+    
+    // 如果已登录，检查用户信息是否有更新
+    if (app.isLoggedIn() && app.globalData.userInfo) {
+      const currentUserInfo = this.data.userInfo
+      const globalUserInfo = app.globalData.userInfo
+      
+      // 检查关键字段是否有更新（如搜索码、昵称、头像等）
+      if (!currentUserInfo || 
+          currentUserInfo.searchCode !== globalUserInfo.searchCode ||
+          currentUserInfo.nickname !== globalUserInfo.nickname ||
+          currentUserInfo.avatar !== globalUserInfo.avatar) {
+        
+        console.log('检测到用户信息更新，同步数据')
+        this.setData({
+          userInfo: globalUserInfo
+        })
+      }
     }
   },
 

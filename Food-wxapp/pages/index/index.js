@@ -9,7 +9,8 @@ Page({
     recommendRecipes: [],
     loading: true,
     showLoginPrompt: false,
-    promptContent: ''
+    promptContent: '',
+    isDataLoaded: false
   },
 
   onLoad: function () {
@@ -17,7 +18,10 @@ Page({
   },
 
   onShow: function () {
-    this.checkLoginAndLoad()
+    // 只在数据未加载时才检查登录和加载数据
+    if (!this.data.isDataLoaded) {
+      this.checkLoginAndLoad()
+    }
     
     // 更新自定义tabbar的选中状态
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -75,7 +79,8 @@ Page({
             isVegetarian: true
           }
         ],
-        loading: false
+        loading: false,
+        isDataLoaded: true  // 数据加载完成，标记为已加载
       })
     }, 1000)
   },

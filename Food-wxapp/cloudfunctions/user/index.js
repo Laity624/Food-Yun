@@ -19,6 +19,10 @@ exports.main = async (event, context) => {
         return await updateUserProfile(event, openid)
       case 'searchUser':
         return await searchUser(event)
+      case 'generateSearchCode':
+        return await generateSearchCode(openid)
+      case 'updateSearchCode':
+        return await updateSearchCode(openid)
       default:
         return {
           success: false,
@@ -97,10 +101,49 @@ async function searchUser(event) {
     data: {
       user: {
         _id: user._id,
+        openid: user.openid,
         nickname: user.nickname,
         avatar: user.avatar,
         searchCode: user.searchCode
       }
     }
   }
+}
+
+// 生成搜索码
+async function generateSearchCode(openid) {
+  // 生成6位随机搜索码
+  const searchCode = 'FY' + Math.random().toString(36).substr(2, 6).toUpperCase()
+  
+  // 检查搜索码是否已存在
+  const existResult = await db.collection('users').where({
+    searchCode: searchCode
+  }).get()
+  
+  if (existResult.data.length > 0) {
+    // 如果存在，递归重新生成
+    return await generateSearchCode(openid)
+  }
+  
+  // 更新用户的搜索码
+  await db.collection('users').where({
+    openid: openid
+  }).update({
+    data: {
+      searchCode: searchCode,
+      updatedAt: new Date()
+    }
+  })
+  
+  return {
+    success: true,
+    data: {
+      searchCode: searchCode
+    }
+  }
+}
+
+// 更新搜索码
+async function updateSearchCode(openid) {
+  return await generateSearchCode(openid)
 }

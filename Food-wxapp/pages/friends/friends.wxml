@@ -1,1 +1,93 @@
-<view class="container"><text>好友页面开发中...</text></view>
+<view class="container">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="header-content">
+      <!-- 搜索框 -->
+      <view class="search-box">
+        <input 
+          class="search-input" 
+          placeholder="搜索好友昵称..." 
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+          bindconfirm="onSearchConfirm"
+          focus="{{searchFocus}}"
+        />
+        <view wx:if="{{searchKeyword.length > 0}}" class="clear-btn" bindtap="onClearSearch">
+          <text class="clear-icon">×</text>
+        </view>
+      </view>
+      
+      <!-- 刷新按钮 -->
+      <view class="action-btn" bindtap="onRefresh">
+        <text class="icon">🔄</text>
+      </view>
+    </view>
+    
+    <!-- 好友请求提醒 -->
+    <view class="request-reminder" bindtap="onGoToRequests">
+      <view class="reminder-content">
+        <view class="reminder-icon">
+          <image src="/images/addFriend.png"></image>
+        </view>
+        <view class="reminder-text">
+          <text class="reminder-title">好友请求</text>
+          <text class="reminder-count">{{friendRequestCount}}个待处理请求</text>
+        </view>
+      </view>
+      <text class="reminder-arrow">›</text>
+    </view>
+  </view>
+  
+  <!-- 好友列表 -->
+  <view class="friend-list">
+    <!-- Loading状态 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:elif="{{friends.length === 0}}" class="empty-container">
+      <image class="empty-icon" src="/images/friend.png" mode="aspectFit"></image>
+      <text class="empty-title">暂无好友</text>
+      <text class="empty-desc">快去添加一些好友吧！</text>
+    </view>
+    
+        <!-- 好友列表 -->
+        <view wx:else>
+          <!-- 搜索无结果 -->
+          <view wx:if="{{showSearch && filteredFriends.length === 0 && searchKeyword.length > 0}}" class="empty-container">
+            <image class="empty-icon" src="/images/friend.png" mode="aspectFit"></image>
+            <text class="empty-title">未找到相关好友</text>
+            <text class="empty-desc">尝试其他关键词或检查拼写</text>
+          </view>
+          
+          <!-- 好友列表 -->
+          <view wx:else>
+            <view class="friend-item" wx:for="{{filteredFriends}}" wx:key="id" bindtap="onFriendTap" data-friend="{{item}}">
+              <image class="friend-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+              <view class="friend-info">
+                <text class="friend-name">{{item.nickname}}</text>
+                <text class="friend-desc">分享了 {{item.recipeCount}} 个菜谱</text>
+                <view class="friend-status">
+                  <text class="status-tag {{item.statusClass}}">{{item.statusText}}</text>
+                </view>
+              </view>
+              <view class="friend-actions">
+                <view class="action-btn" bindtap="onFriendMenu" data-friend="{{item}}" catchtap="true">
+                  <text class="icon">⋯</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+  </view>
+  
+  <!-- 底部添加好友按钮 -->
+  <view class="bottom-action">
+    <button class="add-friend-btn" bindtap="onAddFriend">
+      <text class="btn-icon">👤➕</text>
+      <text class="btn-text">添加好友</text>
+    </button>
+  </view>
+</view>

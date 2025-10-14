@@ -11,8 +11,12 @@
     "read": "resource.userId == auth.openid",
     "write": "resource.userId == auth.openid"
   },
-  "friendships": {
-    "read": "resource.requesterId == auth.openid || resource.receiverId == auth.openid",
-    "write": "resource.requesterId == auth.openid || resource.receiverId == auth.openid"
+  "friends": {
+    "read": "resource.userOpenid == auth.openid || resource.friendOpenid == auth.openid",
+    "write": "resource.userOpenid == auth.openid || resource.friendOpenid == auth.openid"
+  },
+  "friend_requests": {
+    "read": "resource.fromOpenid == auth.openid || resource.targetOpenid == auth.openid",
+    "write": "resource.fromOpenid == auth.openid || resource.targetOpenid == auth.openid"
   }
 }
