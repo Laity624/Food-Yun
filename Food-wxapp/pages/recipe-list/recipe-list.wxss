@@ -14,7 +14,7 @@
   right: 0;
   background-color: #ffffff;
   padding: 24rpx 32rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  /* border-bottom: 1rpx solid #f0f0f0; */
   z-index: 1000;
 }
 
@@ -42,7 +42,7 @@
 /* 场景分类区域 */
 .scene-section {
   background-color: #ffffff;
-  padding: 24rpx 32rpx;
+  padding: 10rpx 32rpx 24rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
@@ -60,6 +60,7 @@
 }
 
 .scene-grid {
+  margin-top: 10rpx;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 16rpx;
@@ -67,7 +68,8 @@
 
 .scene-tag {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+  justify-content: center;
   align-items: center;
   padding: 16rpx 8rpx;
   border-radius: 16rpx;
@@ -387,27 +389,29 @@
 
 .recipe-card {
   background-color: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
-  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 24rpx;
 }
 
 .recipe-card:active {
-  transform: translateY(-2rpx);
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transform: translateY(-4rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
 }
 
 .recipe-content {
   display: flex;
-  padding: 24rpx;
-  gap: 24rpx;
+  padding: 32rpx;
+  gap: 32rpx;
+  align-items: flex-start;
 }
 
 .recipe-image {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 12rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 16rpx;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -416,61 +420,99 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 16rpx;
+  min-height: 200rpx;
+  justify-content: space-between;
 }
 
 .recipe-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
-  line-height: 1.3;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+  margin-bottom: 8rpx;
 }
 
 .recipe-description {
-  font-size: 22rpx;
-  color: #666666;
+  font-size: 26rpx;
+  color: #64748b;
   line-height: 1.4;
+  margin-bottom: 16rpx;
+}
+
+.recipe-description-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .recipe-meta {
   display: flex;
-  gap: 20rpx;
+  gap: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 6rpx;
-  font-size: 20rpx;
-  color: #999999;
+  font-size: 22rpx;
+  color: #64748b;
 }
 
 .recipe-tags {
   display: flex;
-  gap: 8rpx;
+  gap: 10rpx;
   flex-wrap: wrap;
+  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 1;
 }
 
 .recipe-tag {
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  font-size: 20rpx;
-  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60rpx;
+  max-width: 100rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .recipe-tag.scene-tag {
-  background-color: #dbeafe;
-  color: #3b82f6;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.3);
 }
 
 .recipe-tag.ingredient-tag {
-  background-color: #dcfce7;
-  color: #10b981;
+  background: linear-gradient(135deg, #10b981, #047857);
+  box-shadow: 0 2rpx 8rpx rgba(16, 185, 129, 0.3);
 }
 
 .recipe-tag.optional-tag {
-  background-color: #fef3c7;
-  color: #f59e0b;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2rpx 8rpx rgba(245, 158, 11, 0.3);
+}
+
+.recipe-tag.more-tag {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  font-size: 20rpx;
+  padding: 8rpx 12rpx;
+  min-width: 50rpx;
+  max-width: 80rpx;
 }
 
 /* 状态页面 */
@@ -532,7 +574,7 @@
 /* 悬浮按钮 */
 .fab {
   position: fixed;
-  bottom: 40rpx;
+  bottom: 200rpx;
   right: 40rpx;
   width: 112rpx;
   height: 112rpx;
@@ -584,8 +626,4 @@
 /* 安全区域适配 */
 .recipe-list-container {
   padding-bottom: calc(120rpx + env(safe-area-inset-bottom, 0));
-}
-
-.fab {
-  bottom: calc(40rpx + env(safe-area-inset-bottom, 0));
 }

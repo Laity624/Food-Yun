@@ -26,9 +26,9 @@
 
   <!-- 场景分类（主要筛选） -->
   <view class="scene-section">
-    <view class="section-header">
+    <!-- <view class="section-header">
       <text class="section-title">按场景选择</text>
-    </view>
+    </view> -->
     <view class="scene-grid">
       <block wx:for="{{quickFilters}}" wx:key="sceneId" wx:if="{{item.sceneId}}">
         <view
@@ -46,7 +46,7 @@
   <!-- 食材快速筛选 -->
   <view class="ingredient-section">
     <view class="section-header">
-      <text class="section-title">按食材筛选</text>
+      <text class="section-title">食材筛选</text>
       <view class="more-filter-btn" bindtap="onFilterClick">
         <text class="more-filter-text">更多筛选</text>
         <van-icon name="arrow-down" size="12px" color="#3b82f6" />
@@ -191,31 +191,31 @@
           />
           <view class="recipe-info">
             <text class="recipe-title">{{item.name}}</text>
-            <text class="recipe-description">{{item.description || '经典家常菜，营养美味'}}</text>
+            <text class="recipe-description recipe-description-text">{{item.description || '经典家常菜，营养美味'}}</text>
             
             <!-- 制作信息 -->
             <view class="recipe-meta">
               <view class="meta-item">
                 <van-icon name="clock-o" size="12px" color="#999" />
-                <text>{{item.preparationTimeDisplay || '30分钟'}}</text>
+                <text>{{item.preparationTime && item.preparationTime.label || '30分钟'}}</text>
               </view>
               <view class="meta-item">
                 <van-icon name="friends-o" size="12px" color="#999" />
-                <text>{{item.servingSizeDisplay || '2-3人'}}</text>
+                <text>{{item.servingSize && item.servingSize.label || '1-2人'}}</text>
               </view>
               <view class="meta-item">
                 <van-icon name="star" size="12px" color="#ffd700" />
-                <text>4.8</text>
+                <text>{{item.difficulty && item.difficulty.label || '简单'}}</text>
               </view>
             </view>
 
             <!-- 标签 -->
             <view class="recipe-tags">
-              <text class="recipe-tag scene-tag">{{item.sceneDisplay || '日常'}}</text>
-              <text class="recipe-tag ingredient-tag">{{item.ingredientDisplay || '家常'}}</text>
-              <text wx:if="{{item.optionalTags && item.optionalTags.length > 0}}" class="recipe-tag optional-tag">
-                {{filterUtils.getOptionalTagName(cookingMethods, flavorTypes, item.optionalTags[0])}}
-              </text>
+              <view class="recipe-tag scene-tag">{{item.sceneDisplay || '宴客'}}</view>
+              <view class="recipe-tag ingredient-tag">{{item.ingredientDisplay || '肉类'}}</view>
+              <view wx:for="{{item.optionalTags}}" wx:key="index" wx:if="{{index < 2}}" class="recipe-tag optional-tag">
+                {{filterUtils.getOptionalTagName(cookingMethods, flavorTypes, item)}}
+              </view>
             </view>
           </view>
         </view>

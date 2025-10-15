@@ -1,307 +1,213 @@
 <view class="recipe-detail-container">
   
-  <!-- 固定导航栏 -->
-  <view class="fixed-nav">
-    <view class="nav-btn" bindtap="onBack">
-      <van-icon name="arrow-left" size="20px" color="#333" />
-    </view>
-    <view class="nav-actions">
-      <view class="nav-btn" bindtap="onShare">
-        <van-icon name="share" size="18px" color="#333" />
-      </view>
-      <view class="nav-btn" bindtap="onToggleFavorite">
-        <van-icon 
-          name="{{isFavorited ? 'like' : 'like-o'}}" 
-          size="18px" 
-          color="{{isFavorited ? '#ff4444' : '#333'}}" 
+  <!-- 头图区域 -->
+  <view class="hero-section">
+    <!-- 背景图片轮播 -->
+    <swiper 
+      class="hero-swipe" 
+      indicator-dots="{{false}}" 
+      autoplay="{{false}}"
+      circular="{{true}}"
+      duration="300"
+    >
+      <swiper-item wx:for="{{recipe.images}}" wx:key="index">
+        <image 
+          class="hero-image" 
+          src="{{item}}" 
+          mode="aspectFill"
+          lazy-load="{{true}}"
+          bindtap="previewImage"
+          data-current="{{index}}"
         />
+      </swiper-item>
+    </swiper>
+    
+    <!-- 导航栏 -->
+    <view class="hero-nav">
+      <!-- <view class="nav-btn" bindtap="goBack">
+        <van-icon name="arrow-left" size="20px" color="#ffffff" />
+      </view> -->
+      <view class="default"></view>
+      <view class="nav-actions">
+        <view class="nav-btn" bindtap="shareRecipe">
+          <van-icon name="share" size="20px" color="#ffffff" />
+        </view>
+        <view class="nav-btn" bindtap="toggleFavorite">
+          <van-icon 
+            name="{{isFavorited ? 'like' : 'like-o'}}" 
+            size="20px" 
+            color="{{isFavorited ? '#ff4444' : '#ffffff'}}" 
+          />
+        </view>
       </view>
     </view>
   </view>
   
-  <!-- 内容区域 -->
-  <scroll-view class="content-scroll" scroll-y="true" show-scrollbar="{{false}}">
+  <!-- 菜谱核心信息 -->
+  <view class="recipe-info-section">
+    <view class="recipe-info-card">
+      <view class="recipe-title">{{recipe.name}}</view>
+      <view class="recipe-description">{{recipe.description}}</view>
+    </view>
+  </view>
+  
+  <!-- 内容卡片区域 -->
+  <view class="content-card">
     
-    <!-- 图片轮播区域 -->
-    <view class="image-section">
-      <swiper 
-        class="recipe-swiper" 
-        indicator-dots="{{recipe.images && recipe.images.length > 1}}"
-        indicator-color="rgba(255,255,255,0.5)"
-        indicator-active-color="#fff"
-        autoplay="{{recipe.images && recipe.images.length > 1}}"
-        interval="4000"
-        duration="500"
-      >
-        <block wx:for="{{recipe.images || ['/images/default-recipe.png']}}" wx:key="index">
-          <swiper-item>
-            <image 
-              class="recipe-image" 
-              src="{{item}}" 
-              mode="aspectFill"
-              bindtap="previewImage"
-              data-current="{{item}}"
-              data-urls="{{recipe.images}}"
-            />
-          </swiper-item>
-        </block>
-      </swiper>
-      
-      <!-- 渐变遮罩 -->
-      <view class="image-overlay"></view>
-      
-      <!-- 菜谱信息 -->
-      <view class="recipe-info">
-        <text class="recipe-title">{{recipe.name || '菜谱名称'}}</text>
-        <text class="recipe-subtitle">{{recipe.description || '美味家常菜，营养又健康'}}</text>
-        <view class="recipe-meta">
-          <view class="meta-item">
-            <van-icon name="clock-o" size="12px" color="#fff" />
-            <text>{{recipe.preparationTimeDisplay || '30分钟'}}</text>
-          </view>
-          <view class="meta-item">
-            <van-icon name="friends-o" size="12px" color="#fff" />
-            <text>{{recipe.servingSizeDisplay || '2-3人'}}</text>
-          </view>
-          <view class="meta-item">
-            <van-icon name="bar-chart-o" size="12px" color="#fff" />
-            <text>{{recipe.difficultyDisplay || '简单'}}</text>
-          </view>
-          <view class="meta-item">
-            <van-icon name="star" size="12px" color="#ffd700" />
-            <text>{{recipe.rating || '4.8'}}</text>
-          </view>
+    <!-- 标签区域 -->
+    <view class="section">
+      <view class="tag-container">
+        <!-- 场景分类标签 -->
+        <view class="recipe-tag tag-scene" bindtap="filterByScene" data-scene="{{recipe.sceneCategory}}">
+          <text class="tag-emoji">{{sceneCategoryInfo.emoji}}</text>
+          <text>{{sceneCategoryInfo.name}}</text>
+        </view>
+        
+        <!-- 食材分类标签 -->
+        <view class="recipe-tag tag-ingredient" bindtap="filterByIngredient" data-ingredient="{{recipe.ingredientCategory}}">
+          <text class="tag-emoji">{{ingredientCategoryInfo.emoji}}</text>
+          <text>{{ingredientCategoryInfo.name}}</text>
+        </view>
+        
+        <!-- 可选标签 -->
+        <view 
+          wx:for="{{optionalTagsInfo}}" 
+          wx:key="id" 
+          class="recipe-tag tag-optional"
+          bindtap="filterByTag"
+          data-tag="{{item.id}}"
+        >
+          <text class="tag-emoji">{{item.emoji}}</text>
+          <text>{{item.name}}</text>
         </view>
       </view>
     </view>
     
-    <view class="content-card">
-      
-      <!-- 标签区域 -->
-      <view class="section">
-        <view class="tag-container">
-          <view class="recipe-tag tag-scene" wx:if="{{recipe.sceneDisplay}}">
-            <text class="tag-emoji">{{recipe.sceneEmoji || '📅'}}</text>
-            <text>{{recipe.sceneDisplay}}</text>
-          </view>
-          <view class="recipe-tag tag-ingredient" wx:if="{{recipe.ingredientDisplay}}">
-            <text class="tag-emoji">{{recipe.ingredientEmoji || '🥬'}}</text>
-            <text>{{recipe.ingredientDisplay}}</text>
-          </view>
-          <block wx:for="{{recipe.optionalTags}}" wx:key="index" wx:if="{{index < 2}}">
-            <view class="recipe-tag tag-optional">
-              <text class="tag-emoji">{{item.emoji || '🔥'}}</text>
-              <text>{{item.name}}</text>
-            </view>
-          </block>
+    <!-- 制作信息 -->
+    <view class="section">
+      <view class="section-title">
+        <van-icon name="info-o" size="16px" color="#3b82f6" />
+        <text>制作信息</text>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <view class="info-number">{{recipe.preparationTime && recipe.preparationTime.value || '30'}}</view>
+          <view class="info-label">分钟</view>
+        </view>
+        <view class="info-item">
+          <view class="info-number">{{recipe.difficulty && recipe.difficulty.label || '简单'}}</view>
+          <view class="info-label">难度</view>
+        </view>
+        <view class="info-item">
+          <view class="info-number">{{recipe.servingSize && recipe.servingSize.value || '1-2'}}</view>
+          <view class="info-label">人份</view>
         </view>
       </view>
-      
-      <!-- 制作信息 -->
-      <view class="section">
-        <view class="section-title">
-          <van-icon name="info-o" size="18px" color="#3b82f6" />
-          <text>制作信息</text>
-        </view>
-        <view class="info-grid">
-          <view class="info-item">
-            <view class="info-number">{{recipe.preparationTimeDisplay || '30分钟'}}</view>
-            <view class="info-label"></view>
-          </view>
-          <view class="info-item">
-            <view class="info-number">{{recipe.difficultyDisplay || '简单'}}</view>
-            <view class="info-label">难度</view>
-          </view>
-          <view class="info-item">
-            <view class="info-number">{{recipe.servingSizeDisplay || '2-3人'}}</view>
-            <view class="info-label"></view>
-          </view>
-        </view>
+    </view>
+    
+    <!-- 食材清单 -->
+    <view class="section">
+      <view class="section-title">
+        <van-icon name="list" size="16px" color="#3b82f6" />
+        <text>食材清单</text>
       </view>
       
-      <!-- 食材清单 -->
-      <view class="section">
-        <view class="section-title">
-          <van-icon name="list-switch" size="18px" color="#3b82f6" />
-          <text>食材清单</text>
-          <view class="section-action" bindtap="onToggleIngredientMode">
-            <text class="action-text">{{ingredientMode === 'check' ? '取消勾选' : '勾选模式'}}</text>
-          </view>
+      <view class="ingredient-list">
+        <view 
+          wx:for="{{recipe.ingredients}}" 
+          wx:key="id"
+          class="ingredient-item"
+        >
+          <text class="ingredient-name">{{item.name}}</text>
+          <text class="ingredient-amount">{{item.amount}}</text>
         </view>
-        <view class="ingredient-list">
-          <block wx:for="{{recipe.ingredients || []}}" wx:key="id">
+      </view>
+    </view>
+    
+    <!-- 制作步骤 -->
+    <view class="section">
+      <view class="section-title">
+        <van-icon name="orders-o" size="16px" color="#3b82f6" />
+        <text>制作步骤</text>
+      </view>
+      
+      <view class="step-list">
+        <view 
+          wx:for="{{recipe.steps}}" 
+          wx:key="id"
+          class="step-item"
+        >
+          <view class="step-number">
+            <text>{{index + 1}}</text>
+          </view>
+          <view class="step-content">
+            <view class="step-text">{{item.content}}</view>
             <view 
-              class="ingredient-item {{ingredientMode === 'check' && item.checked ? 'checked' : ''}}"
-              bindtap="onToggleIngredient"
+              wx:if="{{item.image}}" 
+              class="step-image"
+              bindtap="previewStepImage"
               data-index="{{index}}"
             >
-              <view class="ingredient-info">
-                <text class="ingredient-name">{{item.name}}</text>
-                <text class="ingredient-amount">{{item.amount}}</text>
-              </view>
-              <view wx:if="{{ingredientMode === 'check'}}" class="ingredient-check">
-                <van-icon 
-                  name="{{item.checked ? 'success' : 'circle'}}" 
-                  size="16px" 
-                  color="{{item.checked ? '#10b981' : '#d1d5db'}}" 
-                />
-              </view>
+              <image src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" />
             </view>
-          </block>
-        </view>
-      </view>
-      
-      <!-- 制作步骤 -->
-      <view class="section">
-        <view class="section-title">
-          <van-icon name="orders-o" size="18px" color="#3b82f6" />
-          <text>制作步骤</text>
-          <view class="section-action" bindtap="onToggleStepMode">
-            <text class="action-text">{{stepMode === 'check' ? '取消勾选' : '勾选模式'}}</text>
-          </view>
-        </view>
-        <view class="step-list">
-          <block wx:for="{{recipe.steps || []}}" wx:key="id">
-            <view class="step-item {{stepMode === 'check' && item.completed ? 'completed' : ''}}">
-              <view class="step-header">
-                <view class="step-number {{stepMode === 'check' && item.completed ? 'completed' : ''}}">
-                  <text wx:if="{{stepMode !== 'check' || !item.completed}}">{{index + 1}}</text>
-                  <van-icon wx:else name="success" size="14px" color="#fff" />
-                </view>
-                <view wx:if="{{stepMode === 'check'}}" class="step-check" bindtap="onToggleStep" data-index="{{index}}">
-                  <van-icon 
-                    name="{{item.completed ? 'success' : 'circle'}}" 
-                    size="16px" 
-                    color="{{item.completed ? '#10b981' : '#d1d5db'}}" 
-                  />
-                </view>
-              </view>
-              
-              <view class="step-content">
-                <text class="step-text {{stepMode === 'check' && item.completed ? 'completed-text' : ''}}">
-                  {{item.content}}
-                </text>
-                
-                <!-- 步骤图片 -->
-                <view wx:if="{{item.image}}" class="step-image-container">
-                  <image 
-                    class="step-image" 
-                    src="{{item.image}}" 
-                    mode="aspectFill"
-                    bindtap="previewStepImage"
-                    data-src="{{item.image}}"
-                  />
-                </view>
-              </view>
-            </view>
-          </block>
-        </view>
-      </view>
-      
-      <!-- 营养信息（可选） -->
-      <view class="section" wx:if="{{recipe.nutrition && recipe.nutrition.length > 0}}">
-        <view class="section-title">
-          <van-icon name="fire-o" size="18px" color="#3b82f6" />
-          <text>营养信息</text>
-        </view>
-        <view class="nutrition-grid">
-          <block wx:for="{{recipe.nutrition}}" wx:key="name">
-            <view class="nutrition-item">
-              <view class="nutrition-value">{{item.value}}</view>
-              <view class="nutrition-unit">{{item.unit}}</view>
-              <view class="nutrition-name">{{item.name}}</view>
-            </view>
-          </block>
-        </view>
-      </view>
-      
-      <!-- 评价区域 -->
-      <view class="section">
-        <view class="section-title">
-          <van-icon name="star-o" size="18px" color="#3b82f6" />
-          <text>菜谱评价</text>
-        </view>
-        <view class="rating-section">
-          <view class="rating-display">
-            <view class="rating-stars">
-              <block wx:for="{{5}}" wx:key="index">
-                <van-icon 
-                  name="star" 
-                  size="16px" 
-                  color="{{index < (recipe.rating || 4.8) ? '#fbbf24' : '#e5e7eb'}}" 
-                />
-              </block>
-            </view>
-            <text class="rating-text">{{recipe.rating || '4.8'}} 分 ({{recipe.reviewCount || 126}}人评价)</text>
-          </view>
-          <view class="rating-btn" bindtap="onRate">
-            <van-icon name="thumb-circle-o" size="14px" />
-            <text>评价</text>
           </view>
         </view>
       </view>
-      
-      <!-- 创建者信息 -->
-      <view class="section" wx:if="{{recipe.creator}}">
-        <view class="creator-info">
-          <view class="creator-avatar">
-            <image wx:if="{{recipe.creator.avatar}}" src="{{recipe.creator.avatar}}" class="avatar-image" />
-            <text wx:else class="avatar-text">{{recipe.creator.name.charAt(0)}}</text>
-          </view>
-          <view class="creator-details">
-            <text class="creator-name">{{recipe.creator.name || '家庭成员'}}</text>
-            <text class="creator-date">{{recipe.createTimeDisplay || '最近创建'}}</text>
-          </view>
-          <view class="creator-action" bindtap="onViewCreatorRecipes">
-            <text class="action-link">查看更多菜谱</text>
-            <van-icon name="arrow" size="12px" color="#3b82f6" />
-          </view>
-        </view>
-      </view>
-      
-      <!-- 相关推荐（如果有） -->
-      <view class="section" wx:if="{{relatedRecipes && relatedRecipes.length > 0}}">
-        <view class="section-title">
-          <van-icon name="apps-o" size="18px" color="#3b82f6" />
-          <text>相关推荐</text>
-        </view>
-        <scroll-view class="related-scroll" scroll-x="true" show-scrollbar="{{false}}">
-          <view class="related-list">
-            <block wx:for="{{relatedRecipes}}" wx:key="_id">
-              <view class="related-item" bindtap="onViewRelatedRecipe" data-id="{{item._id}}">
-                <image class="related-image" src="{{item.images[0]}}" mode="aspectFill" />
-                <text class="related-title">{{item.name}}</text>
-                <text class="related-meta">{{item.preparationTimeDisplay}} · {{item.difficultyDisplay}}</text>
-              </view>
-            </block>
-          </view>
-        </scroll-view>
-      </view>
-      
-      <!-- 底部占位 -->
-      <view class="bottom-placeholder"></view>
     </view>
-  </scroll-view>
+    
+    
+    <!-- 创建者信息 -->
+    <view class="section">
+      <view class="creator-info">
+        <view class="creator-avatar">
+          <image 
+            wx:if="{{recipe.creator.avatar}}"
+            src="{{recipe.creator.avatar}}" 
+            mode="aspectFill"
+          />
+          <text wx:else>{{recipe.creator.nickname && recipe.creator.nickname.charAt(0) || '用'}}</text>
+        </view>
+        <view class="creator-details">
+          <view class="creator-name">{{recipe.creator.nickname || '未知用户'}}</view>
+          <view class="creator-time">{{recipe.createTime || '刚刚创建'}}</view>
+        </view>
+        <view class="creator-action" bindtap="viewCreatorRecipes">
+          <text>查看更多菜谱</text>
+          <van-icon name="arrow" size="12px" color="#3b82f6" />
+        </view>
+      </view>
+    </view>
+    
+  </view>
   
   <!-- 底部操作按钮 -->
   <view class="action-buttons">
-    <view class="action-btn btn-secondary" bindtap="onToggleFavorite">
-      <van-icon name="{{isFavorited ? 'like' : 'like-o'}}" size="18px" />
+    <view class="action-btn secondary" bindtap="toggleFavorite">
+      <van-icon 
+        name="{{isFavorited ? 'like' : 'like-o'}}" 
+        size="16px" 
+        color="{{isFavorited ? '#ff4444' : '#64748b'}}" 
+      />
       <text>{{isFavorited ? '已收藏' : '收藏'}}</text>
     </view>
-    <view class="action-btn btn-secondary" bindtap="onShare">
-      <van-icon name="share" size="18px" />
+    <view class="action-btn primary" bindtap="shareRecipe">
+      <van-icon name="share" size="16px" color="#ffffff" />
       <text>分享</text>
-    </view>
-    <view class="action-btn btn-primary" bindtap="onStartCooking">
-      <van-icon name="play-circle-o" size="18px" />
-      <text>开始制作</text>
     </view>
   </view>
   
   <!-- 加载状态 -->
-  <view wx:if="{{loading}}" class="loading-overlay">
-    <van-loading size="24px" />
-    <text class="loading-text">加载中...</text>
-  </view>
+  <van-loading 
+    wx:if="{{loading}}" 
+    size="24px" 
+    color="#3b82f6"
+    class="page-loading"
+  >
+    加载中...
+  </van-loading>
+  
+  
+  <!-- Toast提示 -->
+  <van-toast id="van-toast" />
+  
 </view>
