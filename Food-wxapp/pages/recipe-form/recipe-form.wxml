@@ -100,7 +100,7 @@
             bindchange="onPreparationTimeChange"
           >
             <view class="picker-field">
-              {{preparationTimes[formData.preparationTimeIndex].label || '请选择'}}
+              {{preparationTimes && preparationTimes.length > 0 && formData.preparationTimeIndex >= 0 && formData.preparationTimeIndex < preparationTimes.length ? preparationTimes[formData.preparationTimeIndex].label : '请选择'}}
             </view>
           </picker>
         </view>
@@ -114,7 +114,7 @@
             bindchange="onDifficultyChange"
           >
             <view class="picker-field">
-              {{difficultyLevels[formData.difficultyIndex].label || '请选择'}}
+              {{difficultyLevels && difficultyLevels.length > 0 && formData.difficultyIndex >= 0 && formData.difficultyIndex < difficultyLevels.length ? difficultyLevels[formData.difficultyIndex].label : '请选择'}}
             </view>
           </picker>
         </view>
@@ -128,7 +128,7 @@
             bindchange="onServingSizeChange"
           >
             <view class="picker-field">
-              {{servingSizes[formData.servingSizeIndex].label || '请选择'}}
+              {{servingSizes && servingSizes.length > 0 && formData.servingSizeIndex >= 0 && formData.servingSizeIndex < servingSizes.length ? servingSizes[formData.servingSizeIndex].label : '请选择'}}
             </view>
           </picker>
         </view>

@@ -60,14 +60,23 @@ Page({
       selected: false
     }))
     
+    const preparationTimes = getPreparationTimes()
+    console.log('初始化preparationTimes:', preparationTimes)
+    console.log('preparationTimes长度:', preparationTimes ? preparationTimes.length : 'undefined')
+    
     this.setData({
       sceneCategories: getSceneCategories(),
       ingredientCategories: getIngredientCategories(),
       cookingMethods: cookingMethods,
       flavorTypes: flavorTypes,
-      preparationTimes: getPreparationTimes(),
+      preparationTimes: preparationTimes,
       difficultyLevels: getDifficultyLevels(),
       servingSizes: getServingSizes()
+    }, () => {
+      // 数据设置完成后的回调
+      console.log('页面数据初始化完成')
+      console.log('当前preparationTimes:', this.data.preparationTimes)
+      console.log('当前preparationTimeIndex:', this.data.formData.preparationTimeIndex)
     })
     
     // 调试：确认optionalTags初始状态
@@ -396,20 +405,116 @@ Page({
   },
 
   onPreparationTimeChange(e) {
+    const selectedIndex = e.detail.value || e.detail
+    const preparationTimes = this.data.preparationTimes
+    
+    console.log('选择制作时间:', selectedIndex)
+    console.log('preparationTimes数组:', preparationTimes)
+    console.log('数组长度:', preparationTimes ? preparationTimes.length : 'undefined')
+    
+    // 验证索引是否在有效范围内
+    if (!preparationTimes || !Array.isArray(preparationTimes) || preparationTimes.length === 0) {
+      console.error('preparationTimes数组未正确初始化')
+      wx.showToast({
+        title: '数据加载中，请稍后再试',
+        icon: 'none'
+      })
+      return
+    }
+    
+    if (selectedIndex < 0 || selectedIndex >= preparationTimes.length) {
+      console.error('选择的索引超出范围:', selectedIndex, '数组长度:', preparationTimes.length)
+      wx.showToast({
+        title: '选择无效，请重新选择',
+        icon: 'none'
+      })
+      return
+    }
+    
+    console.log('选择的制作时间:', preparationTimes[selectedIndex])
+    
     this.setData({
-      'formData.preparationTimeIndex': e.detail
+      'formData.preparationTimeIndex': selectedIndex
+    }, () => {
+      // 数据更新后的回调，确保页面重新渲染
+      console.log('制作时间已更新:', this.data.formData.preparationTimeIndex)
+      console.log('当前显示值:', preparationTimes[this.data.formData.preparationTimeIndex]?.label)
     })
   },
 
   onDifficultyChange(e) {
+    const selectedIndex = e.detail.value || e.detail
+    const difficultyLevels = this.data.difficultyLevels
+    
+    console.log('选择难度等级:', selectedIndex)
+    console.log('difficultyLevels数组:', difficultyLevels)
+    console.log('数组长度:', difficultyLevels ? difficultyLevels.length : 'undefined')
+    
+    // 验证索引是否在有效范围内
+    if (!difficultyLevels || !Array.isArray(difficultyLevels) || difficultyLevels.length === 0) {
+      console.error('difficultyLevels数组未正确初始化')
+      wx.showToast({
+        title: '数据加载中，请稍后再试',
+        icon: 'none'
+      })
+      return
+    }
+    
+    if (selectedIndex < 0 || selectedIndex >= difficultyLevels.length) {
+      console.error('选择的索引超出范围:', selectedIndex, '数组长度:', difficultyLevels.length)
+      wx.showToast({
+        title: '选择无效，请重新选择',
+        icon: 'none'
+      })
+      return
+    }
+    
+    console.log('选择的难度等级:', difficultyLevels[selectedIndex])
+    
     this.setData({
-      'formData.difficultyIndex': e.detail
+      'formData.difficultyIndex': selectedIndex
+    }, () => {
+      // 数据更新后的回调，确保页面重新渲染
+      console.log('难度等级已更新:', this.data.formData.difficultyIndex)
+      console.log('当前显示值:', difficultyLevels[this.data.formData.difficultyIndex]?.label)
     })
   },
 
   onServingSizeChange(e) {
+    const selectedIndex = e.detail.value || e.detail
+    const servingSizes = this.data.servingSizes
+    
+    console.log('选择适合人数:', selectedIndex)
+    console.log('servingSizes数组:', servingSizes)
+    console.log('数组长度:', servingSizes ? servingSizes.length : 'undefined')
+    
+    // 验证索引是否在有效范围内
+    if (!servingSizes || !Array.isArray(servingSizes) || servingSizes.length === 0) {
+      console.error('servingSizes数组未正确初始化')
+      wx.showToast({
+        title: '数据加载中，请稍后再试',
+        icon: 'none'
+      })
+      return
+    }
+    
+    if (selectedIndex < 0 || selectedIndex >= servingSizes.length) {
+      console.error('选择的索引超出范围:', selectedIndex, '数组长度:', servingSizes.length)
+      wx.showToast({
+        title: '选择无效，请重新选择',
+        icon: 'none'
+      })
+      return
+    }
+    
+    console.log('选择的适合人数:', servingSizes[selectedIndex])
+    
     this.setData({
-      'formData.servingSizeIndex': e.detail
+      'formData.servingSizeIndex': selectedIndex
+    }, () => {
+      // 数据更新后的回调，确保页面重新渲染
+      console.log('适合人数已更新:', this.data.formData.servingSizeIndex)
+      console.log('当前显示值:', servingSizes[this.data.formData.servingSizeIndex]?.label)
     })
   },
 
