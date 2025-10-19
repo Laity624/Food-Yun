@@ -22,23 +22,23 @@ Component({
       {
         "type": 'recipeList',
         "pagePath": "/pages/recipe-list/recipe-list",
-        "text": "菜谱",
+        "text": "菜品",
         "iconPath": "./icons/recipe.svg",
         "selectedIconPath": "./icons/recipeed.svg",
       },
       {
-        "type": 'order',
-        "pagePath": "/pages/order/order",
+        "type": 'diancan',
+        "pagePath": "/pages/diancan/diancan",
         "text": "点餐",
-        "iconPath": "./icons/order.svg",
-        "selectedIconPath": "./icons/ordered.svg",
+        "iconPath": "./icons/diancan.svg",
+        "selectedIconPath": "./icons/diancaned.svg",
       },
       {
-        "type": 'friends',
-        "pagePath": "/pages/friends/friends",
-        "text": "好友",
-        "iconPath": "./icons/friends.svg",
-        "selectedIconPath": "./icons/friendsed.svg",
+        "type": 'order',
+        "pagePath": "/pages/order/order",
+        "text": "订单",
+        "iconPath": "./icons/order.svg",
+        "selectedIconPath": "./icons/ordered.svg",
       },
       {
         "type": 'profile',
@@ -94,7 +94,7 @@ Component({
         return
       }
       
-      console.log('切换tab到:', item.type)
+      console.log('切换tab到:', item.type, item.pagePath)
       
       this.setData({
         selected: item.type,

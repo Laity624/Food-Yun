@@ -24,6 +24,22 @@
     </view>
   </view>
 
+  <!-- 状态筛选器 -->
+  <view class="status-filter-section">
+    <view class="status-filter-tabs">
+      <block wx:for="{{statusOptions}}" wx:key="id">
+        <view 
+          class="status-tab {{selectedStatus === item.id ? 'active' : ''}}"
+          data-status="{{item.id}}"
+          bindtap="onStatusFilterChange"
+        >
+          <text class="status-name">{{item.name}}</text>
+          <text class="status-count" wx:if="{{item.count > 0}}">({{item.count}})</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
   <!-- 场景分类（主要筛选） -->
   <view class="scene-section">
     <!-- <view class="section-header">
@@ -180,7 +196,7 @@
     <block wx:for="{{recipes}}" wx:key="_id">
       <recipe-item 
         recipe="{{item}}"
-        show-status="{{false}}"
+        show-status="{{true}}"
         cooking-methods="{{cookingMethods}}"
         flavor-types="{{flavorTypes}}"
         bind:recipeclick="onRecipeClick"

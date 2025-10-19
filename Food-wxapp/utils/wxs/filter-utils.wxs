@@ -4,7 +4,7 @@ var filterUtils = {
   getSceneName: function(sceneCategories, sceneId) {
     for (var i = 0; i < sceneCategories.length; i++) {
       if (sceneCategories[i].id === sceneId) {
-        return sceneCategories[i].name
+        return sceneCategories[i].shortName
       }
     }
     return ''

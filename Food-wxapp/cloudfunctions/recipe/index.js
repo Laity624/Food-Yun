@@ -30,6 +30,8 @@ exports.main = async (event, context) => {
         return await getRecommendRecipes(event)
       case 'search':
         return await searchRecipes(event)
+      case 'myRecipes':
+        return await getMyRecipes(event, openid)
       default:
         return {
           success: false,
@@ -139,6 +141,7 @@ async function getRecipeList(event, openid) {
     sceneCategories, 
     ingredientCategories,
     optionalTags,
+    preparationTime,
     creatorId 
   } = event
 
@@ -187,6 +190,32 @@ async function getRecipeList(event, openid) {
     conditions.push({
       optionalTags: _.in(optionalTags)
     })
+  }
+
+  // 制作时间筛选
+  if (preparationTime) {
+    const timeValue = parseInt(preparationTime)
+    if (timeValue === 10) {
+      // 10分钟
+      conditions.push({
+        'preparationTime.value': '10'
+      })
+    } else if (timeValue === 30) {
+      // 30分钟
+      conditions.push({
+        'preparationTime.value': '30'
+      })
+    } else if (timeValue === 60) {
+      // 1小时
+      conditions.push({
+        'preparationTime.value': '60'
+      })
+    } else if (timeValue === 120) {
+      // 2小时+
+      conditions.push({
+        'preparationTime.value': '120'
+      })
+    }
   }
 
   // 权限条件
@@ -547,6 +576,147 @@ async function searchRecipes(event) {
     success: true,
     data: {
       recipes: result.data
+    }
+  }
+}
+
+// 获取我的菜谱列表
+async function getMyRecipes(event, openid) {
+  const { 
+    page = 1, 
+    pageSize = 10, 
+    search, 
+    sceneCategories, 
+    ingredientCategories,
+    optionalTags,
+    preparationTime,
+    status
+  } = event
+
+  let query = db.collection('recipes')
+
+  // 构建筛选条件
+  let conditions = []
+
+  // 只查询当前用户创建的菜谱
+  conditions.push({ creatorId: openid })
+
+  // 搜索条件（支持菜谱名称和描述）
+  if (search && search.trim()) {
+    conditions.push(
+      _.or([
+        {
+          name: db.RegExp({
+            regexp: search.trim(),
+            options: 'i'
+          })
+        },
+        {
+          description: db.RegExp({
+            regexp: search.trim(),
+            options: 'i'
+          })
+        }
+      ])
+    )
+  }
+
+  // 场景分类筛选
+  if (sceneCategories && sceneCategories.length > 0) {
+    conditions.push({
+      sceneCategory: _.in(sceneCategories)
+    })
+  }
+
+  // 食材分类筛选
+  if (ingredientCategories && ingredientCategories.length > 0) {
+    conditions.push({
+      ingredientCategory: _.in(ingredientCategories)
+    })
+  }
+
+  // 可选标签筛选
+  if (optionalTags && optionalTags.length > 0) {
+    console.log('可选标签筛选参数:', optionalTags)
+    // 菜谱必须包含至少一个选中的可选标签
+    conditions.push({
+      optionalTags: _.in(optionalTags)
+    })
+    console.log('可选标签筛选条件:', { optionalTags: _.in(optionalTags) })
+  }
+
+  // 制作时间筛选
+  if (preparationTime) {
+    console.log('制作时间筛选参数:', preparationTime)
+    const timeValue = parseInt(preparationTime)
+    if (timeValue === 10) {
+      // 10分钟
+      conditions.push({
+        'preparationTime.value': '10'
+      })
+    } else if (timeValue === 30) {
+      // 30分钟
+      conditions.push({
+        'preparationTime.value': '30'
+      })
+    } else if (timeValue === 60) {
+      // 1小时
+      conditions.push({
+        'preparationTime.value': '60'
+      })
+    } else if (timeValue === 120) {
+      // 2小时+
+      conditions.push({
+        'preparationTime.value': '120'
+      })
+    }
+    console.log('制作时间筛选条件:', { 'preparationTime.value': timeValue.toString() })
+  }
+
+  // 状态筛选
+  if (status) {
+    console.log('状态筛选参数:', status)
+    conditions.push({
+      status: status
+    })
+    console.log('状态筛选条件:', { status: status })
+  }
+
+  // 合并所有条件
+  let whereCondition = conditions.length > 0 ? _.and(conditions) : {}
+  console.log('最终查询条件:', whereCondition)
+
+  const result = await query
+    .where(whereCondition)
+    .orderBy('createdAt', 'desc')
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .get()
+
+  // 获取创建者信息，添加错误处理
+  const recipes = await Promise.all(result.data.map(async (recipe) => {
+    try {
+      const userResult = await db.collection('users').doc(recipe.creatorId).get()
+      return {
+        ...recipe,
+        creator: userResult.data || { nickname: '未知用户', avatar: '' },
+        createTime: formatTime(recipe.createdAt)
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      return {
+        ...recipe,
+        creator: { nickname: '未知用户', avatar: '' },
+        createTime: formatTime(recipe.createdAt)
+      }
+    }
+  }))
+
+  return {
+    success: true,
+    data: {
+      recipes,
+      total: result.data.length
     }
   }
 }

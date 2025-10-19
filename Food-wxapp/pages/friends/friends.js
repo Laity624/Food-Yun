@@ -222,7 +222,7 @@ Page({
 
   // 搜索输入
   onSearchInput: function(e) {
-    const keyword = e.detail.value
+    const keyword = e.detail
     this.setData({
       searchKeyword: keyword
     })

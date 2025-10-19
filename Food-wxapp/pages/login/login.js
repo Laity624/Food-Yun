@@ -79,12 +79,8 @@ Page({
   logout: function() {
     util.showConfirm('确定要退出登录吗？').then(confirm => {
       if (confirm) {
-        // 清除全局数据
-        app.globalData.userInfo = null
-        app.globalData.openid = null
-        
-        // 清除本地存储
-        wx.removeStorageSync('userInfo')
+        // 调用app的logout方法
+        app.logout()
         
         // 更新页面状态
         this.setData({

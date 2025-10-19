@@ -34,22 +34,44 @@ Page({
   // 检查登录状态并加载数据
   checkLoginAndLoad: function() {
     // 允许预览模式访问
-    if (!app.isLoggedIn() && !app.globalData.isPreviewMode) {
-      // 未登录且不是预览模式，跳转到登录页
-      wx.redirectTo({
-        url: '/pages/login/login'
+    if (app.globalData.isPreviewMode) {
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: false,
+        isPreviewMode: true
       })
+      this.loadRecommendRecipes()
       return
     }
 
-    // 已登录或预览模式，更新用户信息并加载数据
-    this.setData({
-      userInfo: app.globalData.userInfo,
-      hasUserInfo: app.isLoggedIn(),
-      isPreviewMode: app.globalData.isPreviewMode
-    })
-    
-    this.loadRecommendRecipes()
+    // 检查是否已登录
+    if (app.isLoggedIn()) {
+      // 已登录，更新用户信息并加载数据
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true,
+        isPreviewMode: false
+      })
+      this.loadRecommendRecipes()
+    } else {
+      // 未登录，检查是否有本地用户信息但没有openid的情况
+      const localUserInfo = wx.getStorageSync('userInfo')
+      if (localUserInfo) {
+        // 有本地用户信息但没有openid，尝试重新登录
+        this.setData({
+          userInfo: localUserInfo,
+          hasUserInfo: false,
+          isPreviewMode: false,
+          showLoginPrompt: true,
+          promptContent: '检测到本地用户信息，需要重新登录以获取完整权限'
+        })
+      } else {
+        // 完全没有登录信息，跳转到登录页
+        wx.redirectTo({
+          url: '/pages/login/login'
+        })
+      }
+    }
   },
 
 

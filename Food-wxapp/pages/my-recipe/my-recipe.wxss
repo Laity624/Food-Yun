@@ -237,16 +237,20 @@
 
 .filter-tag {
   padding: 8rpx 16rpx;
-  background-color: #f5f5f5;
+  background-color: #6c757d;
+  border: 2rpx solid #495057;
   border-radius: 16rpx;
   font-size: 20rpx;
-  color: #666666;
+  color: #ffffff;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .filter-tag.selected {
-  background-color: #3b82f6;
+  background-color: #007bff;
+  border-color: #0056b3;
   color: #ffffff;
+  font-weight: 600;
 }
 
 /* 当前筛选条件显示 */
@@ -388,6 +392,7 @@
 }
 
 .recipe-card {
+  position: relative;
   background-color: #ffffff;
   border-radius: 20rpx;
   overflow: hidden;
@@ -626,4 +631,86 @@
 /* 安全区域适配 */
 .recipe-list-container {
   padding-bottom: calc(120rpx + env(safe-area-inset-bottom, 0));
+}
+
+/* 状态筛选器 */
+.status-filter-section {
+  background-color: #ffffff;
+  padding: 20rpx 32rpx 16rpx 32rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.status-filter-tabs {
+  display: flex;
+  gap: 90rpx;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-tab {
+  position: relative;
+  padding: 8rpx 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-tab.active .status-name {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.status-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24rpx;
+  height: 3rpx;
+  background-color: #1890ff;
+  border-radius: 2rpx;
+}
+
+.status-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666666;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.status-count {
+  font-size: 22rpx;
+  margin-left: 6rpx;
+  opacity: 0.7;
+  color: inherit;
+}
+
+/* 菜谱状态标签 */
+.recipe-status-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8rpx 16rpx 8rpx 20rpx;
+  border-radius: 0 0 0 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  z-index: 10;
+  color: #ffffff;
+  min-width: 50rpx;
+  text-align: center;
+  letter-spacing: 0.5rpx;
+}
+
+.recipe-status-tag.draft {
+  background-color: #f59e0b;
+}
+
+.recipe-status-tag.published {
+  background-color: #10b981;
+}
+
+.status-text {
+  font-size: 22rpx;
+  font-weight: 600;
 }

@@ -39,17 +39,63 @@ App({
 
   // 检查登录状态
   checkLoginStatus: function() {
-    // 检查本地是否有用户信息
-    const userInfo = wx.getStorageSync('userInfo')
-    if (userInfo) {
-      this.globalData.userInfo = userInfo
-      console.log('发现本地用户信息', userInfo)
+    // 从本地存储恢复登录数据
+    this.restoreLoginData()
+  },
+
+  // 保存登录数据到本地存储
+  saveLoginData: function(userInfo, openid) {
+    try {
+      wx.setStorageSync('userInfo', userInfo)
+      wx.setStorageSync('openid', openid)
+      console.log('登录数据已保存到本地存储')
+    } catch (error) {
+      console.error('保存登录数据失败:', error)
+    }
+  },
+
+  // 清除本地登录数据
+  clearLoginData: function() {
+    try {
+      wx.removeStorageSync('userInfo')
+      wx.removeStorageSync('openid')
+      console.log('本地登录数据已清除')
+    } catch (error) {
+      console.error('清除登录数据失败:', error)
+    }
+  },
+
+  // 从本地存储恢复登录数据
+  restoreLoginData: function() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo')
+      const openid = wx.getStorageSync('openid')
+      
+      if (userInfo && openid) {
+        this.globalData.userInfo = userInfo
+        this.globalData.openid = openid
+        console.log('从本地存储恢复登录数据', { userInfo, openid })
+        return true
+      } else {
+        console.log('本地存储中没有完整的登录数据')
+        return false
+      }
+    } catch (error) {
+      console.error('恢复登录数据失败:', error)
+      return false
     }
   },
 
   // 检查是否已登录
   isLoggedIn: function() {
     return !!(this.globalData.userInfo && this.globalData.openid)
+  },
+
+  // 退出登录
+  logout: function() {
+    this.globalData.userInfo = null
+    this.globalData.openid = null
+    this.clearLoginData()
   },
 
   // 手动登录
@@ -62,8 +108,8 @@ App({
       this.globalData.openid = res.openid
       this.globalData.userInfo = res.userInfo
       
-      // 保存用户信息到本地
-      wx.setStorageSync('userInfo', res.userInfo)
+      // 保存登录数据到本地存储
+      this.saveLoginData(res.userInfo, res.openid)
       
       return res
     })

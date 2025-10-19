@@ -1,0 +1,133 @@
+/* 菜谱项组件样式 */
+.recipe-card {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 24rpx;
+}
+
+.recipe-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.recipe-content {
+  display: flex;
+  padding: 32rpx;
+  gap: 32rpx;
+  align-items: flex-start;
+}
+
+.recipe-image {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.recipe-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  min-width: 0;
+}
+
+.recipe-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recipe-description {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 24rpx;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.recipe-tags {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.recipe-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.scene-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.ingredient-tag {
+  background-color: #e8f5e8;
+  color: #388e3c;
+}
+
+.optional-tag {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+/* 菜谱状态标签 */
+.recipe-status-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8rpx 16rpx 8rpx 20rpx;
+  border-radius: 0 0 0 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  z-index: 10;
+  color: #ffffff;
+  min-width: 50rpx;
+  text-align: center;
+  letter-spacing: 0.5rpx;
+}
+
+.recipe-status-tag.draft {
+  background-color: #f59e0b;
+}
+
+.recipe-status-tag.published {
+  background-color: #10b981;
+}
+
+.status-text {
+  font-size: 22rpx;
+  font-weight: 600;
+}

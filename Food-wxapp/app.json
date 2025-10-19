@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/login/login",
     "pages/index/index",
+    "pages/login/login",
     "pages/recipe-list/recipe-list",
     "pages/recipe-detail/recipe-detail",
     "pages/recipe-form/recipe-form",
@@ -11,7 +11,9 @@
     "pages/friends/friends",
     "pages/friend-requests/friend-requests",
     "pages/profile/profile",
-    "pages/avatar-cropper/avatar-cropper"
+    "pages/avatar-cropper/avatar-cropper",
+    "pages/diancan/diancan",
+    "pages/my-recipe/my-recipe"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -27,7 +29,7 @@
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
-      { 
+      {
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "images/home.png",
@@ -35,21 +37,21 @@
       },
       {
         "pagePath": "pages/recipe-list/recipe-list",
-        "text": "菜谱",
+        "text": "菜品",
         "iconPath": "images/recipe.png",
         "selectedIconPath": "images/recipe-active.png"
       },
       {
-        "pagePath": "pages/order/order",
+        "pagePath": "pages/diancan/diancan",
         "text": "点餐",
         "iconPath": "images/order.png",
         "selectedIconPath": "images/order-active.png"
       },
       {
-        "pagePath": "pages/friends/friends",
-        "text": "好友",
-        "iconPath": "images/friend.png",
-        "selectedIconPath": "images/friend-active.png"
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "images/order.png",
+        "selectedIconPath": "images/order-active.png"
       },
       {
         "pagePath": "pages/profile/profile",
@@ -65,7 +67,9 @@
       "desc": "获取位置信息用于推荐附近菜谱"
     }
   },
-  "requiredBackgroundModes": ["audio"],
+  "requiredBackgroundModes": [
+    "audio"
+  ],
   "networkTimeout": {
     "request": 10000,
     "downloadFile": 10000

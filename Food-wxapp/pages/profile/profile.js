@@ -134,7 +134,7 @@ Page({
   onMyRecipes: function() {
     this.handlePreviewMode('查看菜谱需要登录后使用', () => {
       wx.navigateTo({
-        url: '/pages/recipe-list/recipe-list?type=my'
+        url: '/pages/my-recipe/my-recipe'
       })
     })
   },

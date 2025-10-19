@@ -5,6 +5,7 @@
 const sceneCategories = [
   {
     id: 'daily',
+    shortName: '日常',
     name: '日常家常菜',
     emoji: '📅',
     description: '平时三餐',
@@ -13,14 +14,16 @@ const sceneCategories = [
   },
   {
     id: 'quick',
+    shortName: '快手',
     name: '快手菜',
-    emoji: '⚡',
+    emoji: '🚀',
     description: '30分钟内',
     color: 'orange',
     gradient: 'linear-gradient(135deg, #f59e0b, #d97706)'
   },
   {
-    id: 'guest',
+    id: 'guest',  
+    shortName: '宴客',
     name: '宴客菜',
     emoji: '🎉',
     description: '招待客人',
@@ -29,6 +32,7 @@ const sceneCategories = [
   },
   {
     id: 'light',
+    shortName: '清淡',
     name: '清淡菜',
     emoji: '🥗',
     description: '老人小孩',
@@ -37,8 +41,9 @@ const sceneCategories = [
   },
   {
     id: 'heavy',
+    shortName: '重口',
     name: '重口味菜',
-    emoji: '🌶️',
+    emoji: '🔥',
     description: '下饭菜',
     color: 'red',
     gradient: 'linear-gradient(135deg, #ef4444, #dc2626)'
@@ -70,12 +75,6 @@ const ingredientCategories = [
     name: '蔬菜',
     emoji: '🥬',
     color: 'green'
-  },
-  {
-    id: 'soup',
-    name: '汤类',
-    emoji: '🍲',
-    color: 'orange'
   },
   {
     id: 'staple',

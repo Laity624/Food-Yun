@@ -1,0 +1,48 @@
+<!-- 菜谱项组件 -->
+<wxs module="filterUtils" src="/utils/wxs/filter-utils.wxs"></wxs>
+<view 
+  class="recipe-card"
+  data-id="{{recipe._id}}"
+  bindtap="onRecipeClick"
+>
+  <view class="recipe-content">
+    <image 
+      class="recipe-image" 
+      src="{{recipe.images[0] || '/images/default-recipe.png'}}" 
+      mode="aspectFill"
+    />
+    <!-- 状态标签 - 只在显示状态时显示 -->
+    <view wx:if="{{showStatus}}" class="recipe-status-tag {{recipe.status === 'draft' ? 'draft' : 'published'}}">
+      <text class="status-text">{{recipe.status === 'draft' ? '草稿' : '已发布'}}</text>
+    </view>
+    <view class="recipe-info">
+      <text class="recipe-title">{{recipe.name}}</text>
+      <text class="recipe-description recipe-description-text">{{recipe.description || '经典家常菜，营养美味'}}</text>
+      
+      <!-- 制作信息 -->
+      <view class="recipe-meta">
+        <view class="meta-item">
+          <van-icon name="clock-o" size="12px" color="#999" />
+          <text>{{recipe.preparationTime && recipe.preparationTime.label || '30分钟'}}</text>
+        </view>
+        <view class="meta-item">
+          <van-icon name="friends-o" size="12px" color="#999" />
+          <text>{{recipe.servingSize && recipe.servingSize.label || '1-2人'}}</text>
+        </view>
+        <view class="meta-item">
+          <van-icon name="star" size="12px" color="#ffd700" />
+          <text>{{recipe.difficulty && recipe.difficulty.label || '简单'}}</text>
+        </view>
+      </view>
+
+      <!-- 标签 -->
+      <view class="recipe-tags">
+        <view class="recipe-tag scene-tag">{{recipe.sceneDisplay || '宴客'}}</view>
+        <view class="recipe-tag ingredient-tag">{{recipe.ingredientDisplay || '肉类'}}</view>
+        <view wx:for="{{recipe.optionalTags}}" wx:key="index" wx:if="{{index < 2}}" class="recipe-tag optional-tag">
+          {{filterUtils.getOptionalTagName(cookingMethods, flavorTypes, item)}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

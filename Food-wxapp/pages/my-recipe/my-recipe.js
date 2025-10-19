@@ -34,6 +34,16 @@ Page({
     // 高级筛选
     selectedTime: '',
     
+    // 状态筛选
+    selectedStatus: 'all', // all, draft, published
+    
+    // 状态筛选选项
+    statusOptions: [
+      { id: 'all', name: '全部', count: 0 },
+      { id: 'draft', name: '草稿', count: 0 },
+      { id: 'published', name: '已发布', count: 0 }
+    ],
+    
     // 制作时间选项（使用公共枚举）
     timeOptions: [],
     
@@ -109,7 +119,8 @@ Page({
       selectedIngredients,
       selectedOptionalTags,
       currentQuickFilter,
-      selectedTime
+      selectedTime,
+      selectedStatus
     } = this.data
     
     // 构建筛选参数
@@ -124,14 +135,15 @@ Page({
     wx.cloud.callFunction({
       name: 'recipe',
       data: {
-        action: 'list',
+        action: 'myRecipes',
         page,
         pageSize,
         search: searchValue,
         sceneCategories: sceneCategories.length > 0 ? sceneCategories : undefined,
         ingredientCategories: selectedIngredients.length > 0 ? selectedIngredients : undefined,
         optionalTags: selectedOptionalTags.length > 0 ? selectedOptionalTags : undefined,
-        preparationTime: timeValue ? timeValue : undefined
+        preparationTime: timeValue ? timeValue : undefined,
+        status: selectedStatus !== 'all' ? selectedStatus : undefined
       }
     }).then(res => {
       console.log('菜谱列表云函数调用结果:', res)
@@ -213,8 +225,9 @@ Page({
   },
 
   onSearchInput: function(e) {
+    console.log('搜索内容', e);
     this.setData({
-      searchValue: e.detail.value
+      searchValue: e.detail
     })
   },
 
@@ -399,6 +412,15 @@ Page({
     // 获取时间选项信息用于日志
     const timeOption = this.data.timeOptions.find(t => t.id === newTime)
     console.log('时间筛选:', newTime, timeOption ? timeOption.label : '无')
+  },
+
+  // 状态筛选
+  onStatusFilterChange: function(e) {
+    const statusId = e.currentTarget.dataset.status
+    this.setData({
+      selectedStatus: statusId
+    })
+    this.refreshData()
   },
 
 
