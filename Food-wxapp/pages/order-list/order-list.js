@@ -19,11 +19,45 @@ Page({
     
     // 搜索
     searchValue: '',
-    showSearch: false
+    showSearch: false,
+    
+    // 用户信息
+    userInfo: null
   },
 
+  // 防抖定时器
+  searchTimer: null,
+
+  // 获取用户信息
+  getUserInfo: function() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo')
+      if (userInfo) {
+        this.setData({
+          userInfo: userInfo
+        })
+        console.log('获取用户信息成功:', userInfo)
+      } else {
+        console.log('未找到用户信息')
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+    }
+  },
+
+
+
   onLoad: function() {
+    this.getUserInfo()
     this.loadOrders()
+  },
+
+  onUnload: function() {
+    // 页面卸载时清理定时器
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer)
+      this.searchTimer = null
+    }
   },
 
   onShow: function() {
@@ -33,6 +67,9 @@ Page({
         selected: 'orderList'
       })
     }
+    
+    // 更新用户信息
+    this.getUserInfo()
     
     // 刷新数据
     // this.refreshData()
@@ -146,16 +183,24 @@ Page({
     })
   },
 
-  onSearchInput: function(e) {
-    console.log('搜索输入===', e);
+  onSearchChange: function(e) {
+    console.log('搜索输入变化===', e);
+    const searchValue = e.detail
+    
+    // 更新搜索值
     this.setData({
-      searchValue: e.detail
+      searchValue: searchValue
     })
-  },
-
-  onSearchConfirm: function() {
-    // 执行搜索，但不触发下拉刷新状态
-    this.performSearch()
+    
+    // 清除之前的定时器
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer)
+    }
+    
+    // 设置防抖定时器，500ms后执行搜索
+    this.searchTimer = setTimeout(() => {
+      this.performSearch()
+    }, 500)
   },
 
   // 新增独立的搜索方法

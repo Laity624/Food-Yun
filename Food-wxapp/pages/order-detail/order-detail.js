@@ -9,7 +9,8 @@ Page({
     orderId: '',
     order: null,
     loading: true,
-    showActionSheet: false
+    showActionSheet: false,
+    userInfo: null
   },
 
   onLoad: function(options) {
@@ -25,6 +26,24 @@ Page({
       setTimeout(() => {
         wx.navigateBack()
       }, 1500)
+    }
+    this.getUserInfo()
+  },
+
+   // 获取用户信息
+   getUserInfo: function() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo')
+      if (userInfo) {
+        this.setData({
+          userInfo: userInfo
+        })
+        console.log('获取用户信息成功:', userInfo)
+      } else {
+        console.log('未找到用户信息')
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
     }
   },
 

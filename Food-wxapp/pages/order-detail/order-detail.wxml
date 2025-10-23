@@ -22,7 +22,14 @@
     <!-- 订单信息 -->
     <view class="order-info">
       <view class="info-item">
-        <text class="info-label">制作者</text>
+        <text class="info-label">订餐者</text>
+        <view class="info-value">
+          <image class="assignee-avatar" src="{{order.creatorAvatar}}" mode="aspectFill" />
+          <text class="assignee-name">{{order.creatorName}}</text>
+        </view>
+      </view>
+      <view class="info-item">
+        <text class="info-label">厨师</text>
         <view class="info-value">
           <image class="assignee-avatar" src="{{order.assigneeAvatar}}" mode="aspectFill" />
           <text class="assignee-name">{{order.assigneeName}}</text>
@@ -82,6 +89,7 @@
           size="large"
           bind:click="startCooking"
           custom-style="flex: 1; margin-right: 12rpx;"
+          wx:if="{{order.assigneeId === userInfo.openid}}"
         >
           开始制作
         </van-button>
@@ -102,6 +110,7 @@
           size="large"
           bind:click="completeCooking"
           custom-style="flex: 1; margin-right: 12rpx;"
+          wx:if="{{order.assigneeId === userInfo.openid}}"
         >
           完成制作
         </van-button>

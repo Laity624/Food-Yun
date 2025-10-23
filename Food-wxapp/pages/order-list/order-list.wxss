@@ -228,9 +228,15 @@ scroll-view ::-webkit-scrollbar {
   color: #ef4444;
 }
 
+.order-creator{
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+}
+
 .order-no {
   font-size: 24rpx;
-  color: #6b7280;
+  color: #7f8899;
 }
 
 /* 制作者信息 */

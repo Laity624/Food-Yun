@@ -13,8 +13,7 @@
       <van-field
         value="{{searchValue}}"
         placeholder="搜索订单号、制作者或菜品..."
-        bind:input="onSearchInput"
-        catch:confirm="onSearchConfirm"
+        bind:change="onSearchChange"
         clearable
         left-icon="search"
         custom-style="background: #f5f5f5; border-radius: 16px; border: none;"
@@ -79,7 +78,10 @@
                 <text class="status-text">{{item.statusLabel}}</text>
               </view>
             </view>
-            <text class="order-no">{{item.orderNo}}</text>
+            <view class="order-creator">
+              <text class="order-no">{{item.orderNo}}</text>
+              <text class="order-no">订餐者：{{item.creator.nickname}}</text>
+            </view>
           </view>
 
           <!-- 制作者信息 -->
@@ -112,13 +114,13 @@
           <view class="order-actions">
             <!-- 待处理状态 -->
             <view wx:if="{{item.status === 'pending'}}" class="button-group">
-              <button class="action-btn primary" bindtap="onStartCooking" data-order-id="{{item._id}}" catchtap="true">开始制作</button>
+              <button class="action-btn primary" bindtap="onStartCooking" data-order-id="{{item._id}}" catchtap="true" wx:if="{{item.assigneeId === userInfo.openid}}">开始制作</button>
               <button class="action-btn secondary" bindtap="onCancelOrder" data-order-id="{{item._id}}" catchtap="true">取消订单</button>
             </view>
             
             <!-- 处理中状态 -->
             <view wx:elif="{{item.status === 'processing'}}" class="button-group">
-              <button class="action-btn primary" bindtap="onCompleteOrder" data-order-id="{{item._id}}" catchtap="true">完成制作</button>
+              <button class="action-btn primary" bindtap="onCompleteOrder" data-order-id="{{item._id}}" catchtap="true" wx:if="{{item.assigneeId === userInfo.openid}}">完成制作</button>
               <button class="action-btn secondary" bindtap="onCancelOrder" data-order-id="{{item._id}}" catchtap="true">取消订单</button>
             </view>
             

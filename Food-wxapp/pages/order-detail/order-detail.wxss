@@ -3,6 +3,7 @@
   min-height: 100vh;
   background-color: #f8fafc;
   padding-bottom: 120rpx;
+  box-sizing: border-box;
 }
 
 /* 加载状态 */
