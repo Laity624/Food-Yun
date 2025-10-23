@@ -2,7 +2,7 @@
 .order-detail-container {
   min-height: 100vh;
   background-color: #f8fafc;
-  padding-bottom: 120rpx;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
@@ -210,13 +210,21 @@
   right: 0;
   background-color: #ffffff;
   padding: 24rpx 32rpx;
+  padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid #e2e8f0;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
+  z-index: 100;
 }
 
 .button-group {
   display: flex;
-  gap: 12rpx;
+  align-items: center;
+  justify-content: space-between;
 }
+.button-group  view{
+  flex: 1;
+}
+
 
 /* 错误状态 */
 .error-state {

@@ -84,53 +84,59 @@
     <view class="action-buttons">
       <!-- 待处理状态 -->
       <view wx:if="{{order.status === 'pending'}}" class="button-group">
-        <van-button 
-          type="primary"
-          size="large"
-          bind:click="startCooking"
-          custom-style="flex: 1; margin-right: 12rpx;"
-          wx:if="{{order.assigneeId === userInfo.openid}}"
-        >
-          开始制作
-        </van-button>
-        <van-button 
-          type="default"
-          size="large"
-          bind:click="cancelOrder"
-          custom-style="flex: 1;"
-        >
-          取消订单
-        </van-button>
+        <view wx:if="{{order.assigneeId === userInfo.openid}}">
+          <van-button 
+            type="primary"
+            bind:click="startCooking"
+            round 
+            block
+          >
+            开始制作
+          </van-button>
+        </view>
+        <view>
+          <van-button 
+            type="default"
+            bind:click="cancelOrder"
+            round 
+            block
+          >
+            取消订单
+          </van-button>
+        </view>
       </view>
       
       <!-- 处理中状态 -->
       <view wx:elif="{{order.status === 'processing'}}" class="button-group">
-        <van-button 
-          type="success"
-          size="large"
-          bind:click="completeCooking"
-          custom-style="flex: 1; margin-right: 12rpx;"
-          wx:if="{{order.assigneeId === userInfo.openid}}"
-        >
-          完成制作
-        </van-button>
-        <van-button 
-          type="default"
-          size="large"
-          bind:click="cancelOrder"
-          custom-style="flex: 1;"
-        >
-          取消订单
-        </van-button>
+        <view  wx:if="{{order.assigneeId === userInfo.openid}}">
+          <van-button 
+            type="success"
+            bind:click="completeCooking"
+            round 
+            block
+          >
+            完成制作
+          </van-button>
+          </view>
+          <view>
+          <van-button 
+            type="default"
+            bind:click="cancelOrder"
+            round 
+            block
+          >
+            取消订单
+          </van-button>
+        </view>
       </view>
       
       <!-- 已完成状态 -->
       <van-button 
         wx:elif="{{order.status === 'completed'}}"
         type="primary"
-        size="large"
         bind:click="reorder"
-        custom-style="flex: 1;"
+        round 
+        block
       >
         再次点餐
       </van-button>
@@ -139,9 +145,9 @@
       <van-button 
         wx:elif="{{order.status === 'cancelled'}}"
         type="primary"
-        size="large"
+        round 
+        block
         bind:click="reorder"
-        custom-style="flex: 1;"
       >
         再次点餐
       </van-button>
