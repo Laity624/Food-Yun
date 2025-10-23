@@ -1,0 +1,244 @@
+/* 订单详情页面样式 */
+.order-detail-container {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 120rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  padding: 120rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 订单内容 */
+.order-content {
+  padding: 32rpx;
+}
+
+/* 订单头部 */
+.order-header {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.order-title {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.meal-icon {
+  font-size: 32rpx;
+}
+
+.meal-type {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.status-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #f59e0b;
+}
+
+.status-processing {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.status-completed {
+  background-color: #d1fae5;
+  color: #10b981;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.order-no {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 订单信息 */
+.order-info {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #6b7280;
+  min-width: 120rpx;
+}
+
+.info-value {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #1a1a1a;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.assignee-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+}
+
+.assignee-name {
+  font-weight: 500;
+}
+
+.notes {
+  text-align: right;
+  color: #6b7280;
+  font-size: 24rpx;
+}
+
+/* 菜品列表 */
+.recipes-section {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 24rpx;
+}
+
+.recipes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.recipe-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8fafc;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.recipe-item:active {
+  background-color: #e2e8f0;
+  transform: scale(0.98);
+}
+
+.recipe-image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.recipe-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.recipe-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 16rpx;
+}
+
+.meta-item {
+  font-size: 22rpx;
+  color: #6b7280;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #e2e8f0;
+}
+
+.button-group {
+  display: flex;
+  gap: 12rpx;
+}
+
+/* 错误状态 */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  padding: 120rpx 32rpx;
+}
+
+.error-emoji {
+  font-size: 80rpx;
+}
+
+.error-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.error-desc {
+  font-size: 28rpx;
+  color: #6b7280;
+  text-align: center;
+}
+

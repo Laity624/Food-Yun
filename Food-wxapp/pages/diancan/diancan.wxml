@@ -1,1 +1,176 @@
-<view class="container"><text>点餐页面开发中...</text></view>
+<view class="diancan-container">
+  <!-- 头部 -->
+  <view class="header-section">
+    <view class="header-content">
+      <text class="page-title">点餐</text>
+      <view class="cart-stats">
+        <van-icon name="shopping-cart-o" size="20px" color="#3b82f6" />
+        <text class="cart-count">{{cartStats.totalCount}}/20</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 购物车商品列表 -->
+  <view class="cart-section">
+    <!-- 购物车数量提示 -->
+    <view wx:if="{{cartItems.length > 0 && cartItems.length >= 18}}" class="cart-limit-tip">
+      <van-icon name="warning-o" size="16px" color="#f59e0b" />
+      <text class="tip-text">购物车已接近上限（{{cartItems.length}}/20），最多可添加20道菜</text>
+    </view>
+    
+    <view wx:if="{{cartItems.length === 0}}" class="empty-cart">
+      <text class="empty-emoji">🛒</text>
+      <text class="empty-title">购物车是空的</text>
+    </view>
+    
+    <view wx:else class="cart-items">
+      <view 
+        wx:for="{{cartItems}}" 
+        wx:key="recipeId"
+        class="cart-item {{item.isSelected ? 'selected' : ''}}"
+      >
+        <view class="item-checkbox" bindtap="onToggleSelection" data-recipe-id="{{item.recipeId}}">
+          <van-icon 
+            name="{{item.isSelected ? 'success' : 'circle'}}" 
+            size="20px" 
+            color="{{item.isSelected ? '#3b82f6' : '#d1d5db'}}" 
+          />
+        </view>
+        
+        <image class="item-image" bindtap="onToggleSelection" data-recipe-id="{{item.recipeId}}" src="{{item.image}}" mode="aspectFill" />
+        
+        <view class="item-info" bindtap="onToggleSelection" data-recipe-id="{{item.recipeId}}">
+          <text class="item-name">{{item.recipeName}}</text>
+          <text class="item-author">作者：{{item.authorName}}</text>
+          <view class="item-meta">
+            <text class="meta-item">⏰ {{item.preparationTime}}</text>
+            <text class="meta-item">⭐ {{item.difficulty}}</text>
+          </view>
+        </view>
+        
+        <view class="item-actions">
+          <van-icon 
+            name="delete" 
+            size="20px" 
+            color="#ff4757" 
+            bindtap="onRemoveItem" 
+            data-recipe-id="{{item.recipeId}}"
+          />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单配置 -->
+  <view wx:if="{{cartItems.length > 0}}" class="order-config">
+    <!-- 选择制作者 -->
+    <view class="config-item" bindtap="onSelectFriend">
+      <view class="config-label">
+        <van-icon name="friends-o" size="20px" color="#3b82f6" />
+        <text>选择制作者</text>
+      </view>
+      <view class="config-value">
+        <text wx:if="{{selectedFriend}}">{{selectedFriend.nickname}}</text>
+        <text wx:else class="placeholder">请选择好友</text>
+        <van-icon name="arrow" size="16px" color="#999" />
+      </view>
+    </view>
+
+    <!-- 选择日期 -->
+    <view class="config-item" bindtap="onSelectDate">
+      <view class="config-label">
+        <van-icon name="calendar-o" size="20px" color="#3b82f6" />
+        <text>选择日期</text>
+      </view>
+      <view class="config-value">
+        <text>{{selectedDate || '今天'}}</text>
+        <van-icon name="arrow" size="16px" color="#999" />
+      </view>
+    </view>
+
+    <!-- 选择时间 -->
+    <view class="config-item" bindtap="onSelectTime">
+      <view class="config-label">
+        <van-icon name="clock-o" size="20px" color="#3b82f6" />
+        <text>选择时间</text>
+      </view>
+      <view class="config-value">
+        <text>{{selectedTimeLabel || '请选择'}}</text>
+        <van-icon name="arrow" size="16px" color="#999" />
+      </view>
+    </view>
+
+    <!-- 备注输入 -->
+    <view class="config-item">
+      <view class="config-label">
+        <van-icon name="edit" size="20px" color="#3b82f6" />
+        <text>备注信息</text>
+      </view>
+      <van-field
+        value="{{orderNotes}}"
+        placeholder="有什么特殊要求吗？"
+        bind:input="onNotesInput"
+        type="textarea"
+        autosize
+        maxlength="200"
+        show-word-limit
+        custom-style="background: #f8fafc; border-radius: 12px; width: 100%; box-sizing: border-box;"
+        style="width: 100%;"
+      />
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view wx:if="{{cartItems.length > 0}}" class="bottom-actions">
+    <view class="selection-info">
+      <view class="selection-info-icon">🍽️</view>
+      <text>已选择 {{cartStats.selectedCount}} 道菜</text>
+    </view>
+    <van-button 
+      type="primary" 
+      bind:click="onCreateOrder"
+      disabled="{{!canCreateOrder}}"
+    >
+      生成订单
+    </van-button>
+  </view>
+
+  <!-- 好友选择器 -->
+  <friend-selector
+    selected-friend-id="{{selectedFriendId}}"
+    show="{{showFriendSelector}}"
+    bind:friendselect="onFriendSelect"
+    bind:close="onCloseFriendSelector"
+  />
+
+  <!-- 时间选择器 -->
+  <van-popup 
+    show="{{showTimeSelector}}" 
+    position="bottom" 
+    bind:close="onCloseTimeSelector"
+    custom-style="z-index: 10000; position: fixed;"
+    safe-area-inset-bottom="{{false}}"
+    overlay-style="z-index: 9999;"
+  >
+    <view class="time-selector">
+      <view class="time-header">
+        <text class="time-title">选择时间</text>
+        <van-icon name="cross" size="20px" bindtap="onCloseTimeSelector" />
+      </view>
+      <view class="time-options">
+        <view 
+          wx:for="{{timeOptions}}" 
+          wx:key="value"
+          class="time-option {{selectedTime === item.value ? 'selected' : ''}}"
+          bindtap="onTimeSelect"
+          data-time="{{item.value}}"
+        >
+          <text class="time-emoji">{{item.emoji}}</text>
+          <text class="time-label">{{item.label}}</text>
+        </view>
+      </view>
+      <!-- 添加底部安全区域 -->
+      <view class="time-bottom-safe"></view>
+    </view>
+  </van-popup>
+</view>

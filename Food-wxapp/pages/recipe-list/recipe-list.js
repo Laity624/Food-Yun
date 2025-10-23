@@ -8,6 +8,7 @@ const {
   getIngredientCategoryById,
   getPreparationTimes
 } = require('../../utils/tagData')
+const cartManager = require('../../utils/cartManager')
 
 Page({
   data: {
@@ -46,7 +47,15 @@ Page({
     selectedOptionalTagsDisplay: [],
     allOptionalTags: [],
     
-    currentQuickFilter: null
+    currentQuickFilter: null,
+    
+    // 购物车相关
+    cartStats: {
+      totalCount: 0,
+      selectedCount: 0,
+      hasItems: false,
+      hasSelected: false
+    }
   },
 
   onLoad: function (options) {
@@ -65,6 +74,8 @@ Page({
       }))
     })
     this.updateComputedData()
+    // 初始化购物车统计
+    this.updateCartStats()
     this.loadRecipes()
   },
 
@@ -75,6 +86,9 @@ Page({
         selected: 'recipeList'
       })
     }
+    
+    // 更新购物车统计
+    this.updateCartStats()
     
     // 页面显示时刷新数据
     this.refreshData()
@@ -124,7 +138,7 @@ Page({
     wx.cloud.callFunction({
       name: 'recipe',
       data: {
-        action: 'list',
+        action: 'friendRecipes',
         page,
         pageSize,
         search: searchValue,
@@ -540,13 +554,134 @@ Page({
     const sceneCategory = getSceneCategoryById(recipe.sceneCategory)
     const ingredientCategory = getIngredientCategoryById(recipe.ingredientCategory)
     
+    // 检查购物车状态
+    const isInCart = cartManager.isInCart(recipe._id)
+    const isSelected = cartManager.isSelected(recipe._id)
+    
     return {
       ...recipe,
       sceneDisplay: sceneCategory ? sceneCategory.shortName : '',
       ingredientDisplay: ingredientCategory ? ingredientCategory.name : '',
       preparationTimeDisplay: recipe.preparationTime ? recipe.preparationTime.label : '',
       difficultyDisplay: recipe.difficulty ? recipe.difficulty.label : '',
-      servingSizeDisplay: recipe.servingSize ? recipe.servingSize.label : ''
+      servingSizeDisplay: recipe.servingSize ? recipe.servingSize.label : '',
+      isInCart: isInCart,
+      isSelected: isSelected
+    }
+  },
+
+  // 更新购物车统计信息
+  updateCartStats: function() {
+    const cartStats = cartManager.getCartStats()
+    this.setData({
+      cartStats: cartStats
+    })
+  },
+
+  // 添加菜谱到购物车
+  onAddToCart: function(e) {
+    const recipeId = e.currentTarget.dataset.recipeId
+    const recipe = this.data.recipes.find(r => r._id === recipeId)
+    
+    if (!recipe) {
+      wx.showToast({
+        title: '菜谱信息错误',
+        icon: 'error'
+      })
+      return
+    }
+
+    const result = cartManager.addToCart(recipe)
+    if (result.success) {
+      // 更新菜谱的购物车状态
+      const recipes = this.data.recipes.map(r => {
+        if (r._id === recipeId) {
+          return {
+            ...r,
+            isInCart: true,
+            isSelected: false
+          }
+        }
+        return r
+      })
+      
+      this.setData({
+        recipes: recipes
+      })
+      
+      // 更新购物车统计
+      this.updateCartStats()
+      
+      wx.showToast({
+        title: result.message || '已添加到购物车',
+        icon: 'success',
+        duration: 1500
+      })
+    } else {
+      wx.showToast({
+        title: result.message || '添加失败',
+        icon: 'none',
+        duration: 2000
+      })
+    }
+  },
+
+  // 从购物车移除菜谱
+  onRemoveFromCart: function(e) {
+    const recipeId = e.currentTarget.dataset.recipeId
+    
+    const success = cartManager.removeFromCart(recipeId)
+    if (success) {
+      // 更新菜谱的购物车状态
+      const recipes = this.data.recipes.map(r => {
+        if (r._id === recipeId) {
+          return {
+            ...r,
+            isInCart: false,
+            isSelected: false
+          }
+        }
+        return r
+      })
+      
+      this.setData({
+        recipes: recipes
+      })
+      
+      // 更新购物车统计
+      this.updateCartStats()
+      
+      wx.showToast({
+        title: '已从购物车移除',
+        icon: 'success',
+        duration: 1500
+      })
+    } else {
+      wx.showToast({
+        title: '移除失败',
+        icon: 'error'
+      })
+    }
+  },
+
+  // 跳转到点餐页面
+  onGoToCart: function() {
+    wx.switchTab({
+      url: '/pages/diancan/diancan'
+    })
+  },
+
+  // 处理购物车操作事件
+  onCartAction: function(e) {
+    console.log('加入购物车====', e);
+    const { recipeId, isInCart } = e.detail
+    
+    if (isInCart) {
+      // 从购物车移除
+      this.onRemoveFromCart({ currentTarget: { dataset: { recipeId } } })
+    } else {
+      // 添加到购物车
+      this.onAddToCart({ currentTarget: { dataset: { recipeId } } })
     }
   }
 })

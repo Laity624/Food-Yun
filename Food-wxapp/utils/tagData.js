@@ -131,6 +131,62 @@ const servingSizes = [
   { value: '6+', label: '6人以上' }
 ]
 
+// 餐次时间选项
+const mealTimes = [
+  { value: 'breakfast', label: '早餐', emoji: '🌅' },
+  { value: 'lunch', label: '午餐', emoji: '🌞' },
+  { value: 'dinner', label: '晚餐', emoji: '🌙' }
+]
+
+// 订单状态枚举
+const orderStatuses = [
+  {
+    value: 'pending',
+    label: '待处理',
+    emoji: '⏳',
+    color: 'orange',
+    bgColor: '#fef3c7',
+    textColor: '#f59e0b',
+    description: '等待开始制作'
+  },
+  {
+    value: 'processing',
+    label: '处理中',
+    emoji: '👨‍🍳',
+    color: 'blue',
+    bgColor: '#dbeafe',
+    textColor: '#3b82f6',
+    description: '正在制作中'
+  },
+  {
+    value: 'completed',
+    label: '已完成',
+    emoji: '✅',
+    color: 'green',
+    bgColor: '#d1fae5',
+    textColor: '#10b981',
+    description: '制作完成'
+  },
+  {
+    value: 'cancelled',
+    label: '已取消',
+    emoji: '❌',
+    color: 'red',
+    bgColor: '#fee2e2',
+    textColor: '#ef4444',
+    description: '订单已取消'
+  }
+]
+
+// 订单状态筛选选项（用于订单列表页）
+const orderStatusTabs = [
+  { value: 'all', label: '全部' },
+  { value: 'pending', label: '待处理' },
+  { value: 'processing', label: '处理中' },
+  { value: 'completed', label: '已完成' },
+  { value: 'cancelled', label: '已取消' }
+]
+
 // 获取场景分类
 function getSceneCategories() {
   return sceneCategories
@@ -164,6 +220,44 @@ function getDifficultyLevels() {
 // 获取适合人数选项
 function getServingSizes() {
   return servingSizes
+}
+
+// 获取餐次时间选项
+function getMealTimes() {
+  return mealTimes
+}
+
+// 获取订单状态枚举
+function getOrderStatuses() {
+  return orderStatuses
+}
+
+// 获取订单状态筛选选项
+function getOrderStatusTabs() {
+  return orderStatusTabs
+}
+
+// 根据状态值获取状态信息
+function getOrderStatusByValue(value) {
+  return orderStatuses.find(status => status.value === value)
+}
+
+// 获取状态标签
+function getOrderStatusLabel(value) {
+  const status = getOrderStatusByValue(value)
+  return status ? status.label : '未知'
+}
+
+// 获取状态样式
+function getOrderStatusStyle(value) {
+  const status = getOrderStatusByValue(value)
+  return status ? {
+    color: status.textColor,
+    bg: status.bgColor
+  } : {
+    color: '#6b7280',
+    bg: '#f3f4f6'
+  }
 }
 
 // 根据ID获取场景分类
@@ -218,6 +312,9 @@ if (typeof module !== 'undefined' && module.exports) {
     preparationTimes,
     difficultyLevels,
     servingSizes,
+    mealTimes,
+    orderStatuses,
+    orderStatusTabs,
     getSceneCategories,
     getIngredientCategories,
     getCookingMethods,
@@ -225,6 +322,12 @@ if (typeof module !== 'undefined' && module.exports) {
     getPreparationTimes,
     getDifficultyLevels,
     getServingSizes,
+    getMealTimes,
+    getOrderStatuses,
+    getOrderStatusTabs,
+    getOrderStatusByValue,
+    getOrderStatusLabel,
+    getOrderStatusStyle,
     getSceneCategoryById,
     getIngredientCategoryById,
     getOptionalTags,
@@ -242,6 +345,9 @@ if (typeof window !== 'undefined') {
     preparationTimes,
     difficultyLevels,
     servingSizes,
+    mealTimes,
+    orderStatuses,
+    orderStatusTabs,
     getSceneCategories,
     getIngredientCategories,
     getCookingMethods,
@@ -249,6 +355,12 @@ if (typeof window !== 'undefined') {
     getPreparationTimes,
     getDifficultyLevels,
     getServingSizes,
+    getMealTimes,
+    getOrderStatuses,
+    getOrderStatusTabs,
+    getOrderStatusByValue,
+    getOrderStatusLabel,
+    getOrderStatusStyle,
     getSceneCategoryById,
     getIngredientCategoryById,
     getOptionalTags,

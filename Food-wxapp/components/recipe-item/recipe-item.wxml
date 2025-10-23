@@ -44,5 +44,17 @@
         </view>
       </view>
     </view>
+    
+    <!-- 购物车按钮 -->
+    <view class="cart-action" catchtap="onCartAction" data-recipe-id="{{recipe._id}}">
+      <view wx:if="{{!recipe.isInCart}}" class="add-to-cart-btn">
+        <van-icon name="plus" size="16px" color="#3b82f6" />
+        <text class="btn-text">加入购物车</text>
+      </view>
+      <view wx:else class="remove-from-cart-btn">
+        <van-icon name="minus" size="16px" color="#ff4757" />
+        <text class="btn-text">移除</text>
+      </view>
+    </view>
   </view>
 </view>

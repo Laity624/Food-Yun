@@ -1,0 +1,68 @@
+<!-- 好友选择器组件 -->
+<van-popup 
+  show="{{show}}" 
+  position="bottom" 
+  bind:close="onClose"
+  custom-style="z-index: 10000;"
+  safe-area-inset-bottom="{{true}}"
+  round="{{true}}"
+>
+  <view class="friend-selector-content">
+    <!-- 头部 -->
+    <view class="modal-header">
+      <text class="modal-title">选择制作者</text>
+      <van-icon name="cross" size="20px" color="#999" bindtap="onClose" />
+    </view>
+    
+    <!-- 搜索框 -->
+    <view class="search-section">
+      <van-field
+        value="{{searchKeyword}}"
+        placeholder="搜索好友..."
+        bind:input="onSearchInput"
+        left-icon="search"
+        focus="{{true}}"
+        custom-style="background: #f5f5f5; border-radius: 12px; border: none;"
+        catchtap="true"
+      />
+    </view>
+    
+    <!-- 好友列表 -->
+    <view class="friends-list">
+      <view wx:if="{{loading}}" class="loading-state">
+        <van-loading size="20px" />
+        <text>加载中...</text>
+      </view>
+      
+      <view wx:elif="{{filteredFriends.length === 0}}" class="empty-state">
+        <text class="empty-emoji">👥</text>
+        <text class="empty-text">暂无好友</text>
+      </view>
+      
+      <view wx:else>
+        <view 
+          wx:for="{{filteredFriends}}" 
+          wx:key="_id"
+          class="friend-item {{selectedFriendId === item._id ? 'selected' : ''}}"
+          data-friend-id="{{item._id}}"
+          bindtap="onSelectFriend"
+        >
+          <image class="friend-avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="friend-info">
+            <view class="friend-name-row">
+              <text class="friend-name">{{item.nickname}}</text>
+              <text wx:if="{{item.isCurrentUser}}" class="current-user-label">(我)</text>
+            </view>
+            <view class="friend-status">
+              <view class="status-dot {{item.isOnline ? 'online' : 'offline'}}"></view>
+              <text class="status-text">{{item.isOnline ? '在线' : '离线'}}</text>
+            </view>
+          </view>
+          <view wx:if="{{selectedFriendId === item._id}}" class="selected-icon">
+            <van-icon name="success" size="16px" color="#3b82f6" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</van-popup>

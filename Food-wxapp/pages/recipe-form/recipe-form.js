@@ -45,7 +45,11 @@ Page({
     difficultyLevels: [],
     servingSizes: [],
     // UI状态
-    showMoreTags: false
+    showMoreTags: false,
+    
+    // 编辑模式
+    isEditMode: false,
+    editRecipeId: ''
   },
 
   onLoad(options) {
@@ -84,6 +88,10 @@ Page({
     
     // 如果有编辑模式，可以在这里初始化数据
     if (options.id) {
+      this.setData({
+        isEditMode: true,
+        editRecipeId: options.id
+      })
       this.loadRecipeData(options.id)
     }
   },
@@ -229,22 +237,49 @@ Page({
 
     const formData = this.prepareFormData(isPublish)
     
+    console.log('准备提交的表单数据:', formData)
+    console.log('食材数量:', formData.ingredients ? formData.ingredients.length : 'undefined')
+    
     // 调用云函数保存菜谱
+    const action = this.data.isEditMode ? 'update' : 'create'
+    const requestData = this.data.isEditMode ? {
+      action: 'update',
+      recipeId: this.data.editRecipeId,
+      data: formData
+    } : {
+      action: 'create',
+      data: formData
+    }
+    
     wx.cloud.callFunction({
       name: 'recipe',
-      data: {
-        action: 'create',
-        data: formData
-      },
+      data: requestData,
       success: (res) => {
-        wx.showToast({
-          title: isPublish ? '创建成功' : '保存成功',
-          icon: 'success'
-        })
+        console.log('云函数返回结果:', res)
         
-        setTimeout(() => {
-          wx.navigateBack()
-        }, 1500)
+        if (res.result && res.result.success) {
+          const successMessage = this.data.isEditMode 
+            ? (isPublish ? '更新成功' : '已保存为草稿')
+            : (isPublish ? '创建成功' : '保存成功')
+          
+          wx.showToast({
+            title: successMessage,
+            icon: 'success'
+          })
+          
+          setTimeout(() => {
+            wx.navigateBack()
+          }, 1500)
+        } else {
+          // 云函数返回失败
+          const errorMessage = res.result?.message || '保存失败'
+          console.error('菜谱创建失败:', errorMessage)
+          wx.showToast({
+            title: errorMessage,
+            icon: 'none',
+            duration: 2000
+          })
+        }
       },
       fail: (err) => {
         console.error('保存菜谱失败:', err)
@@ -289,11 +324,16 @@ Page({
   prepareFormData(isPublish) {
     const { formData, preparationTimes, difficultyLevels, servingSizes } = this.data
     
+    console.log('准备表单数据，原始食材数据:', formData.ingredients)
+    
     // 过滤空食材
     const ingredients = formData.ingredients.filter(item => 
       item && item.name && item.amount && 
       item.name.trim() && item.amount.trim()
     )
+    
+    console.log('过滤后的食材数据:', ingredients)
+    console.log('食材数量:', ingredients.length)
 
     // 过滤空步骤
     const steps = formData.steps.filter(step => 

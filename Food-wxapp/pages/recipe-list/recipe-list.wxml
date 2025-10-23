@@ -17,10 +17,11 @@
         />
       </view>
       
-      <!-- 添加按钮 -->
-      <!-- <view class="add-btn" bindtap="onAddClick">
-        <van-icon name="plus" size="20px" color="#fff" />
-      </view> -->
+      <!-- 购物车按钮 -->
+      <view class="cart-btn" bindtap="onGoToCart">
+        <van-icon name="shopping-cart-o" size="20px" color="#3b82f6" />
+        <view wx:if="{{cartStats.totalCount > 0}}" class="cart-badge">{{cartStats.totalCount}}</view>
+      </view>
     </view>
   </view>
 
@@ -184,6 +185,7 @@
         cooking-methods="{{cookingMethods}}"
         flavor-types="{{flavorTypes}}"
         bind:recipeclick="onRecipeClick"
+        bind:cartaction="onCartAction"
       />
     </block>
   </view>
@@ -216,7 +218,7 @@
   </view>
 
   <!-- 悬浮添加按钮 -->
-  <view class="fab" bindtap="onAddClick">
+  <!-- <view class="fab" bindtap="onAddClick">
     <van-icon name="plus" size="24px" color="#fff" />
-  </view>
+  </view> -->
 </view>

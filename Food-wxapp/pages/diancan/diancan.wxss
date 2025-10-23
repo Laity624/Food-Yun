@@ -1,1 +1,320 @@
-/* pages/diancan/diancan.wxss */
+/* 点餐页面样式 */
+.diancan-container {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 200rpx; /* 增加底部内边距，为底部操作栏预留空间 */
+}
+
+/* 头部 */
+.header-section {
+  background-color: #ffffff;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #e2e8f0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.cart-stats {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 20rpx;
+  background-color: #f0f9ff;
+  border-radius: 20rpx;
+}
+
+/* 购物车数量限制提示 */
+.cart-limit-tip {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background-color: #fef3c7;
+  border: 1rpx solid #f59e0b;
+  border-radius: 8rpx;
+  padding: 16rpx 24rpx;
+  margin: 16rpx 32rpx;
+}
+
+.tip-text {
+  font-size: 28rpx;
+  color: #92400e;
+  flex: 1;
+}
+
+.cart-count {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* 购物车区域 */
+.cart-section {
+  padding: 32rpx;
+}
+
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+  padding: 300rpx 0;
+}
+
+.empty-emoji {
+  font-size: 80rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.cart-item.selected {
+  border-color: #3b82f6;
+  background-color: #f0f9ff;
+}
+
+.item-checkbox {
+  margin-right: 24rpx;
+  padding: 8rpx;
+}
+
+.item-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 24rpx;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.item-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.item-author {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.item-meta {
+  display: flex;
+  gap: 16rpx;
+}
+
+.meta-item {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.item-actions {
+  margin-left: 16rpx;
+  padding: 8rpx;
+}
+
+/* 订单配置 */
+.order-config {
+  margin: 32rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.config-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.config-item:last-child {
+  border-bottom: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16rpx;
+  width: 100%;
+}
+
+.config-label {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #1a1a1a;
+}
+
+.config-value {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: #1a1a1a;
+}
+
+.placeholder {
+  color: #9ca3af;
+}
+
+/* 备注输入框样式 */
+.config-item .van-field {
+  width: 100%;
+  min-height: 120rpx;
+}
+
+/* 订单按钮内容样式 */
+.order-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.dish-count-badge {
+  font-size: 24rpx;
+  background: rgba(255,255,255,0.2);
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.selection-info-icon {
+  font-size: 32rpx;
+  color: #3b82f6;
+}
+
+/* 底部操作栏 */
+.bottom-actions {
+  position: fixed;
+  bottom: 100rpx; /* 调整底部位置，避免与tabbar重叠 */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* 添加z-index，确保在tabbar之上 */
+  background-color: #ffffff;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  /* 添加安全区域支持 */
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  /* 美化效果 */
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
+  border-radius: 24rpx 24rpx 0 0;
+}
+
+.selection-info {
+  font-size: 28rpx;
+  color: #4b5563;
+  font-weight: 500;
+  background-color: #f0f9ff;
+  padding: 16rpx 24rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid #e0f2fe;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+
+
+/* 时间选择器 */
+.time-selector {
+  padding: 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.time-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.time-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.time-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.time-option {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  background-color: #f8fafc;
+  border-radius: 12rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.time-option.selected {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.time-emoji {
+  font-size: 32rpx;
+}
+
+.time-label {
+  font-size: 28rpx;
+  color: #1a1a1a;
+}
+
+/* 时间选择器底部安全区域 */
+.time-bottom-safe {
+  height: calc(100rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+}

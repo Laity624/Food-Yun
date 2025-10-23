@@ -1,4 +1,10 @@
 
 {
-  "navigationBarTitleText": "订单列表"
+  "navigationBarTitleText": "我的订单",
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-loading": "@vant/weapp/loading/index"
+  }
 }

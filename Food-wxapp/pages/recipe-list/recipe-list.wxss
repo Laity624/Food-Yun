@@ -39,6 +39,43 @@
   box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.3);
 }
 
+/* 购物车按钮 */
+.cart-btn {
+  position: relative;
+  width: 72rpx;
+  height: 72rpx;
+  background-color: #f8fafc;
+  border: 2rpx solid #e2e8f0;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.cart-btn:active {
+  background-color: #e2e8f0;
+  transform: scale(0.95);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  background-color: #ff4757;
+  color: #ffffff;
+  font-size: 20rpx;
+  font-weight: bold;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+  box-shadow: 0 2rpx 4rpx rgba(255, 71, 87, 0.3);
+}
+
 /* 场景分类区域 */
 .scene-section {
   background-color: #ffffff;

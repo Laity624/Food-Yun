@@ -8,6 +8,7 @@
     "pages/search/search",
     "pages/order/order",
     "pages/order-list/order-list",
+    "pages/order-detail/order-detail",
     "pages/friends/friends",
     "pages/friend-requests/friend-requests",
     "pages/profile/profile",
@@ -48,7 +49,7 @@
         "selectedIconPath": "images/order-active.png"
       },
       {
-        "pagePath": "pages/order/order",
+        "pagePath": "pages/order-list/order-list",
         "text": "订单",
         "iconPath": "images/order.png",
         "selectedIconPath": "images/order-active.png"

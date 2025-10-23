@@ -181,7 +181,38 @@
   </view>
   
   <!-- 底部操作按钮 -->
-  <view class="action-buttons">
+  <view class="action-buttons" wx:if="{{isMyRecipe}}">
+    <!-- 草稿状态显示发布按钮 -->
+    <view wx:if="{{recipe.status === 'draft'}}" class="action-buttons-draft">
+      <view class="action-btn secondary" bindtap="editRecipe">
+        <van-icon name="edit" size="16px" color="#3b82f6" />
+        <text>编辑</text>
+      </view>
+      <view class="action-btn primary" bindtap="publishRecipe">
+        <van-icon name="send" size="16px" color="#ffffff" />
+        <text>发布</text>
+      </view>
+      <view class="action-btn danger" bindtap="deleteRecipe">
+        <van-icon name="delete" size="16px" color="#ffffff" />
+        <text>删除</text>
+      </view>
+    </view>
+    
+    <!-- 已发布状态显示编辑和删除按钮 -->
+    <view wx:else class="action-buttons-published">
+      <view class="action-btn secondary" bindtap="editRecipe">
+        <van-icon name="edit" size="16px" color="#3b82f6" />
+        <text>编辑</text>
+      </view>
+      <view class="action-btn danger" bindtap="deleteRecipe">
+        <van-icon name="delete" size="16px" color="#ffffff" />
+        <text>删除</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 非个人菜谱的底部操作按钮 -->
+  <view class="action-buttons" wx:else>
     <view class="action-btn secondary" bindtap="toggleFavorite">
       <van-icon 
         name="{{isFavorited ? 'like' : 'like-o'}}" 

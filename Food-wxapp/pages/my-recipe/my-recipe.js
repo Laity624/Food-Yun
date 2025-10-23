@@ -40,8 +40,8 @@ Page({
     // 状态筛选选项
     statusOptions: [
       { id: 'all', name: '全部', count: 0 },
+      { id: 'published', name: '已发布', count: 0 },
       { id: 'draft', name: '草稿', count: 0 },
-      { id: 'published', name: '已发布', count: 0 }
     ],
     
     // 制作时间选项（使用公共枚举）

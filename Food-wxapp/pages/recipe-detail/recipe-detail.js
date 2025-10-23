@@ -36,8 +36,7 @@ Page({
     // 页面状态
     loading: true,
     isFavorited: false,
-    
-    
+    isMyRecipe: false, // 是否为当前用户的菜谱
     
     // 页面参数
     recipeId: ''
@@ -131,10 +130,16 @@ Page({
       return allOptionalTags.find(tag => tag.id === tagId) || { id: tagId, name: '未知标签', emoji: '🏷️' }
     })
     
+    // 判断是否为当前用户的菜谱
+    const app = getApp()
+    const currentOpenid = app.globalData.openid || wx.getStorageSync('openid')
+    const isMyRecipe = currentOpenid && recipe.creatorId === currentOpenid
+    
     this.setData({
       sceneCategoryInfo,
       ingredientCategoryInfo,
-      optionalTagsInfo
+      optionalTagsInfo,
+      isMyRecipe
     })
   },
 
@@ -311,5 +316,150 @@ Page({
       title: `${recipe.name} - 家庭菜谱`,
       imageUrl: recipe.images[0] || '/images/default-recipe.png'
     }
+  },
+
+  // 编辑菜谱
+  editRecipe() {
+    const recipeId = this.data.recipeId
+    wx.navigateTo({
+      url: `/pages/recipe-form/recipe-form?id=${recipeId}`
+    })
+  },
+
+  // 删除菜谱
+  deleteRecipe() {
+    const recipe = this.data.recipe
+    wx.showModal({
+      title: '删除菜谱',
+      content: `确定要删除菜谱"${recipe.name}"吗？删除后无法恢复。`,
+      confirmText: '删除',
+      confirmColor: '#ff4444',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.confirmDeleteRecipe()
+        }
+      }
+    })
+  },
+
+  // 确认删除菜谱
+  confirmDeleteRecipe() {
+    wx.showLoading({ title: '删除中...' })
+    
+    wx.cloud.callFunction({
+      name: 'recipe',
+      data: {
+        action: 'delete',
+        recipeId: this.data.recipeId
+      }
+    }).then(res => {
+      wx.hideLoading()
+      
+      if (res.result.success) {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        })
+        
+        // 延迟返回上一页，让用户看到成功提示
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 1500)
+      } else {
+        wx.showToast({
+          title: res.result.message || '删除失败',
+          icon: 'error'
+        })
+      }
+    }).catch(err => {
+      wx.hideLoading()
+      console.error('删除菜谱失败:', err)
+      wx.showToast({
+        title: '删除失败',
+        icon: 'error'
+      })
+    })
+  },
+
+  // 发布菜谱
+  publishRecipe() {
+    const recipe = this.data.recipe
+    wx.showModal({
+      title: '发布菜谱',
+      content: `确定要发布菜谱"${recipe.name}"吗？发布后其他用户将可以看到此菜谱。`,
+      confirmText: '发布',
+      confirmColor: '#3b82f6',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.confirmPublishRecipe()
+        }
+      }
+    })
+  },
+
+  // 确认发布菜谱
+  confirmPublishRecipe() {
+    wx.showLoading({ title: '发布中...' })
+    
+    // 获取当前菜谱数据，只更新状态和公开性
+    const recipe = this.data.recipe
+    const updateData = {
+      name: recipe.name,
+      description: recipe.description,
+      images: recipe.images,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps,
+      preparationTime: recipe.preparationTime,
+      difficulty: recipe.difficulty,
+      servingSize: recipe.servingSize,
+      sceneCategory: recipe.sceneCategory,
+      ingredientCategory: recipe.ingredientCategory,
+      optionalTags: recipe.optionalTags,
+      isPublic: true,
+      status: 'published'
+    }
+    
+    wx.cloud.callFunction({
+      name: 'recipe',
+      data: {
+        action: 'update',
+        recipeId: this.data.recipeId,
+        data: updateData
+      }
+    }).then(res => {
+      wx.hideLoading()
+      
+      if (res.result.success) {
+        wx.showToast({
+          title: '发布成功',
+          icon: 'success'
+        })
+        
+        // 更新本地数据
+        this.setData({
+          'recipe.status': 'published',
+          'recipe.isPublic': true
+        })
+        
+        // 延迟返回上一页，让用户看到成功提示
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 1500)
+      } else {
+        wx.showToast({
+          title: res.result.message || '发布失败',
+          icon: 'error'
+        })
+      }
+    }).catch(err => {
+      wx.hideLoading()
+      console.error('发布菜谱失败:', err)
+      wx.showToast({
+        title: '发布失败',
+        icon: 'error'
+      })
+    })
   }
 })

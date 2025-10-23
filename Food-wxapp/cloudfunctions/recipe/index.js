@@ -32,6 +32,8 @@ exports.main = async (event, context) => {
         return await searchRecipes(event)
       case 'myRecipes':
         return await getMyRecipes(event, openid)
+      case 'friendRecipes':
+        return await getFriendRecipes(event, openid)
       default:
         return {
           success: false,
@@ -221,12 +223,14 @@ async function getRecipeList(event, openid) {
   // 权限条件
   if (creatorId) {
     conditions.push({ creatorId: creatorId })
+    // 查询指定用户的菜谱时，只显示已发布的
+    conditions.push({ status: 'published' })
   } else {
     // 只显示公开的菜谱或自己的菜谱
     conditions.push(
       _.or([
-        { isPublic: true },
-        { creatorId: openid }
+        { isPublic: true, status: 'published' },
+        { creatorId: openid, status: 'published' }
       ])
     )
   }
@@ -244,10 +248,17 @@ async function getRecipeList(event, openid) {
   // 获取创建者信息，添加错误处理
   const recipes = await Promise.all(result.data.map(async (recipe) => {
     try {
-      const userResult = await db.collection('users').doc(recipe.creatorId).get()
+      const userResult = await db.collection('users').where({
+        openid: recipe.creatorId
+      }).get()
+      
+      const user = userResult.data.length > 0 ? userResult.data[0] : null
       return {
         ...recipe,
-        creator: userResult.data || { nickname: '未知用户', avatar: '' },
+        creator: user ? { 
+          nickname: user.nickname || '未知用户', 
+          avatar: user.avatar || '' 
+        } : { nickname: '未知用户', avatar: '' },
         createTime: formatTime(recipe.createdAt)
       }
     } catch (error) {
@@ -329,8 +340,15 @@ async function getRecipeDetail(event, openid) {
     
     // 获取创建者信息
     try {
-      const userResult = await db.collection('users').doc(recipe.creatorId).get()
-      recipe.creator = userResult.data || { nickname: '未知用户', avatar: '' }
+      const userResult = await db.collection('users').where({
+        openid: recipe.creatorId
+      }).get()
+      
+      const user = userResult.data.length > 0 ? userResult.data[0] : null
+      recipe.creator = user ? { 
+        nickname: user.nickname || '未知用户', 
+        avatar: user.avatar || '' 
+      } : { nickname: '未知用户', avatar: '' }
     } catch (error) {
       console.error('获取用户信息失败:', error)
       recipe.creator = { nickname: '未知用户', avatar: '' }
@@ -696,10 +714,172 @@ async function getMyRecipes(event, openid) {
   // 获取创建者信息，添加错误处理
   const recipes = await Promise.all(result.data.map(async (recipe) => {
     try {
-      const userResult = await db.collection('users').doc(recipe.creatorId).get()
+      const userResult = await db.collection('users').where({
+        openid: recipe.creatorId
+      }).get()
+      
+      const user = userResult.data.length > 0 ? userResult.data[0] : null
       return {
         ...recipe,
-        creator: userResult.data || { nickname: '未知用户', avatar: '' },
+        creator: user ? { 
+          nickname: user.nickname || '未知用户', 
+          avatar: user.avatar || '' 
+        } : { nickname: '未知用户', avatar: '' },
+        createTime: formatTime(recipe.createdAt)
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      return {
+        ...recipe,
+        creator: { nickname: '未知用户', avatar: '' },
+        createTime: formatTime(recipe.createdAt)
+      }
+    }
+  }))
+
+  return {
+    success: true,
+    data: {
+      recipes,
+      total: result.data.length
+    }
+  }
+}
+
+// 获取好友菜谱列表
+async function getFriendRecipes(event, openid) {
+  const { 
+    page = 1, 
+    pageSize = 10, 
+    search, 
+    sceneCategories, 
+    ingredientCategories,
+    optionalTags,
+    preparationTime
+  } = event
+
+  // 先获取好友列表
+  const friendResult = await db.collection('friends').where({
+    $or: [
+      { userOpenid: openid },
+      { friendOpenid: openid }
+    ],
+    status: 'accepted'
+  }).get()
+
+  const friendIds = friendResult.data.map(item => 
+    item.userOpenid === openid ? item.friendOpenid : item.userOpenid
+  )
+  
+  // 添加自己的ID
+  friendIds.push(openid)
+
+  let query = db.collection('recipes')
+
+  // 构建筛选条件
+  let conditions = []
+
+  // 只查询好友和自己的公开菜谱
+  conditions.push({
+    creatorId: db.command.in(friendIds)
+  })
+  
+  conditions.push({
+    isPublic: true
+  })
+  
+  // 只查询已发布的菜谱，排除草稿
+  conditions.push({
+    status: 'published'
+  })
+
+  // 搜索条件（支持菜谱名称和描述）
+  if (search && search.trim()) {
+    conditions.push(
+      _.or([
+        {
+          name: db.RegExp({
+            regexp: search.trim(),
+            options: 'i'
+          })
+        },
+        {
+          description: db.RegExp({
+            regexp: search.trim(),
+            options: 'i'
+          })
+        }
+      ])
+    )
+  }
+
+  // 场景分类筛选
+  if (sceneCategories && sceneCategories.length > 0) {
+    conditions.push({
+      sceneCategory: _.in(sceneCategories)
+    })
+  }
+
+  // 食材分类筛选
+  if (ingredientCategories && ingredientCategories.length > 0) {
+    conditions.push({
+      ingredientCategory: _.in(ingredientCategories)
+    })
+  }
+
+  // 可选标签筛选
+  if (optionalTags && optionalTags.length > 0) {
+    conditions.push({
+      optionalTags: _.in(optionalTags)
+    })
+  }
+
+  // 制作时间筛选
+  if (preparationTime) {
+    const timeValue = parseInt(preparationTime)
+    if (timeValue === 10) {
+      conditions.push({
+        'preparationTime.value': '10'
+      })
+    } else if (timeValue === 30) {
+      conditions.push({
+        'preparationTime.value': '30'
+      })
+    } else if (timeValue === 60) {
+      conditions.push({
+        'preparationTime.value': '60'
+      })
+    } else if (timeValue === 120) {
+      conditions.push({
+        'preparationTime.value': '120'
+      })
+    }
+  }
+
+  // 合并所有条件
+  let whereCondition = conditions.length > 0 ? _.and(conditions) : {}
+
+  const result = await query
+    .where(whereCondition)
+    .orderBy('createdAt', 'desc')
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .get()
+
+  // 获取创建者信息，添加错误处理
+  const recipes = await Promise.all(result.data.map(async (recipe) => {
+    try {
+      const userResult = await db.collection('users').where({
+        openid: recipe.creatorId
+      }).get()
+      
+      const user = userResult.data.length > 0 ? userResult.data[0] : null
+      return {
+        ...recipe,
+        creator: user ? { 
+          nickname: user.nickname || '未知用户', 
+          avatar: user.avatar || '' 
+        } : { nickname: '未知用户', avatar: '' },
         createTime: formatTime(recipe.createdAt)
       }
     } catch (error) {

@@ -355,10 +355,21 @@
   padding: 24rpx 48rpx;
   padding-bottom: calc(24rpx + env(safe-area-inset-bottom, 0));
   border-top: 1rpx solid #f1f5f9;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 24rpx;
   z-index: 100;
+}
+
+/* 草稿状态：三按钮布局 */
+.action-buttons-draft {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 16rpx;
+}
+
+/* 已发布状态：两按钮布局 */
+.action-buttons-published {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24rpx;
 }
 
 .action-btn {
@@ -396,6 +407,17 @@
 .action-btn.primary:active {
   transform: scale(0.95);
   box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.4);
+}
+
+.action-btn.danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(239, 68, 68, 0.3);
+}
+
+.action-btn.danger:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 16rpx rgba(239, 68, 68, 0.4);
 }
 
 

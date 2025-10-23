@@ -54,7 +54,7 @@
   line-height: 1.5;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -130,4 +130,50 @@
 .status-text {
   font-size: 22rpx;
   font-weight: 600;
+}
+
+/* 购物车操作按钮 */
+.cart-action {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  z-index: 10;
+}
+
+.add-to-cart-btn,
+.remove-from-cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.add-to-cart-btn {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.add-to-cart-btn:active {
+  background-color: #2563eb;
+  transform: scale(0.95);
+}
+
+.remove-from-cart-btn {
+  background-color: #ff4757;
+  color: #ffffff;
+}
+
+.remove-from-cart-btn:active {
+  background-color: #ff3742;
+  transform: scale(0.95);
+}
+
+.btn-text {
+  font-size: 22rpx;
+  font-weight: 500;
 }

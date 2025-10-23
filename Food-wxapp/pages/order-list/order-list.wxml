@@ -1,1 +1,143 @@
-<view class="container"><text>订单列表页面开发中...</text></view>
+<view class="order-list-container">
+  <!-- 头部 -->
+  <view class="header-section">
+    <!-- <view class="header-content">
+      <text class="page-title">我的订单</text>
+      <view class="search-btn" bindtap="onSearchClick">
+        <van-icon name="search" size="20px" color="#3b82f6" />
+      </view>
+    </view> -->
+    
+    <!-- 搜索框 -->
+    <view class="search-section">
+      <van-field
+        value="{{searchValue}}"
+        placeholder="搜索订单号、制作者或菜品..."
+        bind:input="onSearchInput"
+        catch:confirm="onSearchConfirm"
+        clearable
+        left-icon="search"
+        custom-style="background: #f5f5f5; border-radius: 16px; border: none;"
+      />
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <view class="status-tabs">
+    <scroll-view class="tabs-scroll" scroll-x="true" show-scrollbar="{{false}}">
+      <view class="tabs-list">
+        <view 
+          wx:for="{{statusTabs}}" 
+          wx:key="value"
+          class="tab-item {{currentStatus === item.value ? 'active' : ''}}"
+          data-status="{{item.value}}"
+          bindtap="onStatusChange"
+        >
+          <text class="tab-text">{{item.label}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="orders-section">
+    <scroll-view 
+      class="orders-scroll"
+      scroll-y="true"
+      refresher-enabled="true"
+      refresher-triggered="{{refreshing}}"
+      bindrefresherrefresh="onRefresh"
+      bindscrolltolower="onReachBottom"
+    >
+      <view wx:if="{{loading && orders.length === 0}}" class="loading-state">
+        <van-loading size="24px" />
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <view wx:elif="{{orders.length === 0}}" class="empty-state">
+        <text class="empty-emoji">📋</text>
+        <text class="empty-title">暂无订单</text>
+      </view>
+
+      <view wx:else class="orders-list">
+        <view 
+          wx:for="{{orders}}" 
+          wx:key="_id"
+          class="order-card"
+          data-order-id="{{item._id}}"
+          bindtap="onOrderClick"
+        >
+          <!-- 订单头部 -->
+          <view class="order-header">
+            <view class="order-title">
+              <view class="order-time">
+                <text class="meal-icon">{{item.mealTypeIcon}}</text>
+                <text class="meal-type">{{item.mealTypeLabel}}订单</text>
+                <text class="order-date">{{item.orderDate}}</text>
+              </view>
+              <view class="status-badge status-{{item.status}}">
+                <text class="status-text">{{item.statusLabel}}</text>
+              </view>
+            </view>
+            <text class="order-no">{{item.orderNo}}</text>
+          </view>
+
+          <!-- 制作者信息 -->
+          <view class="assignee-info">
+            <image class="assignee-avatar" src="{{item.assignee.avatar}}" mode="aspectFill" />
+            <view class="assignee-details">
+              <text class="assignee-name">{{item.assignee.nickname}}</text>
+              <!-- <text class="order-time">日期： {{item.orderDate}}</text> -->
+            </view>
+          </view>
+
+          <!-- 菜品预览区域 -->
+          <view class="recipes-preview">
+            <view class="recipe-grid">
+              <view 
+                wx:for="{{item.recipes}}" 
+                wx:key="index"
+                wx:if="{{index < 4}}"
+                class="recipe-image-item"
+              >
+                <image class="recipe-image" src="{{item.image}}" mode="aspectFill" />
+              </view>
+            </view>
+            <view class="recipe-info-right">
+              <text class="recipe-count">共{{item.totalRecipes}}道菜</text>
+            </view>
+          </view>
+
+          <!-- 操作按钮区域 -->
+          <view class="order-actions">
+            <!-- 待处理状态 -->
+            <view wx:if="{{item.status === 'pending'}}" class="button-group">
+              <button class="action-btn primary" bindtap="onStartCooking" data-order-id="{{item._id}}" catchtap="true">开始制作</button>
+              <button class="action-btn secondary" bindtap="onCancelOrder" data-order-id="{{item._id}}" catchtap="true">取消订单</button>
+            </view>
+            
+            <!-- 处理中状态 -->
+            <view wx:elif="{{item.status === 'processing'}}" class="button-group">
+              <button class="action-btn primary" bindtap="onCompleteOrder" data-order-id="{{item._id}}" catchtap="true">完成制作</button>
+              <button class="action-btn secondary" bindtap="onCancelOrder" data-order-id="{{item._id}}" catchtap="true">取消订单</button>
+            </view>
+            
+            <!-- 已完成或已取消状态 -->
+            <button wx:elif="{{item.status === 'completed' || item.status === 'cancelled'}}" class="action-btn primary" bindtap="onOrderAgain" data-order-id="{{item._id}}" catchtap="true">再次点餐</button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{loading && orders.length > 0}}" class="load-more">
+        <van-loading size="20px" />
+        <text>加载更多...</text>
+      </view>
+
+      <!-- 没有更多 -->
+      <view wx:if="{{!loading && !hasMore && orders.length > 0}}" class="no-more">
+        <text>— 已经到底了 —</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>

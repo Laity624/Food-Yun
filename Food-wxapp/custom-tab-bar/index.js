@@ -35,7 +35,7 @@ Component({
       },
       {
         "type": 'order',
-        "pagePath": "/pages/order/order",
+        "pagePath": "/pages/order-list/order-list",
         "text": "订单",
         "iconPath": "./icons/order.svg",
         "selectedIconPath": "./icons/ordered.svg",

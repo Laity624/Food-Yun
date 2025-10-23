@@ -49,6 +49,22 @@ Component({
           recipe: this.data.recipe
         })
       }
+    },
+
+    /**
+     * 购物车操作事件
+     */
+    onCartAction: function(e) {
+      // 在微信小程序中，通过catchtap来阻止事件冒泡，而不是在JS中调用stopPropagation
+      const recipeId = e.currentTarget.dataset.recipeId
+      if (recipeId) {
+        // 触发父组件的购物车操作事件
+        this.triggerEvent('cartaction', {
+          recipeId: recipeId,
+          recipe: this.data.recipe,
+          isInCart: this.data.recipe.isInCart
+        })
+      }
     }
   }
 })
